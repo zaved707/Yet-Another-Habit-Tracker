@@ -1,0 +1,15 @@
+todo on click of search icon in search screen to lead to search field and open keyboard
+todo noMoviesFound Page For Search Page
+todo bug you can remove something from favourites but now put something to favourites
+DONE  make error page a seperate page
+DONE implement dark Light theme in Settings
+DONE add more items to home screen
+DONE check api key validity
+DONE  make bottom bar icons similar
+DONE add a placeholder for when user has no API
+//DONE: add a better empty placeHolder for Search Screen
+//COMPLETED make favouritesButton in Details page responsive to if the user has added the movie to favourite
+//COMPLETED unify the topApp Bars
+//COMPLETED add topApp bar to MovieDetailsPage
+//COMPLETED search Screen Search Bar improve aesthetics
+//COMPLETED hide loading indicator behind the top bar
