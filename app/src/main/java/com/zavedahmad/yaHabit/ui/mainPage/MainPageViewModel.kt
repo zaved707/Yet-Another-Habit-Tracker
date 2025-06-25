@@ -13,8 +13,10 @@ import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -32,6 +34,10 @@ class MainPageViewModel @Inject constructor(
     override fun onCleared() {
         println("mainViewModelCleared")
     }
+    private val _listStartDate = MutableStateFlow<LocalDate>(LocalDate.now())
+    val listStartDate = _listStartDate.asStateFlow()
+    private val _listEndDate = MutableStateFlow<LocalDate>(LocalDate.now().minusDays(30))
+    val listEndDate = _listEndDate.asStateFlow()
 
     private val _habits = MutableStateFlow<List<HabitEntity>>(emptyList())
     val habits: StateFlow<List<HabitEntity>> = _habits
@@ -55,7 +61,9 @@ class MainPageViewModel @Inject constructor(
     fun readHabitEntries(){
 
     }
-
+    fun getHabitCompletionsByDate(date: Long): Flow<List<HabitCompletionEntity>> {
+        return habitCompletionDao.getHabitCompletionsByDate(date)
+    }
 
 
 }

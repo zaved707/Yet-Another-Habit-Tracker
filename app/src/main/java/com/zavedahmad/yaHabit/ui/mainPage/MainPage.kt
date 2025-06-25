@@ -25,6 +25,7 @@ import java.time.LocalDate
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,8 +41,10 @@ import java.time.ZoneId
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
-    var dates by rememberSaveable { mutableStateOf(generateInitialDates()) }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
+    val listStartDate = viewModel.listStartDate.collectAsStateWithLifecycle()
+    val listEndDate = viewModel.listEndDate.collectAsStateWithLifecycle()
+    var dates by rememberSaveable { mutableStateOf(generateInitialDates()) }
     Scaffold() { innerPadding ->
         Column(
             modifier = Modifier
@@ -50,7 +53,7 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
         ) {
             Button(onClick = { backStack.add(Screen.AddHabitPageRoute) }) { }
             Row(modifier = Modifier.fillMaxHeight()) {
-
+                Text(dates.size.toString())
                 LazyColumn(modifier = Modifier.fillMaxWidth(0.5f)) {
                     items(habits.value) { habit ->
                         Text(habit.name)
@@ -72,14 +75,27 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
                                 date.dayOfMonth.toString()
                             )
                             Text(date.month.toString())
-
+                            val completions =  viewModel.getHabitCompletionsByDate(date.toEpochDay()).collectAsStateWithLifecycle(initialValue = emptyList())
                             habits.value.forEach { habit ->
-                                IconButton(onClick = {viewModel.addHabitEntry(habit.id, date)}) { Icon(Icons.Default.Check, contentDescription = "") }
+                                val isCompleted = completions.value.any { it.habitId == habit.id }
+                                if(!isCompleted){
+                                    IconButton(onClick = {viewModel.addHabitEntry(habit.id, date)}) { Icon(Icons.Default.Close, contentDescription = "Mark as not completed") }
+                                }
+                                else{
+                                   IconButton(onClick = {}) {  Icon(Icons.Default.Check, contentDescription = "")}
+                                }
                             }
                         }
                         if (dates.indexOf(date) > dates.size - 5) {
                             dates = dates + generateMoreDates(dates.last())
                         }
+//                        if (dates.indexOf(date) == 5) {
+//                            dates = dates + generateMoreDatesInverse(dates.first())
+//                            dates = dates.sortedByDescending{it}
+//                        }
+//                        if (dates.size > 60) {
+//                            dates=  dates.takeLast(60).toMutableList()
+//                        }
                     }
                 }
             }
@@ -91,8 +107,15 @@ private fun generateInitialDates(): List<LocalDate> {
     val today = LocalDate.now()
     return (0L..30L).map { today.minusDays(it) }
 }
-
+fun fetchDates(initialDate : LocalDate, lastDate: LocalDate): List<LocalDate>{
+    return generateSequence(initialDate) { it.minusDays(1) }
+        .takeWhile { !it.isBefore(lastDate) }
+        .toList()
+}
 // Generate more dates starting from the last date
 private fun generateMoreDates(lastDate: LocalDate): List<LocalDate> {
     return (1L..30L).map { lastDate.minusDays(it) }
+}
+private fun generateMoreDatesInverse(firstDate : LocalDate): List<LocalDate>{
+    return (1L..30L).map {firstDate.plusDays(it)  }
 }
