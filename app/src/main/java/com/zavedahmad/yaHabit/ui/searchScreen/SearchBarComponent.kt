@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.KeyboardActionHandler
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
@@ -74,7 +73,7 @@ fun SearchBarComponent(backStack: SnapshotStateList<NavKey>) {
             state = basicTextFiledState,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             lineLimits = TextFieldLineLimits.SingleLine,
-            onKeyboardAction = KeyboardActionHandler(function = { })
+            onKeyboardAction = {   }
         )
     }
 

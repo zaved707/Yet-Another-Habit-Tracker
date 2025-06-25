@@ -4,6 +4,8 @@ package com.zavedahmad.yaHabit.hilt
 
 import android.content.Context
 import androidx.room.Room
+import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
+import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.Module
@@ -26,6 +28,15 @@ object HiltMainDbModule {
     @Provides
     fun providePreferencesDao(database: MainDatabase): PreferencesDao{
         return database.preferencesDao()
+    }
+
+    @Provides
+    fun provideHabitDao(database: MainDatabase): HabitDao{
+        return database.habitDao()
+    }
+    @Provides
+    fun provideHabitCompletionDao(database: MainDatabase): HabitCompletionDao{
+        return database.habitCompletionDao()
     }
 
 }
