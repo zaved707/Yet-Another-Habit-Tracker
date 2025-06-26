@@ -16,4 +16,7 @@ interface HabitCompletionDao {
 
     @Query("SELECT * FROM habitCompletion WHERE completionDate = :date")
     fun getHabitCompletionsByDate(date : Long): Flow<List<HabitCompletionEntity>>
+
+    @Query("DELETE FROM habitCompletion WHERE habitId = :habitId AND completionDate = :completionDate")
+    suspend fun deleteHabitCompletionEntry(habitId: Int, completionDate: Long)
 }

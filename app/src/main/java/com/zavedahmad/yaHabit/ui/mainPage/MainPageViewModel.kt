@@ -58,11 +58,17 @@ class MainPageViewModel @Inject constructor(
             habitCompletionDao.addHabitCompletionEntry(HabitCompletionEntity(habitId = habitId, completionDate = completionDate))
         }
     }
-    fun readHabitEntries(){
-
+    fun getHabitCompletionsByHabitId(id: Int): Flow<List<HabitCompletionEntity>> {
+        return habitCompletionDao.getHabitCompletions(id)
     }
     fun getHabitCompletionsByDate(date: Long): Flow<List<HabitCompletionEntity>> {
         return habitCompletionDao.getHabitCompletionsByDate(date)
+    }
+    fun deleteEntryByDateAndHabitId(habitId : Int,date: Long){
+        viewModelScope.launch(Dispatchers.IO) {
+            habitCompletionDao.deleteHabitCompletionEntry(habitId = habitId, completionDate = date)
+        }
+
     }
 
 
