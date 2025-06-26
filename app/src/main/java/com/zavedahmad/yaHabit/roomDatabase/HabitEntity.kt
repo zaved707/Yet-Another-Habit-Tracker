@@ -1,5 +1,6 @@
 package com.zavedahmad.yaHabit.roomDatabase
 
+import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -7,6 +8,7 @@ import androidx.room.PrimaryKey
 data class HabitEntity(
     @PrimaryKey(autoGenerate = true)
     val id : Int = 0,
-    val name: String
+    val name: String,
+    val description : String= "",
 
 )

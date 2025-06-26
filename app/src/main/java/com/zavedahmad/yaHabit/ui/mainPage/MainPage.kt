@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,6 +39,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -52,6 +54,12 @@ import com.zavedahmad.yaHabit.ui.components.MyTopABCommon
 import java.time.LocalDate
 
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +71,10 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
     })
     var dates by rememberSaveable { mutableStateOf(generateInitialDates()) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    Scaffold(
+    var lazyRowWidth by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
+
+    Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
         topBar = { MyTopABCommon(backStack, scrollBehavior, "Habits") },
         floatingActionButton = {
@@ -75,6 +86,7 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(horizontal = 10.dp)
         ) {
 
 
@@ -84,16 +96,28 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
                         Column(
                             Modifier
                                 .fillMaxWidth()
-                                .padding(20.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .padding(10.dp),
+                            horizontalAlignment = Alignment.Start
                         ) {
                             Text(
-                                habit.name
+                                habit.name,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                                ,
+                                style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
                             )
+                            Spacer(Modifier.height(20.dp))
+                            val week = LocalDate.now()
+
                             val completions = viewModel.getHabitCompletionsByHabitId(habit.id)
                                 .collectAsStateWithLifecycle(initialValue = emptyList())
                             var dates by rememberSaveable { mutableStateOf(generateInitialDates()) }
-                            LazyRow {
+                            LazyRow(
+                                reverseLayout = true,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    ) {
+                                val columnWidth = lazyRowWidth / 7
                                 items(dates) { date ->
                                     val isCompleted =
                                         completions.value.any { it.completionDate == date }
@@ -101,45 +125,13 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
                                     if (dates.indexOf(date) > dates.size - 5) {
                                         dates = dates + generateMoreDates(dates.last())
                                     }
-                                    if (!isCompleted) {
-                                        Card(onClick = {(viewModel.addHabitEntry(habit.id, date))},
-                                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseSurface),
-                                            modifier = Modifier
-                                                .padding(10.dp)
-                                                .size(50.dp)
-                                        ) {
-                                            Column(
-                                                Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(10.dp),
-                                                verticalArrangement = Arrangement.Center,
-                                                horizontalAlignment = Alignment.CenterHorizontally
-                                            ) { Text(date.dayOfMonth.toString()) }
-                                        }
-
-                                    }else{
-                                        Card(onClick = {viewModel.deleteEntryByDateAndHabitId(habit.id, date.toEpochDay())},
-                                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-                                            modifier = Modifier
-                                                .padding(10.dp)
-                                                .size(50.dp)
-                                        ) {
-                                            Column(
-                                                Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(10.dp),
-                                                verticalArrangement = Arrangement.Center,
-                                                horizontalAlignment = Alignment.CenterHorizontally
-                                            ) { Text(date.dayOfMonth.toString()) }
-                                        }
-                                    }
-
+                                    DateItem(viewModel, isCompleted, date, habit, 50.dp)
                                 }
                             }
                         }
                     }
 
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(40.dp))
 
 
                 }

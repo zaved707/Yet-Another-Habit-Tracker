@@ -24,8 +24,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
-import com.zavedahmad.yaHabit.ui.AddHabitPage.AddHabitPage
-import com.zavedahmad.yaHabit.ui.AddHabitPage.AddHabitPageViewModel
+import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
+import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
 
 import com.zavedahmad.yaHabit.ui.mainPage.MainPage
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
@@ -124,7 +124,7 @@ class RecipePickerActivity : ComponentActivity() {
                                         is Screen.AddHabitPageRoute -> {
                                             NavEntry(key= key){
                                                 val addHabitPageViewModel = hiltViewModel<AddHabitPageViewModel>()
-                                                AddHabitPage(addHabitPageViewModel)
+                                                AddHabitPage(addHabitPageViewModel, backStack)
 
                                             }
                                         }
