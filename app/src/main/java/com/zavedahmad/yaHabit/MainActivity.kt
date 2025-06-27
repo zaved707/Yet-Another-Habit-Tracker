@@ -34,6 +34,7 @@ import com.zavedahmad.yaHabit.ui.setEdgeToEdgeConfig
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsScreen
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsViewModel
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
+import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
 
@@ -88,6 +89,7 @@ class RecipePickerActivity : ComponentActivity() {
             } else {
 
                 ComposeTemplateTheme(themeReal.value) {
+                    CustomTheme(theme = themeReal.value,  useExistingTheme = true) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
 
@@ -155,7 +157,7 @@ class RecipePickerActivity : ComponentActivity() {
 
                         }
                     }
-                }
+                }}
             }
         }
     }

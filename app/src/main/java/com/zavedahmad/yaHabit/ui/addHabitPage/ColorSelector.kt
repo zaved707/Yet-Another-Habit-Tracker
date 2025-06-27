@@ -29,30 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun ColorSelector(viewModel: AddHabitPageViewModel){
     val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
-    val colors = listOf<Color>(
-        Color(0xFFE91E63),// Vibrant Pink (HotPink)
-        Color(0xFFFF7F50), // Vibrant Coral (Coral)
-        Color(0xFFBA55D3), // Vibrant Orchid (MediumOrchid)
-
-        Color(0xFF4682B4), // Vibrant Steel Blue (SteelBlue)
-
-        Color(0xFF40E0D0), // Vibrant Turquoise (Turquoise)
-
-        Color(0xFF32CD32), // Vibrant Lime Green (LimeGreen)
-
-        Color(0xFFADFF2F), // Vibrant Green Yellow (GreenYellow)
-
-        Color(0xFFFFD700), // Vibrant Gold (Gold)
-
-        Color(0xFFFF8C00), // Vibrant Dark Orange (DarkOrange)
-
-        Color(0xFFDC143C), // Crimson
-        Color(0xFFA0522D), // Vibrant Sienna (Sienna)
-
-        Color(0xFF708090),  // Vibrant Slate Gray (SlateGray)
-
-
-    )
+    val colors = viewModel.colors
     Card(
         Modifier
             .height(100.dp)

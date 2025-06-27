@@ -15,16 +15,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
-@OptIn( ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyMediumTopABCommon(backStack: SnapshotStateList<NavKey>, scrollBehavior: TopAppBarScrollBehavior, title :String){
+fun MyMediumTopABCommon(
+    backStack: SnapshotStateList<NavKey>,
+    scrollBehavior: TopAppBarScrollBehavior,
+    title: String
+) {
     MediumTopAppBar(
         title = { Text(title) },
-        actions = { Row {
-            IconButton(onClick = {backStack.add(Screen.SettingsPageRoute)}){ Icon(imageVector = Icons.Outlined.Settings, contentDescription = "Settings")} }},
-        colors = TopAppBarDefaults.topAppBarColors(
-
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ), scrollBehavior = scrollBehavior
+        actions = {
+            Row {
+                IconButton(onClick = { backStack.add(Screen.SettingsPageRoute) }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Settings,
+                        contentDescription = "Settings"
+                    )
+                }
+            }
+        },
+        scrollBehavior = scrollBehavior
     )
 }

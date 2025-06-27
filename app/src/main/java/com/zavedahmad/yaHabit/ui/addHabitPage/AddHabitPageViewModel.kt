@@ -14,8 +14,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddHabitPageViewModel @Inject constructor(val habitDao: HabitDao) : ViewModel() {
+     val colors =listOf<Color>(
 
-    private val _selectedColor = MutableStateFlow<Color>( Color(0xFFFF69B4))
+
+        Color(0xFFBA55D3), // Vibrant Orchid (MediumOrchid)
+
+        Color(0xFF4682B4), // Vibrant Steel Blue (SteelBlue)
+
+        Color(0xFF40E0D0), // Vibrant Turquoise (Turquoise)
+
+        Color(0xFF32CD32), // Vibrant Lime Green (LimeGreen)
+
+        Color(0xFFADFF2F), // Vibrant Green Yellow (GreenYellow)
+
+        Color(0xFFFFD700), // Vibrant Gold (Gold)
+
+        Color(0xFFFF8C00), // Vibrant Dark Orange (DarkOrange)
+
+        Color(0xFFDC143C), // Crimson
+        Color(0xFFA0522D), // Vibrant Sienna (Sienna)
+
+        Color(0xFF708090),  // Vibrant Slate Gray (SlateGray)
+
+
+    )
+    private val _selectedColor = MutableStateFlow<Color>(  colors[0])
     val selectedColor = _selectedColor.asStateFlow()
     private val _habitName = MutableStateFlow("")
     val habitName = _habitName.asStateFlow()

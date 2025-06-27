@@ -2,6 +2,7 @@ package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,7 +52,7 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
         ) {
 
 
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                 items(habits.value.size) { index ->
                     val habit = habits.value[index]
                     CustomTheme(theme = "system", primaryColor = habit.color) {
