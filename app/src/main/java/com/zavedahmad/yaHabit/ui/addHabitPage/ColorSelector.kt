@@ -30,25 +30,28 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun ColorSelector(viewModel: AddHabitPageViewModel){
     val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
     val colors = listOf<Color>(
-        Color(0xFFFF69B4), // Vibrant Pink (HotPink)
+        Color(0xFFE91E63),// Vibrant Pink (HotPink)
         Color(0xFFFF7F50), // Vibrant Coral (Coral)
         Color(0xFFBA55D3), // Vibrant Orchid (MediumOrchid)
-        Color(0xFF9370DB), // Vibrant Medium Purple (MediumPurple)
+
         Color(0xFF4682B4), // Vibrant Steel Blue (SteelBlue)
-        Color(0xFF00BFFF), // Vibrant Deep Sky Blue (DeepSkyBlue)
+
         Color(0xFF40E0D0), // Vibrant Turquoise (Turquoise)
-        Color(0xFF00FA9A), // Vibrant Medium Spring Green (MediumSpringGreen)
+
         Color(0xFF32CD32), // Vibrant Lime Green (LimeGreen)
-        Color(0xFF7FFF00), // Vibrant Chartreuse (Chartreuse)
+
         Color(0xFFADFF2F), // Vibrant Green Yellow (GreenYellow)
-        Color(0xFFFFFF00), // Vibrant Yellow (Yellow)
+
         Color(0xFFFFD700), // Vibrant Gold (Gold)
-        Color(0xFFFFA500), // Vibrant Orange (Orange)
+
         Color(0xFFFF8C00), // Vibrant Dark Orange (DarkOrange)
-        Color(0xFFFF4500), // Vibrant Orange Red (OrangeRed)
+
+        Color(0xFFDC143C), // Crimson
         Color(0xFFA0522D), // Vibrant Sienna (Sienna)
-        Color(0xFF778899), // Vibrant Light Slate Gray (LightSlateGray)
-        Color(0xFF708090)  // Vibrant Slate Gray (SlateGray)
+
+        Color(0xFF708090),  // Vibrant Slate Gray (SlateGray)
+
+
     )
     Card(
         Modifier

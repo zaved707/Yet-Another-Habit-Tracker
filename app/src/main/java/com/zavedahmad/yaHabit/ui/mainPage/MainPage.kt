@@ -22,23 +22,22 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
-import com.zavedahmad.yaHabit.ui.components.MyTopABCommon
+import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val habits = viewModel.habits.collectAsStateWithLifecycle()
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
 
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
-        topBar = { MyTopABCommon(backStack, scrollBehavior, "Habits") },
+        topBar = { MyMediumTopABCommon(backStack, scrollBehavior, "Habits") },
         floatingActionButton = {
             ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute) }) {
                 Text("Add Habit")

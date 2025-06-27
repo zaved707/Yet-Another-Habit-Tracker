@@ -10,6 +10,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.materialkolor.PaletteStyle
+import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicColorScheme
 
 private val DarkColorScheme = darkColorScheme(
@@ -37,16 +39,22 @@ fun CustomTheme(
         isSystemInDarkTheme() // Optional: default case for unexpected theme values
     }
 
+    val colorScheme = rememberDynamicColorScheme(
+        primary = primaryColor ?: MaterialTheme.colorScheme.primary,
+        secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
+        tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
+        isDark = darkTheme,
 
+        specVersion = ColorSpec.SpecVersion.SPEC_2025,
+        style = PaletteStyle.Expressive,
+        contrastLevel = 0.0 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
+    )
 
 
     MaterialTheme(
-        colorScheme = rememberDynamicColorScheme(
-            primary = primaryColor ?: MaterialTheme.colorScheme.primary,
-            secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
-            tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
-            isDark = darkTheme
-        ),
+        colorScheme = colorScheme,
+
+
         content = content
     )
 }

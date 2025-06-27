@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,20 +37,25 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import com.zavedahmad.yaHabit.ui.components.MyTopABCommon
+import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
     val name by viewModel.habitName.collectAsStateWithLifecycle()
     val description by viewModel.habitDescription.collectAsStateWithLifecycle()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     val isNameError = rememberSaveable { mutableStateOf(false) }
-    Scaffold(
+    val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior (rememberTopAppBarState())
+    CustomTheme(theme = "system", primaryColor = setColor.value) {
+    Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { MyTopABCommon(backStack, scrollBehavior, "add Habit") },
         bottomBar = {
             Box(
@@ -71,7 +77,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         } else {
                             viewModel.addHabit()
                         }
-                    }, modifier = Modifier.fillMaxWidth()) { Text("add") }
+                    }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) { Text("add") }
                 }
             }
         }) { innerPadding ->
@@ -141,4 +147,4 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
         }
 
     }
-}
+}}

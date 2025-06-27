@@ -73,6 +73,9 @@ class MainPageViewModel @Inject constructor(
     fun generateMoreDates(lastDate: LocalDate): List<LocalDate> {
         return (1L..14L).map { lastDate.minusDays(it) }
     }
+    fun deleteHabitById(id: Int){
+        viewModelScope.launch(Dispatchers.IO) { habitDao.deleteHabitById(id) }
+    }
 
 
 }
