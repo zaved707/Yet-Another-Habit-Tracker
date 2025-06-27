@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -31,19 +32,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavKey
+import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import kotlin.collections.plus
 
 @Composable
-fun HabitItem(viewModel: MainPageViewModel, habit: HabitEntity) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+fun HabitItem(backStack: SnapshotStateList<NavKey>,viewModel: MainPageViewModel, habit: HabitEntity) {
+    Card(modifier = Modifier.fillMaxWidth(), onClick = {backStack.add(Screen.HabitDetailsPageRoute(habit.id))}) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,) {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     Text(
                         habit.name,

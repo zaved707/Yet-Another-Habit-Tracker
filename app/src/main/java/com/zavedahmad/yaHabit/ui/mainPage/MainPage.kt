@@ -56,7 +56,7 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
                 items(habits.value.size) { index ->
                     val habit = habits.value[index]
                     CustomTheme(theme = "system", primaryColor = habit.color) {
-                       HabitItem(viewModel,habit)
+                       HabitItem(backStack,viewModel,habit)
 
                         Spacer(Modifier.height(40.dp))
                         if (index == habits.value.size-1){

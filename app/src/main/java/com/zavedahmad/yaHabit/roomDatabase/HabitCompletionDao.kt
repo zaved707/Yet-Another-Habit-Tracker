@@ -19,4 +19,7 @@ interface HabitCompletionDao {
 
     @Query("DELETE FROM habitCompletion WHERE habitId = :habitId AND completionDate = :completionDate")
     suspend fun deleteHabitCompletionEntry(habitId: Int, completionDate: Long)
+
+    @Query("SELECT * FROM habitCompletion WHERE habitId = :habitId AND completionDate > :completionDate" )
+    suspend fun getEntriesAfterDate(habitId: Int, completionDate : Long): List<HabitCompletionEntity>?
 }
