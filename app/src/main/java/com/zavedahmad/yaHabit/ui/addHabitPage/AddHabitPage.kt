@@ -6,10 +6,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
@@ -48,6 +55,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
             Box(
                 Modifier
                     .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Row(
@@ -70,7 +78,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
 
         Column(
-            modifier = Modifier
+            modifier = Modifier.verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
@@ -89,7 +97,11 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                 onValueChange = {
                     isNameError.value = false
                     viewModel.setHabitName(it)
-                }, trailingIcon = { if (isNameError.value){Icon(Icons.Default.Error, contentDescription = "Error") }},
+                }, trailingIcon = {
+                    if (isNameError.value) {
+                        Icon(Icons.Default.Error, contentDescription = "Error")
+                    }
+                },
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
