@@ -44,7 +44,7 @@ fun HabitItem(viewModel: MainPageViewModel, habit: HabitEntity) {
             horizontalAlignment = Alignment.Start
         ) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(Modifier.fillMaxWidth(0.5f)) {
+                Column(Modifier.fillMaxWidth(0.7f)) {
                     Text(
                         habit.name,
 
@@ -59,7 +59,7 @@ fun HabitItem(viewModel: MainPageViewModel, habit: HabitEntity) {
                     Text(
                         habit.description,
 
-                        maxLines = 3,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         style = TextStyle(
                             color = MaterialTheme.colorScheme.onSurface,

@@ -66,10 +66,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 },
                 title = { Text("Settings") },
 
-                colors = TopAppBarDefaults.topAppBarColors(
-
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ), scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior
             )
 
         }) { innerPadding ->

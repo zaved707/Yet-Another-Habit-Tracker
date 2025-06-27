@@ -27,8 +27,10 @@ fun CustomTheme(
     theme: String,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
+    useExistingTheme : Boolean = false,
     content: @Composable () -> Unit
 ) {
+
     val darkTheme = if (theme == "light") {
         false
     } else if (theme == "dark") {
@@ -39,16 +41,39 @@ fun CustomTheme(
         isSystemInDarkTheme() // Optional: default case for unexpected theme values
     }
 
-    val colorScheme = rememberDynamicColorScheme(
-        primary = primaryColor ?: MaterialTheme.colorScheme.primary,
-        secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
-        tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
-        isDark = darkTheme,
+    val colorScheme = if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val context = LocalContext.current
+        if (darkTheme) {
+            dynamicDarkColorScheme(context)
+        } else {
+            dynamicLightColorScheme(context)
+        }
+    } else {
+        if(useExistingTheme) {
+            rememberDynamicColorScheme(
+                primary = primaryColor ?: MaterialTheme.colorScheme.primary,
+                secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
+                tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
+                isDark = darkTheme,
 
-        specVersion = ColorSpec.SpecVersion.SPEC_2025,
-        style = PaletteStyle.Expressive,
-        contrastLevel = 0.0 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
-    )
+                specVersion = ColorSpec.SpecVersion.SPEC_2025,
+                style = PaletteStyle.Expressive,
+                contrastLevel = 0.0 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
+            )
+        }else{
+            rememberDynamicColorScheme(
+                primary = primaryColor ?: Purple80,
+                secondary = secondaryColor ?: PurpleGrey80,
+                tertiary = tertiaryColor ?: Pink80,
+                isDark = darkTheme,
+
+                specVersion = ColorSpec.SpecVersion.SPEC_2025,
+                style = PaletteStyle.Expressive,
+                contrastLevel = 0.0 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
+            )
+        }
+
+    }
 
 
     MaterialTheme(
