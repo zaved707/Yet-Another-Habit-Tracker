@@ -37,7 +37,7 @@ class AddHabitPageViewModel @Inject constructor(val habitDao: HabitDao) : ViewMo
 
     fun addHabit(){
         viewModelScope.launch(Dispatchers.IO) {
-            habitDao.addHabit(HabitEntity(name = habitName.value, description = _habitDescription.value))
+            habitDao.addHabit(HabitEntity(name = habitName.value, color = _selectedColor.value,description = _habitDescription.value))
         }
     }
 }

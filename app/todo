@@ -2,3 +2,6 @@ todo add a colors entity to database
 todo add a category table
 todo add category as a primary key to habits
 todo chnage navigation animations
+todo check if name is not empty
+todo add dragging
+todo make habit theme take dark theme from preferences

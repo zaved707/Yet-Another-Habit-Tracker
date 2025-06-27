@@ -74,7 +74,10 @@ dependencies {
 
     implementation("androidx.room:room-runtime:$roomVersion")
 
+    //Material kolor -- custom colors
 
+    implementation("com.materialkolor:material-kolor:3.0.0-beta07")
+    // end
     ksp("androidx.room:room-compiler:$roomVersion")
 
 

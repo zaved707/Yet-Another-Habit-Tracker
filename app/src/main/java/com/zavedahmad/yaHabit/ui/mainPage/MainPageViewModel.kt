@@ -48,11 +48,7 @@ class MainPageViewModel @Inject constructor(
         }
     }
 
-    fun addHabit(habitName : String){
-        viewModelScope.launch(Dispatchers.IO) {
-            habitDao.addHabit(HabitEntity(name = habitName))
-        }
-    }
+
     fun addHabitEntry(habitId : Int , completionDate : LocalDate){
         viewModelScope.launch {
             habitCompletionDao.addHabitCompletionEntry(HabitCompletionEntity(habitId = habitId, completionDate = completionDate))
@@ -69,6 +65,13 @@ class MainPageViewModel @Inject constructor(
             habitCompletionDao.deleteHabitCompletionEntry(habitId = habitId, completionDate = date)
         }
 
+    }
+    fun generateInitialDates(): List<LocalDate> {
+        val today = LocalDate.now()
+        return (0L..14L).map { today.minusDays(it) }
+    }
+    fun generateMoreDates(lastDate: LocalDate): List<LocalDate> {
+        return (1L..14L).map { lastDate.minusDays(it) }
     }
 
 
