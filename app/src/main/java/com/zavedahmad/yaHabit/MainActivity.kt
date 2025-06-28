@@ -50,13 +50,13 @@ sealed class Screen : NavKey {
     data object SearchPageRoute : Screen()
 
     @Serializable
-    data object AddHabitPageRoute : Screen()
+    data class AddHabitPageRoute(val habitId: Int? = null) : Screen()
 
     @Serializable
     data object FavouritePageRoute : Screen()
 
     @Serializable
-    data class HabitDetailsPageRoute(val habitId : Int) : Screen()
+    data class HabitDetailsPageRoute(val habitId: Int) : Screen()
 
     @Serializable
     data object SettingsPageRoute : Screen()
@@ -87,92 +87,104 @@ class RecipePickerActivity : ComponentActivity() {
             val themeReal = theme
             if (themeReal == null) {
                 ComposeTemplateTheme("system") {
-                    Box(Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface))
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface)
+                    )
                 }
             } else {
 
                 ComposeTemplateTheme(themeReal.value) {
-                    CustomTheme(theme = themeReal.value,  useExistingTheme = true) {
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
+                    CustomTheme(theme = themeReal.value, useExistingTheme = true) {
+                        Scaffold(
+                            modifier = Modifier.fillMaxSize(),
 
-                        ) { innerPadding ->
-                        var absolutePadding = PaddingValues()
-                        if (isTopMainPageRoute) {
-                            absolutePadding =
-                                PaddingValues(bottom = innerPadding.calculateBottomPadding())
-                        }
+                            ) { innerPadding ->
+                            var absolutePadding = PaddingValues()
+                            if (isTopMainPageRoute) {
+                                absolutePadding =
+                                    PaddingValues(bottom = innerPadding.calculateBottomPadding())
+                            }
 
-                        Box(modifier = Modifier.padding()) {
+                            Box(modifier = Modifier.padding()) {
 
 
-                            NavDisplay(
-                                backStack = backStack,
-                                onBack = { backStack.removeLastOrNull() },
-                                entryDecorators = listOf(
-                                    rememberSceneSetupNavEntryDecorator(),
-                                    rememberSavedStateNavEntryDecorator(),
-                                    rememberViewModelStoreNavEntryDecorator()
-                                ),
-                                entryProvider = { key ->
-                                    when (key) {
+                                NavDisplay(
+                                    backStack = backStack,
+                                    onBack = { backStack.removeLastOrNull() },
+                                    entryDecorators = listOf(
+                                        rememberSceneSetupNavEntryDecorator(),
+                                        rememberSavedStateNavEntryDecorator(),
+                                        rememberViewModelStoreNavEntryDecorator()
+                                    ),
+                                    entryProvider = { key ->
+                                        when (key) {
 
-                                        is Screen.MainPageRoute -> {
-                                            NavEntry(key = key) {
+                                            is Screen.MainPageRoute -> {
+                                                NavEntry(key = key) {
 
-                                                Column {
+                                                    Column {
 
-                                                    MainPage(backStack, viewModelMainPage)
+                                                        MainPage(backStack, viewModelMainPage)
+                                                    }
                                                 }
                                             }
-                                        }
-                                        is Screen.AddHabitPageRoute -> {
-                                            NavEntry(key= key){
-                                                val addHabitPageViewModel = hiltViewModel<AddHabitPageViewModel>()
-                                                AddHabitPage(addHabitPageViewModel, backStack)
-
-                                            }
-                                        }
-
-                                        is Screen.SettingsPageRoute -> {
-                                            NavEntry(key = key) {
 
 
-                                                Box(
-                                                    modifier = Modifier.fillMaxSize(),
-                                                    contentAlignment = Alignment.Center
-                                                ) {
+                                            is Screen.SettingsPageRoute -> {
+                                                NavEntry(key = key) {
 
-                                                    SettingsScreen(backStack, settingsViewModel)
+
+                                                    Box(
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+
+                                                        SettingsScreen(backStack, settingsViewModel)
+                                                    }
                                                 }
                                             }
+
+                                            is Screen.AddHabitPageRoute -> {
+                                                NavEntry(key = key) {
+                                                    val addHabitPageViewModel =
+                                                        hiltViewModel<AddHabitPageViewModel, AddHabitPageViewModel.Factory>(
+                                                            creationCallback = { factory ->
+                                                                factory.create(key)
+                                                            }
+                                                        )
+                                                    AddHabitPage(addHabitPageViewModel, backStack)
+
+                                                }
+                                            }
+
+                                            is Screen.HabitDetailsPageRoute -> {
+                                                NavEntry(key = key) {
+                                                    val habitDetailsPageViewModel =
+                                                        hiltViewModel<HabitDetailsPageViewModel, HabitDetailsPageViewModel.Factory>(
+                                                            creationCallback = { factory ->
+                                                                factory.create(key)
+                                                            }
+                                                        )
+                                                    HabitDetailsPage(habitDetailsPageViewModel)
+
+
+                                                }
+                                            }
+
+
+                                            else -> throw RuntimeException("Invalid NavKey.")
                                         }
-                                        is Screen.HabitDetailsPageRoute -> {
-                                        NavEntry(key = key){
-                                            val habitDetailsPageViewModel = hiltViewModel<HabitDetailsPageViewModel, HabitDetailsPageViewModel.Factory>(
-                                                creationCallback = {factory -> factory.create(key)}
-                                            )
-                                            HabitDetailsPage(habitDetailsPageViewModel)
 
 
-                                        }
-                                        }
-
-
-
-
-                                        else -> throw RuntimeException("Invalid NavKey.")
                                     }
+                                )
 
-
-                                }
-                            )
-
+                            }
                         }
                     }
-                }}
+                }
             }
         }
     }

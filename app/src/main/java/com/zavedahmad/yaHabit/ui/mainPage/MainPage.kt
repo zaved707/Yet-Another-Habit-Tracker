@@ -55,7 +55,7 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
 
             topBar = { MyMediumTopABCommon(backStack, scrollBehavior, "Habits") },
             floatingActionButton = {
-                ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute) }) {
+                ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
                     Text("Add Habit")
                 }
             }) { innerPadding ->

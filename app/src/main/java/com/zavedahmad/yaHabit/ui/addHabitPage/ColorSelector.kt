@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun ColorSelector(viewModel: AddHabitPageViewModel){
+fun ColorSelector(viewModel: AddHabitPageViewModel) {
     val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
     val colors = viewModel.colors
     Card(
@@ -36,11 +37,11 @@ fun ColorSelector(viewModel: AddHabitPageViewModel){
             .fillMaxWidth()
 
     ) {
-        LazyRow( verticalAlignment = Alignment.CenterVertically) {
+        LazyRow(verticalAlignment = Alignment.CenterVertically) {
 
-            items(colors.size) {index ->
+            items(colors.size) { index ->
                 val color = colors[index]
-                if (index == 0){
+                if (index == 0) {
                     Spacer(Modifier.width(10.dp))
                 }
                 Box(
@@ -55,7 +56,7 @@ fun ColorSelector(viewModel: AddHabitPageViewModel){
                             Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(Color.White)
+                                .background(MaterialTheme.colorScheme.inverseSurface)
                                 .clickable(onClick = {})
                         ) {
                             Box(
@@ -68,7 +69,13 @@ fun ColorSelector(viewModel: AddHabitPageViewModel){
                             ) {
                                 Icon(
                                     Icons.Default.Check,
-                                    contentDescription = "selected Color"
+                                    contentDescription = "selected Color",
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(
+                                            MaterialTheme.colorScheme.inverseSurface
+                                        )
+
                                 )
                             }
                         }
@@ -82,7 +89,7 @@ fun ColorSelector(viewModel: AddHabitPageViewModel){
                         )
                     }
                 }
-                if (index == colors.size -1){
+                if (index == colors.size - 1) {
                     Spacer(Modifier.width(10.dp))
                 }
             }

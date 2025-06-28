@@ -1,10 +1,17 @@
 package com.zavedahmad.yaHabit.ui.addHabitPage
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
+import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,9 +19,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class AddHabitPageViewModel @Inject constructor(val habitDao: HabitDao) : ViewModel() {
-     val colors =listOf<Color>(
+@HiltViewModel(assistedFactory = AddHabitPageViewModel.Factory::class)
+class AddHabitPageViewModel @AssistedInject constructor(
+    @Assisted val navKey: Screen.AddHabitPageRoute,
+    val habitDao: HabitDao,
+    val preferencesDao: PreferencesDao
+) : ViewModel() {
+    @AssistedFactory
+    interface Factory {
+        fun create(navKey: Screen.AddHabitPageRoute): AddHabitPageViewModel
+    }
+
+    val colors = listOf<Color>(
 
 
         Color(0xFFBA55D3), // Vibrant Orchid (MediumOrchid)
@@ -38,15 +54,24 @@ class AddHabitPageViewModel @Inject constructor(val habitDao: HabitDao) : ViewMo
 
 
     )
-    private val _selectedColor = MutableStateFlow<Color>(  colors[0])
+
+    private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
+    val themeMode = _themeMode.asStateFlow()
+    private val _selectedColor = MutableStateFlow<Color>(colors[0])
     val selectedColor = _selectedColor.asStateFlow()
     private val _habitName = MutableStateFlow("")
     val habitName = _habitName.asStateFlow()
-
+    private val _existingHabitData = mutableStateOf<HabitEntity?>(null)
+    val existingHabitData = _existingHabitData
     private val _habitDescription = MutableStateFlow("")
     val habitDescription = _habitDescription.asStateFlow()
 
-    fun setColor(color: Color){
+    init {
+        collectThemeMode()
+        getHabitDetails()
+    }
+
+    fun setColor(color: Color) {
         _selectedColor.value = color
     }
 
@@ -58,9 +83,50 @@ class AddHabitPageViewModel @Inject constructor(val habitDao: HabitDao) : ViewMo
         _habitDescription.value = description
     }
 
-    fun addHabit(){
+    fun addHabit() {
+        if (navKey.habitId != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                habitDao.addHabit(
+                    HabitEntity(
+                        id = navKey.habitId,
+                        name = habitName.value,
+                        color = _selectedColor.value,
+                        description = _habitDescription.value
+                    )
+                )
+            }
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
+                habitDao.addHabit(
+                    HabitEntity(
+                        name = habitName.value,
+                        color = _selectedColor.value,
+                        description = _habitDescription.value
+                    )
+                )
+            }
+        }
+    }
+
+    fun collectThemeMode() {
         viewModelScope.launch(Dispatchers.IO) {
-            habitDao.addHabit(HabitEntity(name = habitName.value, color = _selectedColor.value,description = _habitDescription.value))
+            preferencesDao.getPreferenceFlow("ThemeMode").collect { preference ->
+                _themeMode.value = preference ?: PreferenceEntity("ThemeMode", "system")
+            }
+        }
+    }
+
+    fun getHabitDetails() {
+        if (navKey.habitId != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                _existingHabitData.value = habitDao.getHabitById(navKey.habitId)
+                val existingHabitHolder = _existingHabitData.value
+                if (existingHabitHolder != null) {
+                    setHabitName(existingHabitHolder.name)
+                    setHabitDescription(existingHabitHolder.description)
+                    setColor(existingHabitHolder.color)
+                }
+            }
         }
     }
 }

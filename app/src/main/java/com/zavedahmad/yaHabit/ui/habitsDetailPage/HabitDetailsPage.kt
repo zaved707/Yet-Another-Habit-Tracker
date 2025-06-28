@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
+import java.time.format.DateTimeFormatter
 import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -73,7 +74,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                                             Modifier.fillMaxWidth(),
                                             horizontalAlignment = Alignment.End
                                         ) {
-                                            Text(month.toString())
+                                            val monthName = month.format(DateTimeFormatter.ofPattern("MMM"))
+                                            Text(monthName)
                                             Box(
                                                 modifier = Modifier
                                                     .height(100.dp)

@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Start
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
@@ -39,15 +40,21 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import kotlin.collections.plus
 
 @Composable
-fun HabitItem(backStack: SnapshotStateList<NavKey>,viewModel: MainPageViewModel, habit: HabitEntity) {
-    OutlinedCard (modifier = Modifier.fillMaxWidth(), onClick = {backStack.add(Screen.HabitDetailsPageRoute(habit.id))}) {
+fun HabitItem(
+    backStack: SnapshotStateList<NavKey>,
+    viewModel: MainPageViewModel,
+    habit: HabitEntity
+) {
+    OutlinedCard(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { backStack.add(Screen.HabitDetailsPageRoute(habit.id)) }) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     Text(
                         habit.name,
@@ -101,8 +108,7 @@ fun HabitItem(backStack: SnapshotStateList<NavKey>,viewModel: MainPageViewModel,
 
         Column(
             Modifier
-                .fillMaxWidth()
-                ,
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.Start
         ) {
 
@@ -111,9 +117,14 @@ fun HabitItem(backStack: SnapshotStateList<NavKey>,viewModel: MainPageViewModel,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column { }
-                IconButton(modifier = Modifier, onClick = {viewModel.deleteHabitById( habit.id)}) {
-                Icon(Icons.Default.Delete, contentDescription = "")
-            }}
+                Row {
+                    IconButton(modifier = Modifier, onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
+                        Icon(Icons.Default.Edit, contentDescription = "")
+                    }
+                IconButton(modifier = Modifier, onClick = { viewModel.deleteHabitById(habit.id) }) {
+                    Icon(Icons.Default.Delete, contentDescription = "")
+                }}
+            }
         }
     }
 }

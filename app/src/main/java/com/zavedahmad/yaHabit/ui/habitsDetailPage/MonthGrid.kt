@@ -50,7 +50,7 @@ fun MonthGrid(month: YearMonth, habitPastYear : List<HabitCompletionEntity>?) {
             }
         }
         items(dates) {date ->
-            var boxColor = MaterialTheme.colorScheme.onPrimary
+            var boxColor = MaterialTheme.colorScheme.surfaceContainer
             if(habitPastYear?.any { it.completionDate == date }?: false) {
                 boxColor = MaterialTheme.colorScheme.primary
             }

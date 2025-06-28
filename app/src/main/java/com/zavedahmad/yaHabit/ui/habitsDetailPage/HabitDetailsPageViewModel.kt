@@ -28,34 +28,41 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao
 
-) : ViewModel(){
+) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
+    }
 
     private val _habitDetails = MutableStateFlow<HabitEntity?>(null)
-    val habitDetails= _habitDetails.asStateFlow()
+    val habitDetails = _habitDetails.asStateFlow()
     private val _habitsPastYear = MutableStateFlow<List<HabitCompletionEntity>?>(null)
     val habitsPastYear: StateFlow<List<HabitCompletionEntity>?> = _habitsPastYear
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
-    @AssistedFactory
-    interface Factory{
-        fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
-    }
+
     init {
         collectThemeMode()
         getHabitDetails()
         getLastYearData()
     }
-    fun getLastYearData(){
+
+    fun getLastYearData() {
         val dateNow = LocalDate.now()
         val dateAYearAgo = dateNow.minusYears(1).toEpochDay()
         viewModelScope.launch(Dispatchers.IO) {
-            _habitsPastYear.value = habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo)
+            _habitsPastYear.value =
+                habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo)
         }
     }
-    fun getHabitDetails(){
+
+    fun getHabitDetails() {
         viewModelScope.launch(Dispatchers.IO) {
-        _habitDetails.value = habitDao.getHabitById(navKey.habitId)
-    }}
+            _habitDetails.value = habitDao.getHabitById(navKey.habitId)
+        }
+    }
+
     fun collectThemeMode() {
         viewModelScope.launch(Dispatchers.IO) {
             preferencesDao.getPreferenceFlow("ThemeMode").collect { preference ->
