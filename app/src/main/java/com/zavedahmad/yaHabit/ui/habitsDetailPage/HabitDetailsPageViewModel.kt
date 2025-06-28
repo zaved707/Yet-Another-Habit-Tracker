@@ -7,6 +7,7 @@ import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
+import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -24,6 +26,9 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitDao: HabitDao
 
 ) : ViewModel(){
+
+    private val _habitDetails = MutableStateFlow<HabitEntity?>(null)
+    val habitDetails= _habitDetails.asStateFlow()
     private val _habitsPastYear = MutableStateFlow<List<HabitCompletionEntity>?>(null)
     val habitsPastYear: StateFlow<List<HabitCompletionEntity>?> = _habitsPastYear
     @AssistedFactory
@@ -31,6 +36,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
     }
     init {
+        getHabitDetails()
         getLastYearData()
     }
     fun getLastYearData(){
@@ -40,5 +46,9 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
             _habitsPastYear.value = habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo)
         }
     }
+    fun getHabitDetails(){
+        viewModelScope.launch(Dispatchers.IO) {
+        _habitDetails.value = habitDao.getHabitById(navKey.habitId)
+    }}
 
 }

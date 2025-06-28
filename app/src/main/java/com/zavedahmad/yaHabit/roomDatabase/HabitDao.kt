@@ -12,6 +12,8 @@ interface HabitDao {
     @Upsert
     suspend fun addHabit(habitEntity: HabitEntity)
 
+    @Query("SELECT * FROM HabitTable WHERE id= :id")
+    suspend fun getHabitById(id : Int): HabitEntity
     @Query("SELECT * FROM HabitTable")
     fun getHabitsFlow(): Flow<List<HabitEntity>>
 
