@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -29,8 +31,15 @@ import androidx.compose.ui.unit.sp
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import java.time.LocalDate
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DateItem(viewModel: MainPageViewModel, isCompleted: Boolean, date: LocalDate, habit: HabitEntity,columnWidth : Dp){
+fun DateItem(
+    viewModel: MainPageViewModel,
+    isCompleted: Boolean,
+    date: LocalDate,
+    habit: HabitEntity,
+    columnWidth: Dp
+) {
     Column(Modifier.width(columnWidth), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             date.dayOfWeek.toString().take(3),
@@ -41,15 +50,19 @@ fun DateItem(viewModel: MainPageViewModel, isCompleted: Boolean, date: LocalDate
         )
         if (!isCompleted) {
             Card(
-                onClick = {
-                    (viewModel.addHabitEntry(
-                        habit.id,
-                        date
-                    ))
-                },
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim),
                 modifier = Modifier
                     .padding(5.dp)
+                    .combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            viewModel.addHabitEntry(
+                                habit.id,
+                                date
+                            )
+                        },
+                        hapticFeedbackEnabled = true
+                    )
                     .size(35.dp),
                 border = BorderStroke(width = 3.dp, color = MaterialTheme.colorScheme.primary)
             ) {
@@ -66,22 +79,25 @@ fun DateItem(viewModel: MainPageViewModel, isCompleted: Boolean, date: LocalDate
 
         } else {
             Card(
-                onClick = {
-                    viewModel.deleteEntryByDateAndHabitId(
-                        habit.id,
-                        date.toEpochDay()
-                    )
-                },
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .padding(5.dp)
+                    .combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            viewModel.deleteEntryByDateAndHabitId(
+                                habit.id,
+                                date.toEpochDay()
+                            )
+                        }
+                        , hapticFeedbackEnabled = true
+                    )
                     .size(35.dp),
 
-            ) {
+                ) {
                 Column(
                     Modifier
-                        .fillMaxSize()
-                        ,
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) { Icon(Icons.Default.Check, contentDescription = "") }
