@@ -35,7 +35,7 @@ fun DateItem(viewModel: MainPageViewModel, isCompleted: Boolean, date: LocalDate
         Text(
             date.dayOfWeek.toString().take(3),
             style = TextStyle(
-                fontWeight = FontWeight.Thin,
+
                 fontSize = 10.sp
             )
         )
@@ -47,11 +47,11 @@ fun DateItem(viewModel: MainPageViewModel, isCompleted: Boolean, date: LocalDate
                         date
                     ))
                 },
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseSurface),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim),
                 modifier = Modifier
                     .padding(5.dp)
                     .size(35.dp),
-                border = BorderStroke(width = 5.dp, color = MaterialTheme.colorScheme.primary)
+                border = BorderStroke(width = 3.dp, color = MaterialTheme.colorScheme.primary)
             ) {
                 Column(
                     Modifier

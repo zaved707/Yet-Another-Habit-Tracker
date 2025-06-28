@@ -9,6 +9,7 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -42,10 +43,14 @@ class MainPageViewModel @Inject constructor(
     private val _habits = MutableStateFlow<List<HabitEntity>>(emptyList())
     val habits: StateFlow<List<HabitEntity>> = _habits
 
+    private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
+    val themeMode = _themeMode.asStateFlow()
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
              habitDao.getHabitsFlow().collect { it -> _habits.value = it }
         }
+        collectThemeMode()
     }
 
 
@@ -75,6 +80,13 @@ class MainPageViewModel @Inject constructor(
     }
     fun deleteHabitById(id: Int){
         viewModelScope.launch(Dispatchers.IO) { habitDao.deleteHabitById(id) }
+    }
+    fun collectThemeMode() {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesDao.getPreferenceFlow("ThemeMode").collect { preference ->
+                _themeMode.value = preference ?: PreferenceEntity("ThemeMode", "system")
+            }
+        }
     }
 
 

@@ -17,6 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,7 +40,7 @@ import kotlin.collections.plus
 
 @Composable
 fun HabitItem(backStack: SnapshotStateList<NavKey>,viewModel: MainPageViewModel, habit: HabitEntity) {
-    Card(modifier = Modifier.fillMaxWidth(), onClick = {backStack.add(Screen.HabitDetailsPageRoute(habit.id))}) {
+    OutlinedCard (modifier = Modifier.fillMaxWidth(), onClick = {backStack.add(Screen.HabitDetailsPageRoute(habit.id))}) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -71,7 +72,7 @@ fun HabitItem(backStack: SnapshotStateList<NavKey>,viewModel: MainPageViewModel,
                         )
                     )
                 }
-                Icon(Icons.Default.Start, contentDescription = "")
+
             }
             Spacer(Modifier.height(20.dp))
 

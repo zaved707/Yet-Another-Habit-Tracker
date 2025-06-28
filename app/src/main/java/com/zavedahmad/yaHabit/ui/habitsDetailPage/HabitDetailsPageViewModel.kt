@@ -8,6 +8,8 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
+import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,7 +25,8 @@ import java.time.LocalDate
 class HabitDetailsPageViewModel @AssistedInject constructor(
     @Assisted val navKey: Screen.HabitDetailsPageRoute,
     val habitCompletionDao: HabitCompletionDao,
-    val habitDao: HabitDao
+    val habitDao: HabitDao,
+    val preferencesDao: PreferencesDao
 
 ) : ViewModel(){
 
@@ -31,11 +34,14 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitDetails= _habitDetails.asStateFlow()
     private val _habitsPastYear = MutableStateFlow<List<HabitCompletionEntity>?>(null)
     val habitsPastYear: StateFlow<List<HabitCompletionEntity>?> = _habitsPastYear
+    private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
+    val themeMode = _themeMode.asStateFlow()
     @AssistedFactory
     interface Factory{
         fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
     }
     init {
+        collectThemeMode()
         getHabitDetails()
         getLastYearData()
     }
@@ -50,5 +56,12 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         viewModelScope.launch(Dispatchers.IO) {
         _habitDetails.value = habitDao.getHabitById(navKey.habitId)
     }}
+    fun collectThemeMode() {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesDao.getPreferenceFlow("ThemeMode").collect { preference ->
+                _themeMode.value = preference ?: PreferenceEntity("ThemeMode", "system")
+            }
+        }
+    }
 
 }
