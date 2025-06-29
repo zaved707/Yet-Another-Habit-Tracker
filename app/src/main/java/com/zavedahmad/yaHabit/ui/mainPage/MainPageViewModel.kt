@@ -9,6 +9,7 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,8 @@ data class habitWithEntries(
 class MainPageViewModel @Inject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
-    val preferencesDao: PreferencesDao
+    val preferencesDao: PreferencesDao,
+    val habitRepository: HabitRepository
 ) :
     ViewModel() {
     override fun onCleared() {
@@ -48,11 +50,15 @@ class MainPageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-             habitDao.getHabitsFlow().collect { it -> _habits.value = it }
+            habitRepository.getHabitsFlowSortedByIndex().collect { it -> _habits.value = it }
         }
         collectThemeMode()
     }
 
+    fun moveHabits(from: Int, to: Int){
+        _habits.value = _habits.value.toMutableList().apply {add(to, removeAt(from))  }
+
+    }
 
     fun addHabitEntry(habitId : Int , completionDate : LocalDate){
         viewModelScope.launch {
@@ -79,7 +85,7 @@ class MainPageViewModel @Inject constructor(
         return (1L..14L).map { lastDate.minusDays(it) }
     }
     fun deleteHabitById(id: Int){
-        viewModelScope.launch(Dispatchers.IO) { habitDao.deleteHabitById(id) }
+        viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
     }
     fun collectThemeMode() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -88,6 +94,10 @@ class MainPageViewModel @Inject constructor(
             }
         }
     }
-
+    fun move(from: Int, to :Int){
+        viewModelScope.launch {
+            habitRepository.move(from,to)
+        }
+    }
 
 }

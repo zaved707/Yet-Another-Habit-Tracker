@@ -24,12 +24,14 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.zavedahmad.yaHabit.ui.TestingPage.TestingPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
-
 import com.zavedahmad.yaHabit.ui.mainPage.MainPage
+
+import com.zavedahmad.yaHabit.ui.mainPage.MainPageReorderable
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
 
 import com.zavedahmad.yaHabit.ui.setEdgeToEdgeConfig
@@ -47,7 +49,7 @@ sealed class Screen : NavKey {
     data object MainPageRoute : Screen()
 
     @Serializable
-    data object SearchPageRoute : Screen()
+    data object TestingPageRoute : Screen()
 
     @Serializable
     data class AddHabitPageRoute(val habitId: Int? = null) : Screen()
@@ -77,7 +79,7 @@ class RecipePickerActivity : ComponentActivity() {
             val viewModelMainPage = hiltViewModel<MainPageViewModel>()
 
             val isTopMainPageRoute =
-                if (backStack.lastOrNull() is Screen.MainPageRoute || backStack.lastOrNull() is Screen.SearchPageRoute || backStack.lastOrNull() is Screen.FavouritePageRoute) {
+                if (backStack.lastOrNull() is Screen.MainPageRoute || backStack.lastOrNull() is Screen.TestingPageRoute || backStack.lastOrNull() is Screen.FavouritePageRoute) {
                     true
                 } else {
                     false
@@ -126,7 +128,7 @@ class RecipePickerActivity : ComponentActivity() {
 
                                                     Column {
 
-                                                        MainPage(backStack, viewModelMainPage)
+                                                        MainPageReorderable(backStack, viewModelMainPage)
                                                     }
                                                 }
                                             }
@@ -170,6 +172,11 @@ class RecipePickerActivity : ComponentActivity() {
                                                     HabitDetailsPage(habitDetailsPageViewModel)
 
 
+                                                }
+                                            }
+                                            is Screen.TestingPageRoute -> {
+                                                NavEntry(key = key){
+                                                    TestingPage(backStack)
                                                 }
                                             }
 

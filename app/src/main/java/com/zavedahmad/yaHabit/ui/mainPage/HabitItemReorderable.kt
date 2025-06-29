@@ -39,11 +39,11 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 
 @Composable
-fun HabitItem(
+fun HabitItemReorderable(
     backStack: SnapshotStateList<NavKey>,
     viewModel: MainPageViewModel,
     habit: HabitEntity,
-
+    reorderableListScope: ReorderableCollectionItemScope
 ) {
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
@@ -80,7 +80,19 @@ fun HabitItem(
                     )
 
                 }
+                IconButton(
+                    modifier = with(reorderableListScope) {
+                        Modifier.draggableHandle(
 
+                        )
+                    },
+                    onClick = {},
+                ) {
+                    Icon(
+                        Icons.Rounded.DragHandle,
+                        contentDescription = "Reorder"
+                    )
+                }
 
 
             }

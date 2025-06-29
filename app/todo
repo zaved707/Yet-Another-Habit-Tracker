@@ -1,8 +1,7 @@
-todo add page for editing habit
 todo a button on habit card to check today's habit
-todo long press to add entry in main page
 todo add a monthly view of any given habit and month
 todo chnage navigation animations
+todo when habits list is empty show a page
 todo add dragging
 todo add delete modal
 todo make a common confirmation modal
@@ -12,3 +11,5 @@ done  add delete button
 done check if name is not empty
 done  add a colors entity to database
 done  make habit theme take dark theme from preferences
+done add page for editing habit
+done long press to add entry in main page

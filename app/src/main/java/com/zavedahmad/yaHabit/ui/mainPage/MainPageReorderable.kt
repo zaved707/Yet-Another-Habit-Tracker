@@ -1,8 +1,10 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -19,7 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -30,10 +35,14 @@ import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
+import kotlinx.coroutines.channels.Channel
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
+fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
+    val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
 
     val scrollBehavior =
@@ -41,6 +50,9 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
 
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
+    LaunchedEffect(habits.value) {
+        listUpdatedChannel.trySend(Unit)
+    }
     if (themeReal == null) {
         ComposeTemplateTheme("system") {
             Box(
@@ -58,29 +70,60 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
                 ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
                     Text("Add Habit")
                 }
-            }) { innerPadding ->
-            Column(
+            }
+        ) { innerPadding ->
+
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(horizontal = 10.dp)
+
             ) {
+                val lazyListState = rememberLazyListState()
+                val reorderableLazyListState =
+                    rememberReorderableLazyListState(
+                        lazyListState,
+                        scrollThresholdPadding = PaddingValues(0.dp)
+                    ) { from, to ->
+                        listUpdatedChannel.tryReceive()
+//        viewModel.moveHabits(from.index,to.index)
+                        println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
+
+                        viewModel.move(from.index, to.index)
+                        listUpdatedChannel.receive()
+                    }
+                // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
 
 
-                LazyColumn(modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()) {
-                    items(habits.value.size) { index ->
+                LazyColumn(
+                    state = lazyListState,
+                    modifier = Modifier.fillMaxSize(),
+                   verticalArrangement = Arrangement.spacedBy(20.dp),
+                    contentPadding = PaddingValues(10.dp)
+                ) {
+                    items(habits.value.size, key = { habits.value[it].id }) { index ->
                         val habit = habits.value[index]
-                        CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
-                            HabitItem(backStack, viewModel, habit)
+                        ReorderableItem(reorderableLazyListState, key = habit.id) {
+                            CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
 
-                            Spacer(Modifier.height(40.dp))
-                            if (index == habits.value.size - 1) {
-                                Spacer(Modifier.height(40.dp))
+
+                                // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
+
+
+                                HabitItemReorderable(
+                                    backStack,
+                                    viewModel,
+                                    habit,
+                                    reorderableListScope = this
+                                )
+
+//                                Spacer(Modifier.height(40.dp))
+                                if (index == habits.value.size - 1) {
+                                    Spacer(Modifier.height(40.dp))
+                                }
+
+
                             }
-
-
                         }
                     }
 
@@ -90,3 +133,4 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
         }
     }
 }
+

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.assisted.Assisted
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class AddHabitPageViewModel @AssistedInject constructor(
     @Assisted val navKey: Screen.AddHabitPageRoute,
     val habitDao: HabitDao,
+    val habitRepository: HabitRepository,
     val preferencesDao: PreferencesDao
 ) : ViewModel() {
     @AssistedFactory
@@ -86,7 +88,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
     fun addHabit() {
         if (navKey.habitId != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                habitDao.addHabit(
+               habitRepository.addItem(
                     HabitEntity(
                         id = navKey.habitId,
                         name = habitName.value,
@@ -97,7 +99,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
             }
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                habitDao.addHabit(
+                habitRepository.addItem(
                     HabitEntity(
                         name = habitName.value,
                         color = _selectedColor.value,
