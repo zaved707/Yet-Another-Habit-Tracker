@@ -23,12 +23,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
+import com.kizitonwose.calendar.core.DayPosition
+import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
+import com.zavedahmad.yaHabit.ui.theme.CustomTheme
+import com.zavedahmad.yaHabit.ui.theme.Grey10
 import com.zavedahmad.yaHabit.utils.convertHabitCompletionEntityListToDatesList
 import com.zavedahmad.yaHabit.utils.findHabitClusters
 import com.zavedahmad.yaHabit.utils.processDateTriples
@@ -42,61 +47,68 @@ import java.util.Locale
 @Composable
 fun CalenderPage(viewModel: CalenderPageViewModel) {
     val habitData = viewModel.habitData.collectAsStateWithLifecycle().value
+    val habitObject = viewModel.habitObject.collectAsStateWithLifecycle().value
 
-    if (habitData == null) {
+    val theme by viewModel.themeMode.collectAsStateWithLifecycle()
+    val themeReal = theme
+    if (habitData == null || habitObject == null || themeReal== null ) {
         LoadingIndicator()
     } else {
-        Scaffold { innerPadding ->
-            val coroutineScope = rememberCoroutineScope()
-            val currentMonth = YearMonth.parse(viewModel.navKey.month)
-            val startMonth = currentMonth.minusMonths(10)
-            val endMonth =currentMonth.plusMonths(10)
-            val daysOfWeek =  daysOfWeek()
-            val calendarState = rememberCalendarState(
-                endMonth= endMonth,
-                startMonth = startMonth,
-                firstVisibleMonth = currentMonth,
+        CustomTheme(theme = themeReal.value, primaryColor = habitObject.color) {
+            Scaffold { innerPadding ->
+                val coroutineScope = rememberCoroutineScope()
+                val currentMonth = YearMonth.parse(viewModel.navKey.month)
+                val startMonth = currentMonth.minusMonths(10)
+                val endMonth = currentMonth.plusMonths(10)
+                val daysOfWeek = daysOfWeek()
+                val calendarState = rememberCalendarState(
+                    endMonth = endMonth,
+                    startMonth = startMonth,
+                    firstVisibleMonth = currentMonth, outDateStyle = OutDateStyle.EndOfGrid,
 
 
-                firstDayOfWeek = daysOfWeek.first(),
-            )
-            LaunchedEffect(calendarState.firstVisibleMonth) {
-                println(calendarState.firstVisibleMonth)
-                calendarState.endMonth = calendarState.firstVisibleMonth.yearMonth.plusMonths(5)
-                calendarState.startMonth = calendarState.firstVisibleMonth.yearMonth.minusMonths(5)
-            }
-            Box(Modifier.padding(innerPadding)) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    val partialAndAbsoluteCombinedList =
-                        processDateTriples(findHabitClusters(habitData, 5, 3))
-                    //Text(partialAndAbsoluteCombinedList.toString())
+                    firstDayOfWeek = daysOfWeek.first(),
+                )
+                LaunchedEffect(calendarState.firstVisibleMonth) {
+                    println(calendarState.firstVisibleMonth)
+                    calendarState.endMonth = calendarState.firstVisibleMonth.yearMonth.plusMonths(5)
+                    calendarState.startMonth =
+                        calendarState.firstVisibleMonth.yearMonth.minusMonths(5)
+                }
+                Box(Modifier.padding(innerPadding)) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        val partialAndAbsoluteCombinedList =
+                            processDateTriples(findHabitClusters(habitData, 5, 3))
+//                    Text(calendarState.firstVisibleMonth.yearMonth.toString())
+                        MonthHeader(calendarState)
+                        DaysOfWeekTitle(daysOfWeek)
 
-                    DaysOfWeekTitle(daysOfWeek)
-                    HorizontalCalendar(
-                        state = calendarState,
-                        monthHeader = { month ->
-                            MonthHeader(month.yearMonth, calendarState)
-                        },
-                        dayContent = { day ->
-                            var dayState = ""
-                            val dates = convertHabitCompletionEntityListToDatesList(habitData)
-                            if (dates.any { it == day.date }) {
-                                dayState = "absolute"
-                            } else if (partialAndAbsoluteCombinedList.any { it == day.date }) {
-                                dayState = "partial"
-                            }
+                        HorizontalCalendar(
+                            state = calendarState,
 
+                            dayContent = { day ->
+                                var dayState = ""
+                                val dates = convertHabitCompletionEntityListToDatesList(habitData)
+                                if (day.position == DayPosition.MonthDate) {
+                                    if (dates.any { it == day.date }) {
+                                        dayState = "absolute"
+                                    } else if (partialAndAbsoluteCombinedList.any { it == day.date }) {
+                                        dayState = "partial"
+                                    }
+                                } else {
+                                    dayState = "disabled"
+                                }
 
-                            DayItem(day, dayState, viewModel)
-                        })
+                                DayItem(day, dayState, viewModel)
+                            })
+                    }
+
                 }
             }
         }
-
-
     }
 }
 
@@ -114,10 +126,16 @@ fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
 }
 
 @Composable
-fun MonthHeader(currentMonth: YearMonth, calendarState: CalendarState) {
+fun MonthHeader(calendarState: CalendarState) {
     val coroutineScope = rememberCoroutineScope()
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+    val currentMonth = calendarState.firstVisibleMonth.yearMonth
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         IconButton(onClick = {
+
             coroutineScope.launch {
                 calendarState.scrollToMonth(currentMonth.minusMonths(1))
 

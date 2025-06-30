@@ -2,6 +2,7 @@ package com.zavedahmad.yaHabit.roomDatabase
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -44,6 +45,11 @@ class HabitRepository @Inject constructor(val habitDao: HabitDao, val habitCompl
 
     fun getAllHabitEntriesById(id: Int) : Flow<List<HabitCompletionEntity>>{
         return habitCompletionDao.getHabitCompletionsById(id)
+    }
+    suspend fun getHabitDetailsById(id: Int) : HabitEntity{
+
+           return habitDao.getHabitById(id)
+
     }
 
     suspend  fun addHabitCompletionEntry(entry : HabitCompletionEntity){

@@ -22,9 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.kizitonwose.calendar.core.CalendarDay
+import com.materialkolor.ktx.darken
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.ui.searchScreen.MyTextField
 import java.time.LocalDate
 
 @Composable
@@ -32,102 +35,123 @@ fun DayItem(day: CalendarDay, state: String, viewModel: CalenderPageViewModel) {
     val date = day.date
 
     var bgColor = MaterialTheme.colorScheme.surfaceVariant
-    var textColor = MaterialTheme.colorScheme.onSurfaceVariant
+
     Box(
         Modifier
             .fillMaxWidth()
-            .aspectRatio(1.0f)
-            .background(bgColor),
+            .aspectRatio(1.0f),
+
         contentAlignment = Alignment.Center
     ) {
-    if (state == "partial") {
-        Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .padding(5.dp)
-                .combinedClickable(
-                    onClick = {},
-                    onLongClick = {
-                        viewModel.addHabitEntry(
-                            viewModel.navKey.habitId,
-                            date
-                        )
-                    },
-                    hapticFeedbackEnabled = true
-                )
-                .size(35.dp),
-            border = BorderStroke(width = 3.dp, color = MaterialTheme.colorScheme.primary)
-        ) {
-            Column(
-                Modifier
-                    .fillMaxSize(),
-
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+        if (state == "partial") {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            viewModel.addHabitEntry(
+                                viewModel.navKey.habitId,
+                                date
+                            )
+                        },
+                        hapticFeedbackEnabled = true
+                    )
+                    .size(35.dp),
+                border = BorderStroke(width = 3.dp, color = MaterialTheme.colorScheme.primary)
             ) {
-                Text(date.dayOfMonth.toString())
+                Column(
+                    Modifier
+                        .fillMaxSize(),
+
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(date.dayOfMonth.toString())
+                }
+            }
+
+
+        } else if (state == "absolute") {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            viewModel.deleteEntryByDateAndHabitId(
+                                viewModel.navKey.habitId,
+                                date.toEpochDay()
+                            )
+                        }, hapticFeedbackEnabled = true
+                    )
+                    .size(35.dp)
+
+            ) {
+                Column(
+                    Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { Icon(Icons.Default.Check, contentDescription = "") }
+            }
+        } else if (state == "disabled") {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.darken(2f)),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .padding(5.dp)
+
+                    .size(35.dp),
+                border = BorderStroke(width = 3.dp, color = MaterialTheme.colorScheme.primary.darken(8f))
+            ) {
+                Column(
+                    Modifier
+                        .fillMaxSize(),
+
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(date.dayOfMonth.toString(), color = MaterialTheme.colorScheme.onSurface.darken(4f))
+                }
+            }
+
+        } else {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            viewModel.addHabitEntry(
+                                viewModel.navKey.habitId,
+                                date
+                            )
+                        },
+                        hapticFeedbackEnabled = true
+                    )
+                    .size(35.dp),
+                border = BorderStroke(width = 3.dp, color = MaterialTheme.colorScheme.primary)
+            ) {
+                Column(
+                    Modifier
+                        .fillMaxSize(),
+
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(date.dayOfMonth.toString())
+                }
             }
         }
 
-
-    } else if (state == "absolute") {
-        Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .padding(5.dp)
-                .combinedClickable(
-                    onClick = {},
-                    onLongClick = {
-                        viewModel.deleteEntryByDateAndHabitId(
-                            viewModel.navKey.habitId,
-                            date.toEpochDay()
-                        )
-                    }, hapticFeedbackEnabled = true
-                )
-                .size(35.dp)
-
-        ) {
-            Column(
-                Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) { Icon(Icons.Default.Check, contentDescription = "") }
-        }
-    }else{
-        Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim),
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .padding(5.dp)
-                .combinedClickable(
-                    onClick = {},
-                    onLongClick = {
-                        viewModel.addHabitEntry(
-                            viewModel.navKey.habitId,
-                            date
-                        )
-                    },
-                    hapticFeedbackEnabled = true
-                )
-                .size(35.dp),
-            border = BorderStroke(width = 3.dp, color = MaterialTheme.colorScheme.primary)
-        ) {
-            Column(
-                Modifier
-                    .fillMaxSize(),
-
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(date.dayOfMonth.toString())
-            }
-        }
     }
-
-}
 
 }
 

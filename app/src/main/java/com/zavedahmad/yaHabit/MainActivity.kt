@@ -31,7 +31,6 @@ import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPage
 import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
-import com.zavedahmad.yaHabit.ui.mainPage.MainPage
 
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageReorderable
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
@@ -43,7 +42,6 @@ import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
-import java.time.YearMonth
 
 sealed class Screen : NavKey {
 
@@ -169,7 +167,7 @@ class RecipePickerActivity : ComponentActivity() {
                                             }
                                             is Screen.CalenderPageRoute -> {
                                                 NavEntry(key = key){
-                                                    val calenderPageViewModel = hiltViewModel<CalenderPageViewModel, CalenderPageViewModel.factory>(
+                                                    val calenderPageViewModel = hiltViewModel<CalenderPageViewModel, CalenderPageViewModel.Factory>(
                                                         creationCallback = {
                                                             factory ->
                                                             factory.create(key)
