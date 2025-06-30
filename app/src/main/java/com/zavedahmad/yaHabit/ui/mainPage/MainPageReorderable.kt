@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -73,63 +74,58 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             }
         ) { innerPadding ->
 
-            Box(
+            val lazyListState = rememberLazyListState()
+            val reorderableLazyListState =
+                rememberReorderableLazyListState(
+                    lazyListState,
+
+                    ) { from, to ->
+                    listUpdatedChannel.tryReceive()
+//        viewModel.moveHabits(from.index,to.index)
+                    //println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
+
+                    viewModel.move(from.index, to.index)
+                    listUpdatedChannel.receive()
+                }
+            // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
+
+
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-
+                    .padding(innerPadding),
+                state = lazyListState,
+                contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                val lazyListState = rememberLazyListState()
-                val reorderableLazyListState =
-                    rememberReorderableLazyListState(
-                        lazyListState,
-                        scrollThresholdPadding = PaddingValues(0.dp)
-                    ) { from, to ->
-                        listUpdatedChannel.tryReceive()
-//        viewModel.moveHabits(from.index,to.index)
-                        println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
 
-                        viewModel.move(from.index, to.index)
-                        listUpdatedChannel.receive()
-                    }
-                // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
+                items(habits.value, key = { it.id }) { habit ->
+                    ReorderableItem(reorderableLazyListState, key = habit.id) { isDragging ->
+                        CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
 
 
-                LazyColumn(
-                    state = lazyListState,
-                    modifier = Modifier.fillMaxSize(),
-                   verticalArrangement = Arrangement.spacedBy(20.dp),
-                    contentPadding = PaddingValues(10.dp)
-                ) {
-                    items(habits.value.size, key = { habits.value[it].id }) { index ->
-                        val habit = habits.value[index]
-                        ReorderableItem(reorderableLazyListState, key = habit.id) {
-                            CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
+                            // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
 
 
-                                // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
-
-
-                                HabitItemReorderable(
-                                    backStack,
-                                    viewModel,
-                                    habit,
-                                    reorderableListScope = this
-                                )
+                            HabitItemReorderable(
+                                backStack,
+                                viewModel,
+                                habit,
+                                reorderableListScope = this,
+                                isDragging
+                            )
 
 //                                Spacer(Modifier.height(40.dp))
-                                if (index == habits.value.size - 1) {
-                                    Spacer(Modifier.height(40.dp))
-                                }
 
 
-                            }
                         }
                     }
-
-
                 }
+                item { Spacer(Modifier.height(70.dp)) }
+
+
             }
+
         }
     }
 }

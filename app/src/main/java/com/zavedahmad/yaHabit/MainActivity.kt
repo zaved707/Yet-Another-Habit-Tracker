@@ -27,6 +27,8 @@ import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.zavedahmad.yaHabit.ui.TestingPage.TestingPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
+import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPage
+import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
 import com.zavedahmad.yaHabit.ui.mainPage.MainPage
@@ -41,6 +43,7 @@ import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
+import java.time.YearMonth
 
 sealed class Screen : NavKey {
 
@@ -53,6 +56,9 @@ sealed class Screen : NavKey {
 
     @Serializable
     data class AddHabitPageRoute(val habitId: Int? = null) : Screen()
+
+    @Serializable
+    data class CalenderPageRoute(val month: String, val habitId : Int) : Screen()
 
     @Serializable
     data object FavouritePageRoute : Screen()
@@ -74,6 +80,7 @@ class RecipePickerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setEdgeToEdgeConfig()
         setContent {
+
             val backStack = rememberNavBackStack<Screen>(Screen.MainPageRoute)
 
             val viewModelMainPage = hiltViewModel<MainPageViewModel>()
@@ -158,6 +165,17 @@ class RecipePickerActivity : ComponentActivity() {
                                                         )
                                                     AddHabitPage(addHabitPageViewModel, backStack)
 
+                                                }
+                                            }
+                                            is Screen.CalenderPageRoute -> {
+                                                NavEntry(key = key){
+                                                    val calenderPageViewModel = hiltViewModel<CalenderPageViewModel, CalenderPageViewModel.factory>(
+                                                        creationCallback = {
+                                                            factory ->
+                                                            factory.create(key)
+                                                        }
+                                                    )
+                                                    CalenderPage(calenderPageViewModel)
                                                 }
                                             }
 

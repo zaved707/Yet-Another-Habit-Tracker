@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.DragHandle
@@ -37,6 +38,7 @@ import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import sh.calvin.reorderable.ReorderableCollectionItemScope
+import java.time.YearMonth
 
 @Composable
 fun HabitItem(
@@ -121,6 +123,11 @@ fun HabitItem(
             ) {
                 Column { }
                 Row {
+                    IconButton(
+                        modifier = Modifier,
+                        onClick = { backStack.add(Screen.CalenderPageRoute(month = YearMonth.now().toString(), habit.id)) }) {
+                        Icon(Icons.Default.CalendarMonth, contentDescription = "")
+                    }
                     IconButton(
                         modifier = Modifier,
                         onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {

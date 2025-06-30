@@ -69,7 +69,8 @@ android {
 
 dependencies {
     implementation(libs.reorderable)
-
+    //calander
+    implementation("com.kizitonwose.calendar:compose:2.7.0")
     //room imports
     val roomVersion = "2.7.1"
 

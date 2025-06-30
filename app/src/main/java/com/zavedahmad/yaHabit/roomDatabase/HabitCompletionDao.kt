@@ -12,7 +12,7 @@ interface HabitCompletionDao {
     suspend fun addHabitCompletionEntry(habitCompletionEntity: HabitCompletionEntity)
 
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id")
-    fun getHabitCompletions(id : Int): Flow<List<HabitCompletionEntity>>
+    fun getHabitCompletionsById(id : Int): Flow<List<HabitCompletionEntity>>
 
     @Query("SELECT * FROM habitCompletion WHERE completionDate = :date")
     fun getHabitCompletionsByDate(date : Long): Flow<List<HabitCompletionEntity>>
@@ -21,5 +21,5 @@ interface HabitCompletionDao {
     suspend fun deleteHabitCompletionEntry(habitId: Int, completionDate: Long)
 
     @Query("SELECT * FROM habitCompletion WHERE habitId = :habitId AND completionDate > :completionDate" )
-    suspend fun getEntriesAfterDate(habitId: Int, completionDate : Long): List<HabitCompletionEntity>?
+    fun getEntriesAfterDate(habitId: Int, completionDate : Long): Flow<List<HabitCompletionEntity>?>
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -51,6 +52,7 @@ fun DateItem(
         if (!isCompleted) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim),
+                shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .padding(5.dp)
                     .combinedClickable(
@@ -80,6 +82,7 @@ fun DateItem(
         } else {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .padding(5.dp)
                     .combinedClickable(
@@ -92,7 +95,7 @@ fun DateItem(
                         }
                         , hapticFeedbackEnabled = true
                     )
-                    .size(35.dp),
+                    .size(35.dp)
 
                 ) {
                 Column(

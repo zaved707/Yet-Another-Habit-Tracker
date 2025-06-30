@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.DragHandle
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,16 +39,33 @@ import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import sh.calvin.reorderable.ReorderableCollectionItemScope
+import java.time.YearMonth
 
 @Composable
 fun HabitItemReorderable(
     backStack: SnapshotStateList<NavKey>,
     viewModel: MainPageViewModel,
     habit: HabitEntity,
-    reorderableListScope: ReorderableCollectionItemScope
+    reorderableListScope: ReorderableCollectionItemScope,
+    isDragging: Boolean
 ) {
+    val color  = if (isDragging){
+        CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
+
+    } else{ CardDefaults.outlinedCardColors() }
+    val cardElevation = if (isDragging){
+        CardDefaults.outlinedCardElevation(defaultElevation = 10.dp)
+
+    } else{ CardDefaults.outlinedCardElevation() }
     OutlinedCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+
+        ,
+        elevation = cardElevation,
+
+        colors = color,
         onClick = { backStack.add(Screen.HabitDetailsPageRoute(habit.id)) }) {
         Column(
             Modifier
@@ -54,7 +73,7 @@ fun HabitItemReorderable(
                 .padding(10.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(modifier = with(reorderableListScope) {Modifier.longPressDraggableHandle().fillMaxWidth()}, horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     Text(
                         habit.name,
@@ -80,7 +99,7 @@ fun HabitItemReorderable(
                     )
 
                 }
-                IconButton(
+                /*IconButton(
                     modifier = with(reorderableListScope) {
                         Modifier.draggableHandle(
 
@@ -92,7 +111,7 @@ fun HabitItemReorderable(
                         Icons.Rounded.DragHandle,
                         contentDescription = "Reorder"
                     )
-                }
+                }*/
 
 
             }
@@ -133,6 +152,12 @@ fun HabitItemReorderable(
             ) {
                 Column { }
                 Row {
+                    val currentMonth = YearMonth.now()
+                    IconButton(
+                        modifier = Modifier,
+                        onClick = { backStack.add(Screen.CalenderPageRoute(month  = currentMonth.toString(), habit.id)) }) {
+                        Icon(Icons.Default.CalendarMonth, contentDescription = "")
+                    }
                     IconButton(
                         modifier = Modifier,
                         onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,11 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
+import com.zavedahmad.yaHabit.utils.findHabitClusters
+import com.zavedahmad.yaHabit.utils.processDateTriples
 import java.time.format.DateTimeFormatter
 import java.time.YearMonth
 
@@ -59,11 +64,18 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
         } else {
             CustomTheme(theme = themeReal.value, primaryColor = habitDetails.color) {
                 Scaffold(topBar = { LargeTopAppBar(title = { Text(habitDetails.name) }) }) { innerPadding ->
-                    Column(Modifier
-                        .padding(innerPadding)
-                        .padding(horizontal = 10.dp)) {
+                    Column(
+                        Modifier
+                            .padding(innerPadding)
+                            .padding(horizontal = 10.dp)
+                    ) {
                         Text(habitDetails.description)
                         Spacer(Modifier.height(30.dp))
+
+                        if (habitsPastYear != null) {
+                            Text(findHabitClusters(habitsPastYear, timeSpanDays = 5, 3).toString())
+                            Text(processDateTriples( findHabitClusters(habitsPastYear, timeSpanDays = 5, 3)).toString())
+                        }
                         Card {
                             Box(Modifier.padding(vertical = 20.dp)) {
                                 LazyRow(reverseLayout = true) {
@@ -74,7 +86,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                                             Modifier.fillMaxWidth(),
                                             horizontalAlignment = Alignment.End
                                         ) {
-                                            val monthName = month.format(DateTimeFormatter.ofPattern("MMM"))
+                                            val monthName =
+                                                month.format(DateTimeFormatter.ofPattern("MMM"))
                                             Text(monthName)
                                             Box(
                                                 modifier = Modifier
@@ -97,7 +110,41 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                                 }
                             }
                         }
+                        Spacer(Modifier.height(40.dp))
+                        Row (Modifier.fillMaxWidth()){
+                            Card(Modifier   ) {
+                                Column(
+                                    Modifier
 
+                                        .padding(20.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        "Past Month",
+                                        fontSize = 30.sp,
+                                        fontWeight = FontWeight.Black
+                                    )
+                                    Text(habitsPastYear?.let { it.size.toString() } ?: "0",
+                                        fontSize = 30.sp)
+                                }
+                            }
+                            Card(Modifier    ) {
+                                Column(
+                                    Modifier
+
+                                        .padding(20.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        "Past Year",
+                                        fontSize = 30.sp,
+                                        fontWeight = FontWeight.Black
+                                    )
+                                    Text(habitsPastYear?.let { it.size.toString() } ?: "0",
+                                        fontSize = 30.sp)
+                                }
+                            }
+                        }
                     }
                 }
             }

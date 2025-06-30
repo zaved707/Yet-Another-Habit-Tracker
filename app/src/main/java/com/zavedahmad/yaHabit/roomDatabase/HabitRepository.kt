@@ -1,9 +1,13 @@
 package com.zavedahmad.yaHabit.roomDatabase
 
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
-class HabitRepository @Inject constructor(val habitDao: HabitDao) {
+class HabitRepository @Inject constructor(val habitDao: HabitDao, val habitCompletionDao: HabitCompletionDao) {
     suspend fun deleteHabit(id: Int) {
         habitDao.deleteHabitById(id)
     }
@@ -20,13 +24,35 @@ class HabitRepository @Inject constructor(val habitDao: HabitDao) {
         )
 
     }
-    suspend fun move(fromIndex : Int, toIndex : Int){
+
+    suspend fun editItem(habitEntity: HabitEntity) {
+        habitDao.addHabit(
+            habitEntity
+        )
+    }
+
+    suspend fun move(fromIndex: Int, toIndex: Int) {
         val entity = habitDao.getHabitByIndex(fromIndex)
         habitDao.pluck(entity.index)
         habitDao.vacant(toIndex)
         habitDao.changeIndex(toIndex, entity.id)
     }
-    fun getHabitsFlowSortedByIndex() :  Flow<List<HabitEntity>>{
+
+    fun getHabitsFlowSortedByIndex(): Flow<List<HabitEntity>> {
         return habitDao.getHabitsFlowSortedByIndex()
+    }
+
+    fun getAllHabitEntriesById(id: Int) : Flow<List<HabitCompletionEntity>>{
+        return habitCompletionDao.getHabitCompletionsById(id)
+    }
+
+    suspend  fun addHabitCompletionEntry(entry : HabitCompletionEntity){
+
+            habitCompletionDao.addHabitCompletionEntry(entry)
+
+    }
+
+    suspend fun deleteHabitCompletionEntry(habitId: Int, date : Long){
+        habitCompletionDao.deleteHabitCompletionEntry(habitId = habitId, completionDate = date)
     }
 }

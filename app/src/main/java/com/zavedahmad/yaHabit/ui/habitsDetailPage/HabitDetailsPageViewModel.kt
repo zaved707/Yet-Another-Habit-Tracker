@@ -52,8 +52,8 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         val dateNow = LocalDate.now()
         val dateAYearAgo = dateNow.minusYears(1).toEpochDay()
         viewModelScope.launch(Dispatchers.IO) {
-            _habitsPastYear.value =
-                habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo)
+
+                habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo).collect {  _habitsPastYear.value = it }
         }
     }
 

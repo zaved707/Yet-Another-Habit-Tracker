@@ -1,8 +1,6 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
-import androidx.compose.runtime.LaunchedEffect
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
@@ -66,7 +64,7 @@ class MainPageViewModel @Inject constructor(
         }
     }
     fun getHabitCompletionsByHabitId(id: Int): Flow<List<HabitCompletionEntity>> {
-        return habitCompletionDao.getHabitCompletions(id)
+        return habitCompletionDao.getHabitCompletionsById(id)
     }
     fun getHabitCompletionsByDate(date: Long): Flow<List<HabitCompletionEntity>> {
         return habitCompletionDao.getHabitCompletionsByDate(date)
