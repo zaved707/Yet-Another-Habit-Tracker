@@ -90,7 +90,7 @@ fun HabitItem(
 
 
             val completions = viewModel.getHabitCompletionsByHabitId(habit.id)
-                .collectAsStateWithLifecycle(initialValue = emptyList())
+                .collectAsStateWithLifecycle(initialValue = emptyList()).value
             var dates by rememberSaveable { mutableStateOf(viewModel.generateInitialDates()) }
             LazyRow(
                 reverseLayout = true,
@@ -99,9 +99,9 @@ fun HabitItem(
             ) {
 
                 items(dates) { date ->
-                    val isCompleted =
-                        completions.value.any { it.completionDate == date }
-
+                    val isCompleted =if(completions == null){false}else {
+                        completions.any { it.completionDate == date }
+                    }
 
                     DateItem(viewModel, isCompleted, date, habit, 50.dp)
                 }

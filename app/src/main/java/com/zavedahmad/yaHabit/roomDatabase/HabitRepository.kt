@@ -43,7 +43,7 @@ class HabitRepository @Inject constructor(val habitDao: HabitDao, val habitCompl
         return habitDao.getHabitsFlowSortedByIndex()
     }
 
-    fun getAllHabitEntriesById(id: Int) : Flow<List<HabitCompletionEntity>>{
+    fun getAllHabitEntriesById(id: Int) : Flow<List<HabitCompletionEntity>?>{
         return habitCompletionDao.getHabitCompletionsById(id)
     }
     suspend fun getHabitDetailsById(id: Int) : HabitEntity{

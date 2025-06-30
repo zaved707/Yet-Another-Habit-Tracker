@@ -54,7 +54,7 @@ class CalenderPageViewModel @AssistedInject constructor(
     fun getHabitDetails() {
         viewModelScope.launch(Dispatchers.IO) {
             _habitObject.value = habitRepository.getHabitDetailsById(navKey.habitId)
-            println(habitObject.value)
+//            println(habitObject.value)
         }
     }
 

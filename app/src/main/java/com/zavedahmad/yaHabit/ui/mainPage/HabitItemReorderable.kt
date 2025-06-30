@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.rounded.DragHandle
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -119,7 +118,7 @@ fun HabitItemReorderable(
 
 
             val completions = viewModel.getHabitCompletionsByHabitId(habit.id)
-                .collectAsStateWithLifecycle(initialValue = emptyList())
+                .collectAsStateWithLifecycle(initialValue = emptyList()).value
             var dates by rememberSaveable { mutableStateOf(viewModel.generateInitialDates()) }
             LazyRow(
                 reverseLayout = true,
@@ -128,9 +127,9 @@ fun HabitItemReorderable(
             ) {
 
                 items(dates) { date ->
-                    val isCompleted =
-                        completions.value.any { it.completionDate == date }
-
+                    val isCompleted =if(completions == null){false}else {
+                        completions.any { it.completionDate == date }
+                    }
 
                     DateItem(viewModel, isCompleted, date, habit, 50.dp)
                 }

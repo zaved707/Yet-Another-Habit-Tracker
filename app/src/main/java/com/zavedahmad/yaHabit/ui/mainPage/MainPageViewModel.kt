@@ -63,7 +63,7 @@ class MainPageViewModel @Inject constructor(
             habitCompletionDao.addHabitCompletionEntry(HabitCompletionEntity(habitId = habitId, completionDate = completionDate))
         }
     }
-    fun getHabitCompletionsByHabitId(id: Int): Flow<List<HabitCompletionEntity>> {
+    fun getHabitCompletionsByHabitId(id: Int): Flow<List<HabitCompletionEntity>?> {
         return habitCompletionDao.getHabitCompletionsById(id)
     }
     fun getHabitCompletionsByDate(date: Long): Flow<List<HabitCompletionEntity>> {
