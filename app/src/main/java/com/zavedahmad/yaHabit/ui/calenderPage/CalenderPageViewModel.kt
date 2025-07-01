@@ -29,12 +29,7 @@ class CalenderPageViewModel @AssistedInject constructor(
         fun create(navKey: Screen.CalenderPageRoute): CalenderPageViewModel
     }
 
-    init {
-        collectThemeMode()
 
-        getHabitDetails()
-        getHabitData()
-    }
 
     private val _habitData = MutableStateFlow<List<HabitCompletionEntity>?>(null)
     val habitData = _habitData.asStateFlow()
@@ -44,6 +39,14 @@ class CalenderPageViewModel @AssistedInject constructor(
 
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
+
+
+    init {
+        collectThemeMode()
+        getHabitDetails()
+
+        getHabitData()
+    }
     fun getHabitData() {
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.getAllHabitEntriesById(navKey.habitId).collect { _habitData.value = it }

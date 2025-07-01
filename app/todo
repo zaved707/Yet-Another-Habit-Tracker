@@ -1,3 +1,4 @@
+todo app crashing in zero entries
 todo a button on habit card to check today's habit
 todo add a monthly view of any given habit and month
 todo chnage navigation animations
@@ -13,4 +14,3 @@ done  make habit theme take dark theme from preferences
 done add page for editing habit
 done long press to add entry in main page
 done add dragging
-solved app crashing in zero entries

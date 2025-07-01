@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -39,6 +40,7 @@ import com.zavedahmad.yaHabit.utils.findHabitClusters
 import com.zavedahmad.yaHabit.utils.processDateTriples
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
@@ -51,7 +53,7 @@ fun CalenderPage(viewModel: CalenderPageViewModel) {
 
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
-    if (habitData == null || habitObject == null || themeReal== null ) {
+    if (habitData == null || habitObject == null || themeReal == null) {
         LoadingIndicator()
     } else {
         CustomTheme(theme = themeReal.value, primaryColor = habitObject.color) {
@@ -71,14 +73,28 @@ fun CalenderPage(viewModel: CalenderPageViewModel) {
                 )
                 LaunchedEffect(calendarState.firstVisibleMonth) {
                     println(calendarState.firstVisibleMonth)
-                    calendarState.endMonth = calendarState.firstVisibleMonth.yearMonth.plusMonths(5)
+                    if (calendarState.firstVisibleMonth.yearMonth < YearMonth.now()
+                            .minusMonths(5)
+                    ) {
+                        calendarState.endMonth =
+                            calendarState.firstVisibleMonth.yearMonth.plusMonths(5)
+                    } else {
+                        calendarState.endMonth =
+                            YearMonth.now()
+                    }
                     calendarState.startMonth =
                         calendarState.firstVisibleMonth.yearMonth.minusMonths(5)
                 }
-                Box(Modifier.padding(innerPadding)) {
+                Box(
+                    Modifier
+                        .padding(innerPadding)
+                        .fillMaxWidth()
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
                     ) {
                         val partialAndAbsoluteCombinedList =
                             processDateTriples(findHabitClusters(habitData, 5, 3))
@@ -92,17 +108,43 @@ fun CalenderPage(viewModel: CalenderPageViewModel) {
                             dayContent = { day ->
                                 var dayState = ""
                                 val dates = convertHabitCompletionEntityListToDatesList(habitData)
-                                if (day.position == DayPosition.MonthDate) {
-                                    if (dates.any { it == day.date }) {
+                                val dateToday = LocalDate.now()
+                                if (dates.any { it == day.date }) {
+                                    if (day.position != DayPosition.MonthDate || day.date.toEpochDay() > dateToday.toEpochDay()) {
+                                        dayState = "absoluteDisabled"
+                                    } else {
                                         dayState = "absolute"
-                                    } else if (partialAndAbsoluteCombinedList.any { it == day.date }) {
+                                    }
+                                } else if (partialAndAbsoluteCombinedList.any { it == day.date }) {
+                                    if (day.position != DayPosition.MonthDate || day.date > dateToday) {
+                                        dayState = "partialDisabled"
+                                    } else {
                                         dayState = "partial"
                                     }
                                 } else {
-                                    dayState = "disabled"
+                                    if (day.position != DayPosition.MonthDate || day.date > dateToday) {
+                                        dayState = "incompleteDisabled"
+                                    } else {
+                                        dayState = "incomplete"
+                                    }
                                 }
 
-                                DayItem(day, dayState, viewModel)
+
+                                DayItem(
+                                    day.date,
+                                    dayState,
+                                    addHabitEntry = {
+                                        viewModel.addHabitEntry(
+                                            completionDate = day.date,
+                                            habitId = habitObject.id
+                                        )
+                                    },
+                                    deleteHabit = {
+                                        viewModel.deleteEntryByDateAndHabitId(
+                                            habitId = habitObject.id,
+                                            date = day.date.toEpochDay()
+                                        )
+                                    })
                             })
                     }
 
