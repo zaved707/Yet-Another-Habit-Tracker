@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.ui.calenderPage.MonthCalendar
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import java.time.YearMonth
 
@@ -114,7 +115,7 @@ fun HabitItemReorderable(
 
             }
             Spacer(Modifier.height(20.dp))
-            WeekCalendar(habit, viewModel.habitRepository, addHabit = { date ->
+            WeekCalendar (habit, viewModel.habitRepository, addHabit = { date ->
                 viewModel.addHabitEntry(
                     habitId = habit.id,
                     completionDate = date

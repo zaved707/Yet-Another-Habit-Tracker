@@ -75,8 +75,7 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                         calendarState.endMonth =
                             calendarState.firstVisibleMonth.yearMonth.plusMonths(5)
                     } else {
-                        calendarState.endMonth =
-                            YearMonth.now()
+                        calendarState.endMonth = YearMonth.now()
                     }
                     calendarState.startMonth =
                         calendarState.firstVisibleMonth.yearMonth.minusMonths(5)
@@ -96,7 +95,7 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                         val dates = convertHabitCompletionEntityListToDatesList(habitData)
                         val partialAndAbsoluteCombinedList =
                             processDateTriples(findHabitClusters(habitData, 5, 3))
-                       val dateToday = LocalDate.now()
+                        val dateToday = LocalDate.now()
 //                    Text(calendarState.firstVisibleMonth.yearMonth.toString())
 
 
@@ -130,21 +129,15 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                                 }
 
 
-                                DayItem(
-                                    day.date,
-                                    dayState,
-                                    addHabitEntry = {
-                                        viewModel.addHabitEntry(
-                                            completionDate = day.date,
-                                            habitId = habitObject.id
-                                        )
-                                    },
-                                    deleteHabit = {
-                                        viewModel.deleteEntryByDateAndHabitId(
-                                            habitId = habitObject.id,
-                                            date = day.date.toEpochDay()
-                                        )
-                                    })
+                                DayItem(day.date, dayState, addHabitEntry = {
+                                    viewModel.addHabitEntry(
+                                        completionDate = day.date, habitId = habitObject.id
+                                    )
+                                }, deleteHabit = {
+                                    viewModel.deleteEntryByDateAndHabitId(
+                                        habitId = habitObject.id, date = day.date.toEpochDay()
+                                    )
+                                })
                             })
                     }
 
@@ -184,8 +177,7 @@ fun MonthHeader(calendarState: CalendarState) {
             }
         }) {
             Icon(
-                Icons.Default.ArrowBackIosNew,
-                contentDescription = "previous month"
+                Icons.Default.ArrowBackIosNew, contentDescription = "previous month"
             )
         }
         Text(currentMonth.toString())
@@ -196,8 +188,7 @@ fun MonthHeader(calendarState: CalendarState) {
             }
         }) {
             Icon(
-                Icons.AutoMirrored.Filled.ArrowForwardIos,
-                contentDescription = "next month"
+                Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription = "next month"
             )
         }
     }
