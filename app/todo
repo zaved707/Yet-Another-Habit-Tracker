@@ -1,4 +1,4 @@
-todo app crashing in zero entries
+todo load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo a button on habit card to check today's habit
 todo add a monthly view of any given habit and month
 todo chnage navigation animations
@@ -7,6 +7,7 @@ todo add delete modal
 todo make a common confirmation modal
 todo POSTPONED add a category table
 todo POSTPONED add category as a primary key to habits
+done app crashing in zero entries  // app was crashing because init was reffering to a variable which was not yet initialized
 done  add delete button
 done check if name is not empty
 done  add a colors entity to database

@@ -18,12 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,7 +31,6 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
-import com.zavedahmad.yaHabit.ui.theme.Grey10
 import com.zavedahmad.yaHabit.utils.convertHabitCompletionEntityListToDatesList
 import com.zavedahmad.yaHabit.utils.findHabitClusters
 import com.zavedahmad.yaHabit.utils.processDateTriples
@@ -47,7 +43,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CalenderPage(viewModel: CalenderPageViewModel) {
+fun CalenderPage(viewModel: CalendarPageViewModel) {
     val habitData = viewModel.habitData.collectAsStateWithLifecycle().value
     val habitObject = viewModel.habitObject.collectAsStateWithLifecycle().value
 
@@ -96,9 +92,14 @@ fun CalenderPage(viewModel: CalenderPageViewModel) {
                             .fillMaxWidth()
                             .padding(10.dp)
                     ) {
+// this list does not contains all absolute values it only contain absolute values which are a part of a streak
+                        val dates = convertHabitCompletionEntityListToDatesList(habitData)
                         val partialAndAbsoluteCombinedList =
                             processDateTriples(findHabitClusters(habitData, 5, 3))
+                       val dateToday = LocalDate.now()
 //                    Text(calendarState.firstVisibleMonth.yearMonth.toString())
+
+
                         MonthHeader(calendarState)
                         DaysOfWeekTitle(daysOfWeek)
 
@@ -107,8 +108,7 @@ fun CalenderPage(viewModel: CalenderPageViewModel) {
 
                             dayContent = { day ->
                                 var dayState = ""
-                                val dates = convertHabitCompletionEntityListToDatesList(habitData)
-                                val dateToday = LocalDate.now()
+
                                 if (dates.any { it == day.date }) {
                                     if (day.position != DayPosition.MonthDate || day.date.toEpochDay() > dateToday.toEpochDay()) {
                                         dayState = "absoluteDisabled"

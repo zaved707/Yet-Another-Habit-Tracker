@@ -57,6 +57,8 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         }
     }
 
+
+
     fun getHabitDetails() {
         viewModelScope.launch(Dispatchers.IO) {
             _habitDetails.value = habitDao.getHabitById(navKey.habitId)

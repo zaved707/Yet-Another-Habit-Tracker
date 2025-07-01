@@ -89,43 +89,46 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                 }
             // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
 
+            Column( modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)) {
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                state = lazyListState,
-                contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
 
-                items(habits.value, key = { it.id }) { habit ->
-                    ReorderableItem(reorderableLazyListState, key = habit.id) { isDragging ->
-                        CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
+                    state = lazyListState,
+                    contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
 
-
-                            // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
+                    items(habits.value, key = { it.id }) { habit ->
+                        ReorderableItem(reorderableLazyListState, key = habit.id) { isDragging ->
+                            CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
 
 
-                            HabitItemReorderable(
-                                backStack,
-                                viewModel,
-                                habit,
-                                reorderableListScope = this,
-                                isDragging
-                            )
+                                // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
+
+
+                                HabitItemReorderable(
+                                    backStack,
+                                    viewModel,
+                                    habit,
+                                    reorderableListScope = this,
+                                    isDragging
+                                )
 
 //                                Spacer(Modifier.height(40.dp))
 
 
+                            }
                         }
                     }
+                    item { Spacer(Modifier.height(70.dp)) }
+
+
                 }
-                item { Spacer(Modifier.height(70.dp)) }
-
-
             }
-
         }
     }
 }

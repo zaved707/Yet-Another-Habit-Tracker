@@ -18,15 +18,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-@HiltViewModel(assistedFactory = CalenderPageViewModel.Factory::class)
-class CalenderPageViewModel @AssistedInject constructor(
+@HiltViewModel(assistedFactory = CalendarPageViewModel.Factory::class)
+class CalendarPageViewModel @AssistedInject constructor(
     @Assisted val navKey: Screen.CalenderPageRoute,
     val habitRepository: HabitRepository,
     val preferencesDao: PreferencesDao
 ) : ViewModel() {
     @AssistedFactory
     interface Factory {
-        fun create(navKey: Screen.CalenderPageRoute): CalenderPageViewModel
+        fun create(navKey: Screen.CalenderPageRoute): CalendarPageViewModel
     }
 
 

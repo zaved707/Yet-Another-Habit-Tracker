@@ -28,7 +28,7 @@ import com.zavedahmad.yaHabit.ui.TestingPage.TestingPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
 import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPage
-import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPageViewModel
+import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
 
@@ -167,13 +167,13 @@ class RecipePickerActivity : ComponentActivity() {
                                             }
                                             is Screen.CalenderPageRoute -> {
                                                 NavEntry(key = key){
-                                                    val calenderPageViewModel = hiltViewModel<CalenderPageViewModel, CalenderPageViewModel.Factory>(
+                                                    val calendarPageViewModel = hiltViewModel<CalendarPageViewModel, CalendarPageViewModel.Factory>(
                                                         creationCallback = {
                                                             factory ->
                                                             factory.create(key)
                                                         }
                                                     )
-                                                    CalenderPage(calenderPageViewModel)
+                                                    CalenderPage(calendarPageViewModel)
                                                 }
                                             }
 

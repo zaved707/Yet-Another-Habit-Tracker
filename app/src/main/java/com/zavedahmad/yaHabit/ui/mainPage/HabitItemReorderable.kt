@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
@@ -21,10 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
@@ -48,20 +41,22 @@ fun HabitItemReorderable(
     reorderableListScope: ReorderableCollectionItemScope,
     isDragging: Boolean
 ) {
-    val color  = if (isDragging){
+    val color = if (isDragging) {
         CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
 
-    } else{ CardDefaults.outlinedCardColors() }
-    val cardElevation = if (isDragging){
+    } else {
+        CardDefaults.outlinedCardColors()
+    }
+    val cardElevation = if (isDragging) {
         CardDefaults.outlinedCardElevation(defaultElevation = 10.dp)
 
-    } else{ CardDefaults.outlinedCardElevation() }
+    } else {
+        CardDefaults.outlinedCardElevation()
+    }
     OutlinedCard(
         modifier =
             Modifier
-                .fillMaxWidth()
-
-        ,
+                .fillMaxWidth(),
         elevation = cardElevation,
 
         colors = color,
@@ -72,7 +67,11 @@ fun HabitItemReorderable(
                 .padding(10.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Row(modifier = with(reorderableListScope) {Modifier.longPressDraggableHandle().fillMaxWidth()}, horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(modifier = with(reorderableListScope) {
+                Modifier
+                    .longPressDraggableHandle()
+                    .fillMaxWidth()
+            }, horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     Text(
                         habit.name,
@@ -115,7 +114,17 @@ fun HabitItemReorderable(
 
             }
             Spacer(Modifier.height(20.dp))
-            WeekCalendar(viewModel,habit)
+            WeekCalendar(habit, viewModel.habitRepository, addHabit = { date ->
+                viewModel.addHabitEntry(
+                    habitId = habit.id,
+                    completionDate = date
+                )
+            }, deleteHabit = {date ->
+                viewModel.deleteEntryByDateAndHabitId(
+                    habitId = habit.id,
+                    date = date.toEpochDay()
+                )
+            })
 
 //            WeekCalendarOld(viewModel, habit)
 
@@ -139,7 +148,14 @@ fun HabitItemReorderable(
                     val currentMonth = YearMonth.now()
                     IconButton(
                         modifier = Modifier,
-                        onClick = { backStack.add(Screen.CalenderPageRoute(month  = currentMonth.toString(), habit.id)) }) {
+                        onClick = {
+                            backStack.add(
+                                Screen.CalenderPageRoute(
+                                    month = currentMonth.toString(),
+                                    habit.id
+                                )
+                            )
+                        }) {
                         Icon(Icons.Default.CalendarMonth, contentDescription = "")
                     }
                     IconButton(

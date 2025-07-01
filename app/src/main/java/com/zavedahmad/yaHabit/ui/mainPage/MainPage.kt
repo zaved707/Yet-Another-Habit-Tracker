@@ -26,7 +26,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
+import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
@@ -65,6 +67,9 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
                     .padding(innerPadding)
                     .padding(horizontal = 10.dp)
             ) {
+
+
+
 
 
                 LazyColumn(modifier = Modifier
