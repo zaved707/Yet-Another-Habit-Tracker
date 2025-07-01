@@ -115,25 +115,10 @@ fun HabitItemReorderable(
 
             }
             Spacer(Modifier.height(20.dp))
+            WeekCalendar(viewModel,habit)
 
+//            WeekCalendarOld(viewModel, habit)
 
-            val completions = viewModel.getHabitCompletionsByHabitId(habit.id)
-                .collectAsStateWithLifecycle(initialValue = emptyList()).value
-            var dates by rememberSaveable { mutableStateOf(viewModel.generateInitialDates()) }
-            LazyRow(
-                reverseLayout = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-                items(dates) { date ->
-                    val isCompleted =if(completions == null){false}else {
-                        completions.any { it.completionDate == date }
-                    }
-
-                    DateItem(viewModel, isCompleted, date, habit, 50.dp)
-                }
-            }
 
         }
 
