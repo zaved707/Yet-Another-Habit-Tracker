@@ -63,8 +63,8 @@ class AddHabitPageViewModel @AssistedInject constructor(
     val selectedColor = _selectedColor.asStateFlow()
     private val _habitName = MutableStateFlow("")
     val habitName = _habitName.asStateFlow()
-    private val _existingHabitData = mutableStateOf<HabitEntity?>(null)
-    val existingHabitData = _existingHabitData
+    private val _existingHabitData = MutableStateFlow<HabitEntity?>(null)
+    val existingHabitData = _existingHabitData.asStateFlow()
     private val _habitDescription = MutableStateFlow("")
     val habitDescription = _habitDescription.asStateFlow()
     private val _habitFrequency = MutableStateFlow<Int?>(null)
@@ -76,6 +76,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
 
     init {
         collectThemeMode()
+
         getHabitDetails()
     }
 

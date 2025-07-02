@@ -67,52 +67,12 @@ import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
-    var title = "Add Habit"
 
-    if (viewModel.navKey.habitId != null) {
-        title = "Edit Habit"
-    }
-
-    val name by viewModel.habitName.collectAsStateWithLifecycle()
-    val description by viewModel.habitDescription.collectAsStateWithLifecycle()
-
-    val isNameError = remember { derivedStateOf { name.isEmpty() } }
-    val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
-
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
+    val existingHabitData = viewModel.existingHabitData.collectAsStateWithLifecycle().value
 
-    val daysRequiredForStreakCustom = rememberSaveable { mutableStateOf("3") }
-    val isDaysRequiredValidCustom = rememberSaveable { mutableStateOf(true) }
-    val daysRequiredForStreakWeek = rememberSaveable { mutableStateOf("3") }
-    val daysRequiredForStreakMonth = rememberSaveable { mutableStateOf("3") }
-    val streakLengthCustom = rememberSaveable { mutableStateOf("14") }
-    val isStreakLengthValidCustom = rememberSaveable { mutableStateOf(true) }
-    val isDaysRequiredValidMonth = rememberSaveable { mutableStateOf(true) }
-    val isDaysRequiredValidWeek = rememberSaveable { mutableStateOf(true) }
-    val isErrorCustom by remember { derivedStateOf { !(isDaysRequiredValidCustom.value && isStreakLengthValidCustom.value) } }
-    val options = listOf("Everyday", "Weekly", "Monthly", "Custom")
-    val streakChecked = rememberSaveable { mutableStateOf(0) }
-    val errorCommon = remember {
-        // TODO: Figure this part out. Currently it's showing error when no error is there. Need to fix it.
-        derivedStateOf {
-            if (!isNameError.value) {
-                if (streakChecked.value == 1 && !isDaysRequiredValidWeek.value) {
-                    true
-                } else if (streakChecked.value == 2 && !isDaysRequiredValidMonth.value) {
-                    true
-                } else if (streakChecked.value == 3 && isErrorCustom) {
-                    true
-                } else {
-                    false
-                }
-            } else {
-                true
-            }
-        }
-    }
-    if (themeReal == null) {
+    if (themeReal == null || existingHabitData == null && viewModel.navKey.habitId != null) {
 
         Box(
             Modifier
@@ -121,6 +81,64 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
         )
 
     } else {
+        var title = "Add Habit"
+
+
+
+        val name by viewModel.habitName.collectAsStateWithLifecycle()
+        val description by viewModel.habitDescription.collectAsStateWithLifecycle()
+
+        val isNameError = remember { derivedStateOf { name.isEmpty() } }
+        val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
+
+        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+        val daysRequiredForStreakCustom = rememberSaveable { mutableStateOf("3") }
+        val isDaysRequiredValidCustom = rememberSaveable { mutableStateOf(true) }
+        val daysRequiredForStreakWeek = rememberSaveable { mutableStateOf("3") }
+        val daysRequiredForStreakMonth = rememberSaveable { mutableStateOf("3") }
+        val streakLengthCustom = rememberSaveable { mutableStateOf("14") }
+        val isStreakLengthValidCustom = rememberSaveable { mutableStateOf(true) }
+        val isDaysRequiredValidMonth = rememberSaveable { mutableStateOf(true) }
+        val isDaysRequiredValidWeek = rememberSaveable { mutableStateOf(true) }
+        val isErrorCustom by remember { derivedStateOf { !(isDaysRequiredValidCustom.value && isStreakLengthValidCustom.value) } }
+        val options = listOf("Everyday", "Weekly", "Monthly", "Custom")
+        val streakChecked = rememberSaveable { mutableStateOf(0) }
+        val errorCommon = remember {
+            // TODO: Figure this part out. Currently it's showing error when no error is there. Need to fix it.
+            derivedStateOf {
+                if (!isNameError.value) {
+                    if (streakChecked.value == 1 && !isDaysRequiredValidWeek.value) {
+                        true
+                    } else if (streakChecked.value == 2 && !isDaysRequiredValidMonth.value) {
+                        true
+                    } else if (streakChecked.value == 3 && isErrorCustom) {
+                        true
+                    } else {
+                        false
+                    }
+                } else {
+                    true
+                }
+            }
+        }
+
+        if (viewModel.navKey.habitId != null) {
+            title = "Edit Habit"
+            if(existingHabitData?.streakType == "everyday"){
+                streakChecked.value = 0
+
+            }else if(existingHabitData?.streakType == "week"){
+                daysRequiredForStreakWeek.value  = existingHabitData.frequency.toString()
+                streakChecked.value = 1
+            }else if(existingHabitData?.streakType == "month"){
+                streakChecked.value = 2
+                daysRequiredForStreakMonth.value = existingHabitData.frequency.toString()
+            }else if(existingHabitData?.streakType == "custom"){
+                streakChecked.value = 3
+                streakLengthCustom.value = existingHabitData.cycle.toString()
+                daysRequiredForStreakCustom.value = existingHabitData.frequency.toString()
+            }
+        }
         CustomTheme(
             theme = themeReal.value,
             primaryColor = setColor.value,
@@ -158,7 +176,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         .verticalScroll(rememberScrollState())
                         .padding(innerPadding)
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp).windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)),
+                        .padding(horizontal = 20.dp)
+                        .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     TextField(
@@ -224,10 +243,21 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         options.forEachIndexed { index, item ->
                             val isChecked = streakChecked.value == index
                             ToggleButton(
-                               checked = isChecked, shapes = when (index) {
-                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape, shape = ButtonGroupDefaults.connectedLeadingButtonPressShape)
-                                    options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes(pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,shape = ButtonGroupDefaults.connectedTrailingButtonPressShape)
-                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes(pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,shape = ButtonGroupDefaults.connectedMiddleButtonPressShape)
+                                checked = isChecked, shapes = when (index) {
+                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
+                                        pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
+                                        shape = ButtonGroupDefaults.connectedLeadingButtonPressShape
+                                    )
+
+                                    options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes(
+                                        pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
+                                        shape = ButtonGroupDefaults.connectedTrailingButtonPressShape
+                                    )
+
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes(
+                                        pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
+                                        shape = ButtonGroupDefaults.connectedMiddleButtonPressShape
+                                    )
                                 }, onCheckedChange = {
                                     if (!isChecked) {
 
@@ -239,14 +269,18 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                                 Row {  /*AnimatedVisibility(visible = streakChecked.value == index) {
                                 Icon(Icons.Default.Check, contentDescription = "selected", modifier = Modifier.size(15.dp))
                             }*/
-                                Text(item)
-                            }}
+                                    Text(item)
+                                }
+                            }
                         }
                     }
 
                     AnimatedVisibility(visible = streakChecked.value == 1) {
                         Column {
-                            InvalidValueIndicator(Modifier.fillMaxWidth(0.5f),visible = !isDaysRequiredValidWeek.value)
+                            InvalidValueIndicator(
+                                Modifier.fillMaxWidth(0.5f),
+                                visible = !isDaysRequiredValidWeek.value
+                            )
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
@@ -284,43 +318,53 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                     }
                     AnimatedVisibility(visible = streakChecked.value == 2) {
                         Column {
-                            InvalidValueIndicator(Modifier.fillMaxWidth(0.5f),visible = !isDaysRequiredValidMonth.value)
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            TextField(
-                                modifier = Modifier.width(70.dp),
-                                value = daysRequiredForStreakMonth.value,
-                                colors = TextFieldDefaults.colors(
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
-                                ),
-                                onValueChange = {
-                                    if (it.toIntOrNull() != null) {
-                                        if (it.toInt() < 30 && it.toInt() > 0) {
-                                            daysRequiredForStreakMonth.value = it
-                                            isDaysRequiredValidMonth.value = true
-                                            viewModel.setHabitFrequency(it.toInt())
-                                        } else if (it.toIntOrNull() == 0) {
-                                            daysRequiredForStreakMonth.value = it
+                            InvalidValueIndicator(
+                                Modifier.fillMaxWidth(0.5f),
+                                visible = !isDaysRequiredValidMonth.value
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextField(
+                                    modifier = Modifier.width(70.dp),
+                                    value = daysRequiredForStreakMonth.value,
+                                    colors = TextFieldDefaults.colors(
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent
+                                    ),
+                                    onValueChange = {
+                                        if (it.toIntOrNull() != null) {
+                                            if (it.toInt() < 30 && it.toInt() > 0) {
+                                                daysRequiredForStreakMonth.value = it
+                                                isDaysRequiredValidMonth.value = true
+                                                viewModel.setHabitFrequency(it.toInt())
+                                            } else if (it.toIntOrNull() == 0) {
+                                                daysRequiredForStreakMonth.value = it
+                                                isDaysRequiredValidMonth.value = false
+
+                                            }
+                                        } else {
+                                            daysRequiredForStreakMonth.value = ""
                                             isDaysRequiredValidMonth.value = false
-
                                         }
-                                    } else {
-                                        daysRequiredForStreakMonth.value = ""
-                                        isDaysRequiredValidMonth.value = false
-                                    }
-                                })
-                            Spacer(Modifier.width(10.dp))
-                            Text("times per Month")
+                                    })
+                                Spacer(Modifier.width(10.dp))
+                                Text("times per Month")
 
-                        }}
+                            }
+                        }
                     }
                     AnimatedVisibility(visible = streakChecked.value == 3) {
-                        Column (Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
+                        Column(
+                            Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
 
-                                InvalidValueIndicator(Modifier.fillMaxWidth(0.5f), visible=isErrorCustom)
+                            InvalidValueIndicator(
+                                Modifier.fillMaxWidth(0.5f),
+                                visible = isErrorCustom
+                            )
 
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -404,9 +448,9 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                                         tint = MaterialTheme.colorScheme.error
                                     )
                                 }*/
-                               /* AnimatedVisibility(visible = !isErrorCustom) {
-                                    Icon(Icons.Default.Check, contentDescription = "")
-                                }*/
+                                /* AnimatedVisibility(visible = !isErrorCustom) {
+                                     Icon(Icons.Default.Check, contentDescription = "")
+                                 }*/
                                 Spacer(Modifier.height(20.dp))
                             }
                         }
@@ -460,10 +504,20 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 }
 
 @Composable
-fun InvalidValueIndicator(modifier: Modifier = Modifier ,visible: Boolean) {
-    AnimatedVisibility( modifier = modifier, visible = visible) {
-        Box(Modifier.clip(RoundedCornerShape(50.dp)).background(MaterialTheme.colorScheme.error), contentAlignment = Alignment.Center){
-        Text("Invalid Values" , Modifier.padding(5.dp), color = MaterialTheme.colorScheme.onError, fontSize = 15.sp)
+fun InvalidValueIndicator(modifier: Modifier = Modifier, visible: Boolean) {
+    AnimatedVisibility(modifier = modifier, visible = visible) {
+        Box(
+            Modifier
+                .clip(RoundedCornerShape(50.dp))
+                .background(MaterialTheme.colorScheme.error),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "Invalid Values",
+                Modifier.padding(5.dp),
+                color = MaterialTheme.colorScheme.onError,
+                fontSize = 15.sp
+            )
         }
     }
 

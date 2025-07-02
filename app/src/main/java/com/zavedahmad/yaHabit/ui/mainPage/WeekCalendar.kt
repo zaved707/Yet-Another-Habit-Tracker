@@ -64,7 +64,7 @@ fun WeekCalendar(
     habitData.value?.let { habitData ->
         val dates = convertHabitCompletionEntityListToDatesList(habitData)
         val partialAndAbsoluteCombinedList =
-            processDateTriples(findHabitClusters(habitData, 5, 3))
+            processDateTriples(findHabitClusters(habitData, habit.cycle, habit.frequency))
         val dateToday = LocalDate.now()
         Column {
         val daysOfWeek = daysOfWeek()
