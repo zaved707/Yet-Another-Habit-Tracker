@@ -232,7 +232,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
                     AnimatedVisibility(visible = streakChecked.value == 1) {
                         Column {
-                            InvalidValueIndicator(!isDaysRequiredValidWeek.value)
+                            InvalidValueIndicator(Modifier.fillMaxWidth(0.5f),visible = !isDaysRequiredValidWeek.value)
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
@@ -269,6 +269,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         }
                     }
                     AnimatedVisibility(visible = streakChecked.value == 2) {
+                        Column {
+                            InvalidValueIndicator(Modifier.fillMaxWidth(0.5f),visible = !isDaysRequiredValidMonth.value)
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
@@ -299,12 +301,12 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                             Spacer(Modifier.width(10.dp))
                             Text("times per Month")
 
-                        }
+                        }}
                     }
                     AnimatedVisibility(visible = streakChecked.value == 3) {
-                        Column {
+                        Column (Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
 
-                                InvalidValueIndicator(isErrorCustom)
+                                InvalidValueIndicator(Modifier.fillMaxWidth(0.5f), visible=isErrorCustom)
 
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -443,10 +445,10 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 }
 
 @Composable
-fun InvalidValueIndicator(isVisible: Boolean) {
-    AnimatedVisibility( modifier = Modifier.fillMaxWidth(), visible = isVisible) {
-        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.error)){
-        Text("Invalid Values" , Modifier.padding(10.dp), color = MaterialTheme.colorScheme.onError)
+fun InvalidValueIndicator(modifier: Modifier = Modifier ,visible: Boolean) {
+    AnimatedVisibility( modifier = modifier, visible = visible) {
+        Box(Modifier.clip(RoundedCornerShape(50.dp)).background(MaterialTheme.colorScheme.error), contentAlignment = Alignment.Center){
+        Text("Invalid Values" , Modifier.padding(5.dp), color = MaterialTheme.colorScheme.onError, fontSize = 15.sp)
         }
     }
 
