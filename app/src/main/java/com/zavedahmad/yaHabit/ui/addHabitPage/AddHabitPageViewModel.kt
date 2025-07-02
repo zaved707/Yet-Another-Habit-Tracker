@@ -67,6 +67,12 @@ class AddHabitPageViewModel @AssistedInject constructor(
     val existingHabitData = _existingHabitData
     private val _habitDescription = MutableStateFlow("")
     val habitDescription = _habitDescription.asStateFlow()
+    private val _habitFrequency = MutableStateFlow<Int?>(null)
+    val habitFrequency = _habitFrequency.asStateFlow()
+    private val _habitCycle = MutableStateFlow<Int?>(null)
+    val habitCycle = _habitCycle.asStateFlow()
+    private val _habitStreakType = MutableStateFlow<String>("everyday")
+    val habitStreakType = _habitStreakType.asStateFlow()
 
     init {
         collectThemeMode()
@@ -94,7 +100,11 @@ class AddHabitPageViewModel @AssistedInject constructor(
                         name = habitName.value,
                         color = _selectedColor.value,
                         description = _habitDescription.value,
-                        index = _existingHabitData.value?.index ?: 0
+                        index = _existingHabitData.value?.index ?: 0,
+                        streakType = _habitStreakType.value,
+                        frequency = _habitFrequency.value ?: 2,
+                        cycle = _habitCycle.value ?: 7
+
                     )
                 )
             }
@@ -104,7 +114,10 @@ class AddHabitPageViewModel @AssistedInject constructor(
                     HabitEntity(
                         name = habitName.value,
                         color = _selectedColor.value,
-                        description = _habitDescription.value
+                        description = _habitDescription.value,
+                        streakType = _habitStreakType.value,
+                        frequency = _habitFrequency.value ?: 2,
+                        cycle = _habitCycle.value ?: 7
                     )
                 )
             }
@@ -119,6 +132,18 @@ class AddHabitPageViewModel @AssistedInject constructor(
         }
     }
 
+    fun setHabitFrequency(frequency: Int) {
+        _habitFrequency.value = frequency
+    }
+
+    fun setHabitCycle(cycle: Int) {
+        _habitCycle.value = cycle
+    }
+
+    fun setHabitStreakType(streakType: String) {
+        _habitStreakType.value = streakType
+    }
+
     fun getHabitDetails() {
         if (navKey.habitId != null) {
             viewModelScope.launch(Dispatchers.IO) {
@@ -128,6 +153,9 @@ class AddHabitPageViewModel @AssistedInject constructor(
                     setHabitName(existingHabitHolder.name)
                     setHabitDescription(existingHabitHolder.description)
                     setColor(existingHabitHolder.color)
+                    setHabitFrequency(existingHabitHolder.frequency)
+                    setHabitCycle(existingHabitHolder.cycle)
+                    setHabitStreakType(existingHabitHolder.streakType)
                 }
             }
         }

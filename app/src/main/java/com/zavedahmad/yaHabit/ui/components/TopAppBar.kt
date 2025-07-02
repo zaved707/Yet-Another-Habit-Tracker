@@ -15,13 +15,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
-@OptIn( ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTopABCommon(backStack: SnapshotStateList<NavKey>, scrollBehavior: TopAppBarScrollBehavior,title :String){
+fun MyTopABCommon(
+    backStack: SnapshotStateList<NavKey>,
+    scrollBehavior: TopAppBarScrollBehavior,
+    title: String,
+    actions: @Composable () -> Unit = {},
+    showSettingsIcon: Boolean = true
+) {
     TopAppBar(
         title = { Text(title) },
-        actions = { Row {
-            IconButton(onClick = {backStack.add(Screen.SettingsPageRoute)}){ Icon(imageVector = Icons.Outlined.Settings, contentDescription = "Settings")} }},
-       scrollBehavior = scrollBehavior
-    )
-}
+        actions = {
+            Row {
+                actions()
+                if (showSettingsIcon) {
+                    IconButton(onClick = { backStack.add(Screen.SettingsPageRoute) }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
+                }
+            }},
+            scrollBehavior = scrollBehavior
+            )
+        }

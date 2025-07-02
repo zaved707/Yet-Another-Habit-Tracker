@@ -24,7 +24,10 @@ class HabitRepository @Inject constructor(val habitDao: HabitDao, val habitCompl
             HabitEntity(
                 name = habitEntity.name,
                 color = habitEntity.color,
-                index = max?.let { it + 1 } ?: 0
+                index = max?.let { it + 1 } ?: 0,
+                cycle = habitEntity.cycle,
+                frequency = habitEntity.frequency,
+                streakType = habitEntity.streakType
             )
         )
     }

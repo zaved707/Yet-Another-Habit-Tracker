@@ -1,3 +1,6 @@
+todo custom the cycle input doesn't checks when changed and othe one is small
+todo custom cycle value not uploading to database
+todo addNew Habit page Use NewMaterial3 top bar and add button to right side on top bar
 todo load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo a button on habit card to check today's habit
 todo add a monthly view of any given habit and month
