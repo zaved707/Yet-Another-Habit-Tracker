@@ -44,102 +44,38 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CalenderPage(viewModel: CalendarPageViewModel) {
-    val habitData = viewModel.habitData.collectAsStateWithLifecycle().value
+
     val habitObject = viewModel.habitObject.collectAsStateWithLifecycle().value
 
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
-    if (habitData == null || habitObject == null || themeReal == null) {
+    if (habitObject == null || themeReal == null) {
         LoadingIndicator()
     } else {
         CustomTheme(theme = themeReal.value, primaryColor = habitObject.color) {
             Scaffold { innerPadding ->
-                val coroutineScope = rememberCoroutineScope()
-                val currentMonth = YearMonth.parse(viewModel.navKey.month)
-                val startMonth = currentMonth.minusMonths(10)
-                val endMonth = currentMonth.plusMonths(10)
-                val daysOfWeek = daysOfWeek()
-                val calendarState = rememberCalendarState(
-                    endMonth = endMonth,
-                    startMonth = startMonth,
-                    firstVisibleMonth = currentMonth, outDateStyle = OutDateStyle.EndOfGrid,
 
-
-                    firstDayOfWeek = daysOfWeek.first(),
-                )
-                LaunchedEffect(calendarState.firstVisibleMonth) {
-                    println(calendarState.firstVisibleMonth)
-                    if (calendarState.firstVisibleMonth.yearMonth < YearMonth.now()
-                            .minusMonths(5)
-                    ) {
-                        calendarState.endMonth =
-                            calendarState.firstVisibleMonth.yearMonth.plusMonths(5)
-                    } else {
-                        calendarState.endMonth = YearMonth.now()
-                    }
-                    calendarState.startMonth =
-                        calendarState.firstVisibleMonth.yearMonth.minusMonths(5)
-                }
                 Box(
                     Modifier
                         .padding(innerPadding)
                         .fillMaxWidth()
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    ) {
-// this list does not contains all absolute values it only contain absolute values which are a part of a streak
-                        val dates = convertHabitCompletionEntityListToDatesList(habitData)
-                        val partialAndAbsoluteCombinedList =
-                            processDateTriples(findHabitClusters(habitData, 5, 3))
-                        val dateToday = LocalDate.now()
-//                    Text(calendarState.firstVisibleMonth.yearMonth.toString())
+                    MonthCalendar(
+                        habitObject,
+                        viewModel.habitRepository,
+                        addHabit = { date ->
+                            viewModel.addHabitEntry(
+                                habitObject.id,
+                                completionDate = date
+                            )
+                        },
+                        deleteHabit = { date ->
+                            viewModel.deleteEntryByDateAndHabitId(
+                                habitObject.id,
+                                date.toEpochDay()
+                            )
+                        })
 
-
-                        MonthHeader(calendarState)
-                        DaysOfWeekTitle(daysOfWeek)
-
-                        HorizontalCalendar(
-                            state = calendarState,
-
-                            dayContent = { day ->
-                                var dayState = ""
-
-                                if (dates.any { it == day.date }) {
-                                    if (day.position != DayPosition.MonthDate || day.date.toEpochDay() > dateToday.toEpochDay()) {
-                                        dayState = "absoluteDisabled"
-                                    } else {
-                                        dayState = "absolute"
-                                    }
-                                } else if (partialAndAbsoluteCombinedList.any { it == day.date }) {
-                                    if (day.position != DayPosition.MonthDate || day.date > dateToday) {
-                                        dayState = "partialDisabled"
-                                    } else {
-                                        dayState = "partial"
-                                    }
-                                } else {
-                                    if (day.position != DayPosition.MonthDate || day.date > dateToday) {
-                                        dayState = "incompleteDisabled"
-                                    } else {
-                                        dayState = "incomplete"
-                                    }
-                                }
-
-
-                                DayItem(day.date, dayState, addHabitEntry = {
-                                    viewModel.addHabitEntry(
-                                        completionDate = day.date, habitId = habitObject.id
-                                    )
-                                }, deleteHabit = {
-                                    viewModel.deleteEntryByDateAndHabitId(
-                                        habitId = habitObject.id, date = day.date.toEpochDay()
-                                    )
-                                })
-                            })
-                    }
 
                 }
             }
