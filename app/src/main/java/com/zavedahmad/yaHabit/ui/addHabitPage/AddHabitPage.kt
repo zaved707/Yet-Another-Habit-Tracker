@@ -10,12 +10,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -153,7 +158,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         .verticalScroll(rememberScrollState())
                         .padding(innerPadding)
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 20.dp).windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     TextField(
@@ -206,6 +211,15 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         }
 
                     }
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Frequency", fontSize = 20.sp)
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    HorizontalDivider()
+                    Spacer(Modifier.height(20.dp))
                     Row {
                         options.forEachIndexed { index, item ->
                             val isChecked = streakChecked.value == index
@@ -232,7 +246,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
                     AnimatedVisibility(visible = streakChecked.value == 1) {
                         Column {
-                            InvalidValueIndicator(!isDaysRequiredValidWeek.value)
+                            InvalidValueIndicator(Modifier.fillMaxWidth(0.5f),visible = !isDaysRequiredValidWeek.value)
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
@@ -269,6 +283,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         }
                     }
                     AnimatedVisibility(visible = streakChecked.value == 2) {
+                        Column {
+                            InvalidValueIndicator(Modifier.fillMaxWidth(0.5f),visible = !isDaysRequiredValidMonth.value)
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
@@ -299,12 +315,12 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                             Spacer(Modifier.width(10.dp))
                             Text("times per Month")
 
-                        }
+                        }}
                     }
                     AnimatedVisibility(visible = streakChecked.value == 3) {
-                        Column {
+                        Column (Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
 
-                                InvalidValueIndicator(isErrorCustom)
+                                InvalidValueIndicator(Modifier.fillMaxWidth(0.5f), visible=isErrorCustom)
 
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -422,19 +438,20 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
 
 
-                    Spacer(Modifier.height(30.dp))
+
 
                     Spacer(Modifier.height(30.dp))
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Choose Color", fontSize = 20.sp)
+                        Text("Color", fontSize = 20.sp)
                     }
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(10.dp))
                     HorizontalDivider()
                     Spacer(Modifier.height(20.dp))
                     ColorSelector(viewModel)
+                    Spacer(Modifier.height(30.dp))
                 }
 
             }
@@ -443,10 +460,10 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 }
 
 @Composable
-fun InvalidValueIndicator(isVisible: Boolean) {
-    AnimatedVisibility( modifier = Modifier.fillMaxWidth(), visible = isVisible) {
-        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.error)){
-        Text("Invalid Values" , Modifier.padding(10.dp), color = MaterialTheme.colorScheme.onError)
+fun InvalidValueIndicator(modifier: Modifier = Modifier ,visible: Boolean) {
+    AnimatedVisibility( modifier = modifier, visible = visible) {
+        Box(Modifier.clip(RoundedCornerShape(50.dp)).background(MaterialTheme.colorScheme.error), contentAlignment = Alignment.Center){
+        Text("Invalid Values" , Modifier.padding(5.dp), color = MaterialTheme.colorScheme.onError, fontSize = 15.sp)
         }
     }
 
