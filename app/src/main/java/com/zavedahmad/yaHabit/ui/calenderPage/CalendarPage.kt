@@ -30,6 +30,7 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
+import com.zavedahmad.yaHabit.ui.habitsDetailPage.FullDataGridCalender
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import com.zavedahmad.yaHabit.utils.convertHabitCompletionEntityListToDatesList
 import com.zavedahmad.yaHabit.utils.findHabitClusters
@@ -55,11 +56,25 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
         CustomTheme(theme = themeReal.value, primaryColor = habitObject.color) {
             Scaffold { innerPadding ->
 
-                Box(
+                Column (
                     Modifier
                         .padding(innerPadding)
                         .fillMaxWidth()
                 ) {
+                    FullDataGridCalender(habitObject,
+                        viewModel.habitRepository,
+                        addHabit = { date ->
+                            viewModel.addHabitEntry(
+                                habitObject.id,
+                                completionDate = date
+                            )
+                        },
+                        deleteHabit = { date ->
+                            viewModel.deleteEntryByDateAndHabitId(
+                                habitObject.id,
+                                date.toEpochDay()
+                            )
+                        })
                     MonthCalendar(
                         habitObject,
                         viewModel.habitRepository,
