@@ -13,7 +13,7 @@ import java.time.LocalDate
  *
  * @param habitEntries A list of [HabitCompletionEntity] objects, representing when a habit was completed.
  *                     It's assumed that these entries might not be sorted by date.
- * @param timeSpanDays The duration in days to consider for a cluster. For example, if 7,
+ * @param cycleLength The duration in days to consider for a cluster. For example, if 7,
  *                     the function looks for clusters within any 7-day window.
  * @param minOccurrences The minimum number of habit completions required within the `timeSpanDays`
  *                       to qualify as a cluster.
@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 fun findHabitClusters(
     habitEntries: List<HabitCompletionEntity>,
-    timeSpanDays: Int,
+    cycleLength: Int,
     minOccurrences: Int
 ): List<Triple<LocalDate, LocalDate, Int>> {
     val results = mutableListOf<Triple<LocalDate, LocalDate, Int>>()
@@ -40,7 +40,7 @@ fun findHabitClusters(
     while (i < sortedHabitEntries.size) {
         val startDate = sortedHabitEntries[i].completionDate
 
-        val endDate = startDate.plusDays(timeSpanDays-1.toLong())
+        val endDate = startDate.plusDays(cycleLength-1.toLong())
         var count = 0
 
         var j = i

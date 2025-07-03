@@ -15,7 +15,8 @@ import java.time.LocalDate
     )]
 )
 data class HabitCompletionEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val habitId: Int,
-    val completionDate: LocalDate
+    val completionDate: LocalDate,
+    val partial : Boolean = false,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0
 )

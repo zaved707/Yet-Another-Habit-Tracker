@@ -1,3 +1,5 @@
+/* IMPORTANT todo now add all datesNotPresentIndDatabase to database as partial Entries*/
+todo check that the entry that goes in to repository is has id 0 so make sure it doesn't replace the entry already there with the id 0
 todo a button on habit card to check today's habit
 todo chnage navigation animations
 todo when habits list is empty show a page

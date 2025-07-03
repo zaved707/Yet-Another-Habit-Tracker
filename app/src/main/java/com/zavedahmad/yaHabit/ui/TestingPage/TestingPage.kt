@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DragHandle
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,43 +53,7 @@ fun TestingPage(backStack: SnapshotStateList<NavKey>) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val hapticFeedback = LocalHapticFeedback.current
-
-            var list by remember { mutableStateOf(List(100) { "Item $it" }) }
-            val lazyListState = rememberLazyListState()
-            val reorderableLazyListState =
-                rememberReorderableLazyListState(lazyListState) { from, to ->
-                    list = list.toMutableList().apply {
-                        add(to.index, removeAt(from.index))
-                    }
-
-                    hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
-                }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(list, key = { it }) {
-                    ReorderableItem(reorderableLazyListState, key = it) { isDragging ->
-                        val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
-
-                        Surface(shadowElevation = elevation) {
-                            Row {
-                                Text(it, Modifier.padding(horizontal = 8.dp))
-                                IconButton(
-                                    modifier = Modifier.longPressDraggableHandle(),
-                                    onClick = {},
-                                ) {
-                                    Icon(Icons.Rounded.DragHandle, contentDescription = "Reorder")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            Button({}) {Text("Add Entry") }
         }
     }
 }
