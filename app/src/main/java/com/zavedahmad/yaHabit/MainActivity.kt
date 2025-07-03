@@ -3,6 +3,9 @@ package com.zavedahmad.yaHabit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,7 +59,7 @@ sealed class Screen : NavKey {
     data class AddHabitPageRoute(val habitId: Int? = null) : Screen()
 
     @Serializable
-    data class CalenderPageRoute(val month: String, val habitId : Int) : Screen()
+    data class CalenderPageRoute(val month: String, val habitId: Int) : Screen()
 
     @Serializable
     data object FavouritePageRoute : Screen()
@@ -104,110 +107,114 @@ class RecipePickerActivity : ComponentActivity() {
 
                 ComposeTemplateTheme(themeReal.value) {
                     CustomTheme(theme = themeReal.value, useExistingTheme = true) {
-                        Scaffold(
-                            modifier = Modifier.fillMaxSize(),
 
-                            ) { innerPadding ->
-                            var absolutePadding = PaddingValues()
-                            if (isTopMainPageRoute) {
-                                absolutePadding =
-                                    PaddingValues(bottom = innerPadding.calculateBottomPadding())
-                            }
-
-                            Box(modifier = Modifier.padding()) {
+                        Box(modifier = Modifier.padding()) {
 
 
-                                NavDisplay(
-                                    backStack = backStack,
-                                    onBack = { backStack.removeLastOrNull() },
-                                    entryDecorators = listOf(
-                                        rememberSceneSetupNavEntryDecorator(),
-                                        rememberSavedStateNavEntryDecorator(),
-                                        rememberViewModelStoreNavEntryDecorator()
-                                    ),
-                                    entryProvider = { key ->
-                                        when (key) {
+                            NavDisplay(
+                                backStack = backStack,
+                                onBack = { backStack.removeLastOrNull() },
+                                entryDecorators = listOf(
+                                    rememberSceneSetupNavEntryDecorator(),
+                                    rememberSavedStateNavEntryDecorator(),
+                                    rememberViewModelStoreNavEntryDecorator()
+                                ),
+                                entryProvider = { key ->
+                                    when (key) {
 
-                                            is Screen.MainPageRoute -> {
-                                                NavEntry(key = key) {
+                                        is Screen.MainPageRoute -> {
+                                            NavEntry(key = key) {
 
-                                                    Column {
+                                                Column {
 
-                                                        MainPageReorderable(backStack, viewModelMainPage)
-                                                    }
-                                                }
-                                            }
-
-
-                                            is Screen.SettingsPageRoute -> {
-                                                NavEntry(key = key) {
-
-
-                                                    Box(
-                                                        modifier = Modifier.fillMaxSize(),
-                                                        contentAlignment = Alignment.Center
-                                                    ) {
-
-                                                        SettingsScreen(backStack, settingsViewModel)
-                                                    }
-                                                }
-                                            }
-
-                                            is Screen.AddHabitPageRoute -> {
-                                                NavEntry(key = key) {
-                                                    val addHabitPageViewModel =
-                                                        hiltViewModel<AddHabitPageViewModel, AddHabitPageViewModel.Factory>(
-                                                            creationCallback = { factory ->
-                                                                factory.create(key)
-                                                            }
-                                                        )
-                                                    AddHabitPage(addHabitPageViewModel, backStack)
-
-                                                }
-                                            }
-                                            is Screen.CalenderPageRoute -> {
-                                                NavEntry(key = key){
-                                                    val calendarPageViewModel = hiltViewModel<CalendarPageViewModel, CalendarPageViewModel.Factory>(
-                                                        creationCallback = {
-                                                            factory ->
-                                                            factory.create(key)
-                                                        }
+                                                    MainPageReorderable(
+                                                        backStack,
+                                                        viewModelMainPage
                                                     )
-                                                    CalenderPage(calendarPageViewModel)
                                                 }
                                             }
-
-                                            is Screen.HabitDetailsPageRoute -> {
-                                                NavEntry(key = key) {
-                                                    val habitDetailsPageViewModel =
-                                                        hiltViewModel<HabitDetailsPageViewModel, HabitDetailsPageViewModel.Factory>(
-                                                            creationCallback = { factory ->
-                                                                factory.create(key)
-                                                            }
-                                                        )
-                                                    HabitDetailsPage(habitDetailsPageViewModel)
-
-
-                                                }
-                                            }
-                                            is Screen.TestingPageRoute -> {
-                                                NavEntry(key = key){
-                                                    TestingPage(backStack)
-                                                }
-                                            }
-
-
-                                            else -> throw RuntimeException("Invalid NavKey.")
                                         }
 
 
-                                    }
-                                )
+                                        is Screen.SettingsPageRoute -> {
+                                            NavEntry(key = key) {
 
-                            }
+
+                                                Box(
+                                                    modifier = Modifier.fillMaxSize(),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+
+                                                    SettingsScreen(backStack, settingsViewModel)
+                                                }
+                                            }
+                                        }
+
+                                        is Screen.AddHabitPageRoute -> {
+                                            NavEntry(key = key) {
+                                                val addHabitPageViewModel =
+                                                    hiltViewModel<AddHabitPageViewModel, AddHabitPageViewModel.Factory>(
+                                                        creationCallback = { factory ->
+                                                            factory.create(key)
+                                                        }
+                                                    )
+                                                AddHabitPage(addHabitPageViewModel, backStack)
+
+                                            }
+                                        }
+
+                                        is Screen.CalenderPageRoute -> {
+                                            NavEntry(key = key) {
+                                                val calendarPageViewModel =
+                                                    hiltViewModel<CalendarPageViewModel, CalendarPageViewModel.Factory>(
+                                                        creationCallback = { factory ->
+                                                            factory.create(key)
+                                                        }
+                                                    )
+                                                CalenderPage(calendarPageViewModel)
+                                            }
+                                        }
+
+                                        is Screen.HabitDetailsPageRoute -> {
+                                            NavEntry(key = key) {
+                                                val habitDetailsPageViewModel =
+                                                    hiltViewModel<HabitDetailsPageViewModel, HabitDetailsPageViewModel.Factory>(
+                                                        creationCallback = { factory ->
+                                                            factory.create(key)
+                                                        }
+                                                    )
+                                                HabitDetailsPage(habitDetailsPageViewModel)
+
+
+                                            }
+                                        }
+
+                                        is Screen.TestingPageRoute -> {
+                                            NavEntry(key = key) {
+                                                TestingPage(backStack)
+                                            }
+                                        }
+
+
+                                        else -> throw RuntimeException("Invalid NavKey.")
+                                    }
+
+
+                                },
+                                transitionSpec = {
+                                    slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(
+                                        targetOffsetX = { -it })
+                                },
+                                predictivePopTransitionSpec = {
+                                    slideInHorizontally(initialOffsetX = { -it/2 }) togetherWith slideOutHorizontally(
+                                        targetOffsetX = { it })
+                                }
+                            )
+
                         }
                     }
                 }
+
             }
         }
     }

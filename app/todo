@@ -1,20 +1,20 @@
-todo custom the cycle input doesn't checks when changed and othe one is small
-todo custom cycle value not uploading to database
-todo addNew Habit page Use NewMaterial3 top bar and add button to right side on top bar
-todo load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo a button on habit card to check today's habit
-todo add a monthly view of any given habit and month
 todo chnage navigation animations
 todo when habits list is empty show a page
 todo add delete modal
 todo make a common confirmation modal
 todo POSTPONED add a category table
+todo POSTPONED load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo POSTPONED add category as a primary key to habits
 done app crashing in zero entries  // app was crashing because init was reffering to a variable which was not yet initialized
 done  add delete button
 done check if name is not empty
+done add a monthly view of any given habit and month
 done  add a colors entity to database
 done  make habit theme take dark theme from preferences
 done add page for editing habit
+done custom cycle value not uploading to database
 done long press to add entry in main page
 done add dragging
+done custom the cycle input doesn't checks when changed and othe one is small
+done addNew Habit page Use NewMaterial3 top bar and add button to right side on top bar
