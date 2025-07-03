@@ -72,10 +72,10 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                         Text(habitDetails.description)
                         Spacer(Modifier.height(30.dp))
 
-                        if (habitsPastYear != null) {
-                            Text(findHabitClusters(habitsPastYear, timeSpanDays = 5, 3).toString())
-                            Text(processDateTriples( findHabitClusters(habitsPastYear, timeSpanDays = 5, 3)).toString())
-                        }
+//                        if (habitsPastYear != null) {
+//                            Text(findHabitClusters(habitsPastYear, timeSpanDays = 5, 3).toString())
+//                            Text(processDateTriples( findHabitClusters(habitsPastYear, timeSpanDays = 5, 3)).toString())
+//                        }
                         Card {
                             Box(Modifier.padding(vertical = 20.dp)) {
                                 LazyRow(reverseLayout = true) {
