@@ -8,6 +8,7 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.assisted.Assisted
@@ -26,7 +27,8 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     @Assisted val navKey: Screen.HabitDetailsPageRoute,
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
-    val preferencesDao: PreferencesDao
+    val preferencesDao: PreferencesDao,
+    val habitRepository: HabitRepository
 
 ) : ViewModel() {
 
@@ -34,7 +36,8 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     interface Factory {
         fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
     }
-
+    private val _habitAllData = MutableStateFlow<List<HabitCompletionEntity>?>(null)
+    val habitAllData = _habitAllData.asStateFlow()
     private val _habitDetails = MutableStateFlow<HabitEntity?>(null)
     val habitDetails = _habitDetails.asStateFlow()
     private val _habitsPastYear = MutableStateFlow<List<HabitCompletionEntity>?>(null)
@@ -46,8 +49,13 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         collectThemeMode()
         getHabitDetails()
         getLastYearData()
+        getHabitAllData()
     }
-
+    fun getHabitAllData(){
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.getAllHabitEntriesById(navKey.habitId).collect { _habitAllData.value = it }
+        }
+    }
     fun getLastYearData() {
         val dateNow = LocalDate.now()
         val dateAYearAgo = dateNow.minusYears(1).toEpochDay()

@@ -24,17 +24,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.ui.calenderPage.MonthCalendarNew
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import com.zavedahmad.yaHabit.utils.findHabitClusters
 import com.zavedahmad.yaHabit.utils.processDateTriples
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.time.YearMonth
 
@@ -45,9 +50,10 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
     val habitDetails = viewModel.habitDetails.collectAsStateWithLifecycle().value
     val month = YearMonth.now()
     val twelveMonths = (0..12).map { month.minusMonths(it.toLong()) }
-
+    val habitAllData = viewModel.habitAllData.collectAsStateWithLifecycle().value
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
+    val coroutineScope = rememberCoroutineScope()
     if (themeReal == null) {
         ComposeTemplateTheme("system") {
             Box(
@@ -111,8 +117,26 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                             }
                         }
                         Spacer(Modifier.height(40.dp))
-                        Row (Modifier.fillMaxWidth()){
-                            Card(Modifier   ) {
+                        MonthCalendarNew(
+                            habitDetails,
+                            viewModel.habitRepository,
+                            addHabit = { date ->
+                                coroutineScope.launch(
+                                    Dispatchers.IO
+                                ) {
+                                    viewModel.habitRepository.addWithPartialCheck(
+                                        HabitCompletionEntity(
+                                            habitId = viewModel.navKey.habitId,
+                                            completionDate = date
+                                        )
+                                    )
+                                }
+                            },
+                            deleteHabit = {},
+                            habitData = habitAllData
+                        )
+                        Row(Modifier.fillMaxWidth()) {
+                            Card(Modifier) {
                                 Column(
                                     Modifier
 
@@ -128,7 +152,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                                         fontSize = 30.sp)
                                 }
                             }
-                            Card(Modifier    ) {
+                            Card(Modifier) {
                                 Column(
                                     Modifier
 

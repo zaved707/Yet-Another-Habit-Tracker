@@ -78,7 +78,28 @@ fun DayItem(date: LocalDate, state: String, addHabitEntry : () -> Unit, deleteHa
             }
 
 
-        } else if (state == "absolute") {
+        }else if (state == "error") {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.error),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .padding(5.dp)
+
+                    .size(35.dp)
+
+            ) {
+                Column(
+                    Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {  Text(
+                    date.dayOfMonth.toString(),
+                    color = MaterialTheme.colorScheme.onPrimary
+                ) }
+            }
+        }
+        else if (state == "absolute") {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(10.dp),
