@@ -94,71 +94,57 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                                     )
                                 }
                             },
-                            deleteHabit =  {date ->
-                        viewModel.deleteHabitEntryWithPartialCheck(
-                            habitId = habitDetails.id,
-                            date = date
-                        )
-                    })
-
-                        Spacer(Modifier.height(40.dp))
-                        MonthCalendarNew(
-                            habitDetails,
-                            viewModel.habitRepository,
-                            addHabit = { date ->
-                                coroutineScope.launch(
-                                    Dispatchers.IO
-                                ) {
-                                    viewModel.habitRepository.addWithPartialCheck(
-                                        HabitCompletionEntity(
-                                            habitId = viewModel.navKey.habitId,
-                                            completionDate = date
-                                        )
-                                    )
-                                }
-                            },
                             deleteHabit = { date ->
                                 viewModel.deleteHabitEntryWithPartialCheck(
                                     habitId = habitDetails.id,
                                     date = date
                                 )
-                            },
-                            habitData = habitAllData
+                            }
                         )
-                        Row(Modifier.fillMaxWidth()) {
-                            Card(Modifier) {
-                                Column(
-                                    Modifier
 
-                                        .padding(20.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        "Past Month",
-                                        fontSize = 30.sp,
-                                        fontWeight = FontWeight.Black
-                                    )
-                                    Text(habitsPastYear?.let { it.size.toString() } ?: "0",
-                                        fontSize = 30.sp)
-                                }
-                            }
-                            Card(Modifier) {
-                                Column(
-                                    Modifier
 
-                                        .padding(20.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        "Past Year",
-                                        fontSize = 30.sp,
-                                        fontWeight = FontWeight.Black
-                                    )
-                                    Text(habitsPastYear?.let { it.size.toString() } ?: "0",
-                                        fontSize = 30.sp)
-                                }
-                            }
-                        }
+                        Spacer(Modifier.height(40.dp))
+                        /* MonthCalendarNew(
+
+                             addHabit = { date ->
+                                 coroutineScope.launch(
+                                     Dispatchers.IO
+                                 ) {
+                                     viewModel.habitRepository.addWithPartialCheck(
+                                         HabitCompletionEntity(
+                                             habitId = viewModel.navKey.habitId,
+                                             completionDate = date
+                                         )
+                                     )
+                                 }
+                             },
+                             deleteHabit = { date ->
+                                 viewModel.deleteHabitEntryWithPartialCheck(
+                                     habitId = habitDetails.id,
+                                     date = date
+                                 )
+                             },
+                             habitData = habitAllData
+                         )*/
+                        Card(Modifier.fillMaxWidth().height(100.dp)) {  }
+                        Text(
+                            "Past Month",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Black
+                        )
+                        Text(habitsPastYear?.let { it.size.toString() } ?: "0",
+                            fontSize = 30.sp)
+
+
+                        Text(
+                            "Past Year",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Black
+                        )
+                        Text(habitsPastYear?.let { it.size.toString() } ?: "0",
+                            fontSize = 30.sp)
+
+
                     }
                 }
             }

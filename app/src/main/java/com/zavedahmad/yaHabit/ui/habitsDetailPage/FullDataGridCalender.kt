@@ -53,15 +53,15 @@ fun FullDataGridCalender(
 ) {
     val currentMonth = remember { YearMonth.now() }
 //    val habitDataSorted = habitData.sortedBy { it.completionDate }
-    val sortedDays = habitData?.sortedBy { it.completionDate }
+
 
     val startMonth = currentMonth.minusMonths(12)
     // Adjust as needed
-    val lastDay = sortedDays?.first()?.completionDate ?: LocalDate.now()
+
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
     val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
     val dateToday = LocalDate.now()
-    val gridHeight = 500        // CHANGE this to change grid height
+    val gridHeight = 190      // CHANGE this to change grid height
 
 
     val calendarState = rememberHeatMapCalendarState(

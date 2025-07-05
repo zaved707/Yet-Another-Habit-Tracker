@@ -21,8 +21,8 @@ import java.time.YearMonth
 
 @Composable
 fun MonthCalendarNew(
-    habit: HabitEntity,
-    habitRepository: HabitRepository,
+
+
     addHabit: (date: LocalDate) -> Unit,
     deleteHabit: (date: LocalDate) -> Unit,
     initialMonthString: String? = null,
