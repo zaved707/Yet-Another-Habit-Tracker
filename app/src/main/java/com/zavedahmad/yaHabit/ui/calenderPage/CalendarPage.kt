@@ -74,7 +74,7 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                         deleteHabit = { date ->
                             viewModel.deleteEntryByDateAndHabitId(
                                 habitObject.id,
-                                date.toEpochDay()
+                                date
                             )
                         })
 

@@ -1,10 +1,12 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
+import android.health.connect.datatypes.HeightRecord
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -26,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.compose.HeatMapCalendar
@@ -49,12 +52,12 @@ fun FullDataGridCalender(
 ) {
     val currentMonth = remember { YearMonth.now() }
 //    val habitDataSorted = habitData.sortedBy { it.completionDate }
-    val sortedDays =  habitData?.sortedBy { it.completionDate }
+    val sortedDays = habitData?.sortedBy { it.completionDate }
 
     val startMonth = remember {
         sortedDays?.first()?.completionDate?.yearMonth ?: currentMonth.minusMonths(12)
     } // Adjust as needed
-    val lastDay =  sortedDays?.first()?.completionDate ?: LocalDate.now()
+    val lastDay = sortedDays?.first()?.completionDate ?: LocalDate.now()
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
     val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
     val dateToday = LocalDate.now()
@@ -94,13 +97,15 @@ fun FullDataGridCalender(
                 },
                 monthHeader = {
 
-                        if(LocalDate.now().yearMonth != it.yearMonth ){
+                    if (LocalDate.now().yearMonth != it.yearMonth) {
                         Text(
                             it.yearMonth.month.toString(),
                             fontSize = (gridHeight / 8 / 3 * 2).sp, textAlign = TextAlign.Start
                         )
-                    }}
-                ,
+                    }else{
+                        Spacer(Modifier.height((gridHeight / 8).dp))
+                    }
+                },
                 modifier = Modifier
                     .height(gridHeight.dp)
                     .fillMaxWidth(),
@@ -113,40 +118,46 @@ fun FullDataGridCalender(
                             dayState = "error"
                         } else if (datesMatching.size == 1) {
                             dayState = if (datesMatching[0].partial) {
-                                if ( day.date > dateToday) {
+                                if (day.date > dateToday) {
                                     "partialDisabled"
                                 } else {
                                     "partial"
                                 }
                             } else {
-                                if ( day.date> dateToday) {
+                                if (day.date > dateToday) {
                                     "absoluteDisabled"
                                 } else {
                                     "absolute"
                                 }
                             }
-                        }else {
-                            if ( day.date > dateToday) {
+                        } else {
+                            if (day.date > dateToday) {
                                 dayState = "incompleteDisabled"
                             } else {
                                 dayState = "incomplete"
                             }
                         }
                     }
-                    if (dayState != "incompleteDisabled" && dayState != "absoluteDisabled" && dayState != "partialDisabled" ){
-                    Box(
-                        Modifier
+                    if (dayState != "incompleteDisabled" && dayState != "absoluteDisabled" && dayState != "partialDisabled") {
+                        Box(
+                            Modifier
 
-                            .height((gridHeight / 8).dp)
-                            .aspectRatio(1f),
+                                .height((gridHeight / 8).dp)
+                                .aspectRatio(1f),
 
-                        ) {
-                        Box(Modifier.padding((gridHeight / 80).dp)) {
-                            GridDayItem(dayState, addHabit = {addHabit(day.date)}, deleteHabit ={deleteHabit(day.date)}, date = day.date)
+                            ) {
+                            Box(Modifier.padding((gridHeight / 80).dp)) {
+                                GridDayItem(
+                                    dayState,
+                                    addHabit = { addHabit(day.date) },
+                                    deleteHabit = { deleteHabit(day.date) },
+                                    date = day.date
+                                )
+                            }
                         }
-                    }
 
-                }})
+                    }
+                })
         }
     }
 }

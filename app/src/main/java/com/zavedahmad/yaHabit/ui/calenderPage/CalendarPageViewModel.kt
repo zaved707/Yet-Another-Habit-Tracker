@@ -72,7 +72,7 @@ class CalendarPageViewModel @AssistedInject constructor(
         }
     }
 
-    fun deleteEntryByDateAndHabitId(habitId: Int, date: Long) {
+    fun deleteEntryByDateAndHabitId(habitId: Int, date: LocalDate) {
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.deleteHabitCompletionEntry(habitId, date)
         }

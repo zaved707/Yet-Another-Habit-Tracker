@@ -110,7 +110,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                                     )
                                 }
                             },
-                            deleteHabit = {},
+                            deleteHabit = {date -> viewModel.deleteHabitEntryWithPartialCheck(habitId = habitDetails.id, date =   date)},
                             habitData = habitAllData
                         )
                         Row(Modifier.fillMaxWidth()) {

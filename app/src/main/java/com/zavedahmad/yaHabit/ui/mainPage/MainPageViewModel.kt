@@ -21,9 +21,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 data class habitWithEntries(
-    val habit : HabitEntity,
-    val entries : List<HabitCompletionEntity>?
+    val habit: HabitEntity,
+    val entries: List<HabitCompletionEntity>?
 )
+
 @HiltViewModel()
 class MainPageViewModel @Inject constructor(
     val habitCompletionDao: HabitCompletionDao,
@@ -35,6 +36,7 @@ class MainPageViewModel @Inject constructor(
     override fun onCleared() {
         println("mainViewModelCleared")
     }
+
     private val _listStartDate = MutableStateFlow<LocalDate>(LocalDate.now())
     val listStartDate = _listStartDate.asStateFlow()
     private val _listEndDate = MutableStateFlow<LocalDate>(LocalDate.now().minusDays(30))
@@ -53,38 +55,58 @@ class MainPageViewModel @Inject constructor(
         collectThemeMode()
     }
 
-    fun moveHabits(from: Int, to: Int){
-        _habits.value = _habits.value.toMutableList().apply {add(to, removeAt(from))  }
+    fun moveHabits(from: Int, to: Int) {
+        _habits.value = _habits.value.toMutableList().apply { add(to, removeAt(from)) }
 
     }
 
-    fun addHabitEntry(habitId : Int , completionDate : LocalDate){
+    fun addHabitEntry(habitId: Int, completionDate: LocalDate) {
         viewModelScope.launch {
-            habitCompletionDao.addHabitCompletionEntry(HabitCompletionEntity(habitId = habitId, completionDate = completionDate))
+            habitCompletionDao.addHabitCompletionEntry(
+                HabitCompletionEntity(
+                    habitId = habitId,
+                    completionDate = completionDate
+                )
+            )
         }
     }
+
     fun getHabitCompletionsByHabitId(id: Int): Flow<List<HabitCompletionEntity>?> {
         return habitCompletionDao.getHabitCompletionsById(id)
     }
+
     fun getHabitCompletionsByDate(date: Long): Flow<List<HabitCompletionEntity>> {
         return habitCompletionDao.getHabitCompletionsByDate(date)
     }
-    fun deleteEntryByDateAndHabitId(habitId : Int,date: Long){
+
+    fun deleteEntryByDateAndHabitId(habitId: Int, date: LocalDate) {
         viewModelScope.launch(Dispatchers.IO) {
             habitCompletionDao.deleteHabitCompletionEntry(habitId = habitId, completionDate = date)
         }
 
     }
+
+    fun deleteHabitEntryWithPartialCheck(date: LocalDate, habitId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.deleteWithPartialCheck(
+                HabitCompletionEntity(habitId, date)
+            )
+        }
+    }
+
     fun generateInitialDates(): List<LocalDate> {
         val today = LocalDate.now()
         return (0L..14L).map { today.minusDays(it) }
     }
+
     fun generateMoreDates(lastDate: LocalDate): List<LocalDate> {
         return (1L..14L).map { lastDate.minusDays(it) }
     }
-    fun deleteHabitById(id: Int){
+
+    fun deleteHabitById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
     }
+
     fun collectThemeMode() {
         viewModelScope.launch(Dispatchers.IO) {
             preferencesDao.getPreferenceFlow("ThemeMode").collect { preference ->
@@ -92,9 +114,10 @@ class MainPageViewModel @Inject constructor(
             }
         }
     }
-    fun move(from: Int, to :Int){
+
+    fun move(from: Int, to: Int) {
         viewModelScope.launch {
-            habitRepository.move(from,to)
+            habitRepository.move(from, to)
         }
     }
 

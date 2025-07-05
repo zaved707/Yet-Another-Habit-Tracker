@@ -23,6 +23,7 @@ import java.time.LocalDate
  *         - The count of habit completions within that cluster (Int).
  *         The returned list contains all such clusters found in the input `habitEntries`.
  */
+// this gives clusters for last date + cycle amounto of days
 
 fun findHabitClusters(
     habitEntries: List<HabitCompletionEntity>,

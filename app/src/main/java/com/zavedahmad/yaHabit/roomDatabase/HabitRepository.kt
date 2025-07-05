@@ -3,6 +3,7 @@ package com.zavedahmad.yaHabit.roomDatabase
 import com.zavedahmad.yaHabit.utils.findHabitClusters
 import com.zavedahmad.yaHabit.utils.processDateTriples
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import javax.inject.Inject
 
 class HabitRepository @Inject constructor(
@@ -103,7 +104,7 @@ class HabitRepository @Inject constructor(
         if (currentEntryPresentInPartial) {
             habitCompletionDao.deleteHabitCompletionEntry(
                 habitEntity.id,
-                entry.completionDate.toEpochDay()
+                entry.completionDate
             )
 
         }
@@ -121,14 +122,54 @@ class HabitRepository @Inject constructor(
     }
 
     suspend fun deleteWithPartialCheck(entry: HabitCompletionEntity) {
+        // todo extract cycle from 2*cycle in past and future of the entry.completionDate ,
+        val habitEntity = habitDao.getHabitById(entry.habitId)
+
+        val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
+            habitEntity.id,
+            entry.completionDate.minusDays((habitEntity.cycle * 2 - 2).toLong()),
+            entry.completionDate.plusDays((habitEntity.cycle * 2 - 2).toLong())
+        )
+        println(entries?.size)
+        // todo seperate in partial and absolute lists
+        val partialEntries = entries?.filter { entry -> entry.partial == true }
+        val absoluteEntries = entries?.filter { entry -> entry.partial != true }
+
+        // todo remove entry.completiondate item from Absolute List
+        val absoluteWithoutCurrentDay =
+            absoluteEntries?.filter { item -> item.completionDate != entry.completionDate }
+
+        // todo get clusters of the new absolute List and get their dates
+        val clusters = findHabitClusters(
+            absoluteWithoutCurrentDay ?: mutableListOf(),
+            habitEntity.cycle,
+            minOccurrences = habitEntity.frequency
+        )
+
+        val processedClusters = processDateTriples(clusters)
+
+        processedClusters
+        //todo check the items which are present in all extracted list from db. and are not present in the new
+
+        val entriesToPurge = partialEntries?.filter { item -> item.completionDate !in processedClusters }
+
+
+        // todo remove those entries from db
+        entriesToPurge?.forEach { deleteHabitCompletionEntry(it.habitId, it.completionDate) }
+        // remove the current date item
+        deleteHabitCompletionEntry(habitEntity.id, entry.completionDate)
+        // checking if current entity will change to partial or not
+        if (entry.completionDate in processedClusters){
+            addHabitCompletionEntry(HabitCompletionEntity(habitId =  habitEntity.id , completionDate = entry.completionDate, partial = true))
+        }
 
     }
-
+    // No checks
     suspend fun addHabitCompletionEntry(entry: HabitCompletionEntity) {
         habitCompletionDao.addHabitCompletionEntry(entry)
     }
 
-    suspend fun deleteHabitCompletionEntry(habitId: Int, date: Long) {
+    suspend fun deleteHabitCompletionEntry(habitId: Int, date: LocalDate) {
         habitCompletionDao.deleteHabitCompletionEntry(habitId = habitId, completionDate = date)
     }
 

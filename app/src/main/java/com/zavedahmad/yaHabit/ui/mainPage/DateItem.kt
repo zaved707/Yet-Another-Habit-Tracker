@@ -90,7 +90,7 @@ fun DateItem(
                         onLongClick = {
                             viewModel.deleteEntryByDateAndHabitId(
                                 habit.id,
-                                date.toEpochDay()
+                                date
                             )
                         }
                         , hapticFeedbackEnabled = true

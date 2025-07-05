@@ -124,7 +124,7 @@ fun HabitItemReorderable(
             }, deleteHabit = { date ->
                 viewModel.deleteEntryByDateAndHabitId(
                     habitId = habit.id,
-                    date = date.toEpochDay()
+                    date = date
                 )
             })
 
