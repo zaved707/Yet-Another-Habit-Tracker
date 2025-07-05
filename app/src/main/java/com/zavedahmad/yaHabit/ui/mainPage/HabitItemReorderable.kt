@@ -39,8 +39,8 @@ fun HabitItemReorderable(
     backStack: SnapshotStateList<NavKey>,
     viewModel: MainPageViewModel,
     habit: HabitEntity,
-    reorderableListScope: ReorderableCollectionItemScope,
-    isDragging: Boolean
+    reorderableListScope: ReorderableCollectionItemScope? = null,
+    isDragging: Boolean = false
 ) {
     val color = if (isDragging) {
         CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
@@ -68,11 +68,12 @@ fun HabitItemReorderable(
                 .padding(10.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Row(modifier = with(reorderableListScope) {
+            Row(modifier = if(reorderableListScope != null){with(reorderableListScope) {
                 Modifier
                     .longPressDraggableHandle()
                     .fillMaxWidth()
-            }, horizontalArrangement = Arrangement.SpaceBetween) {
+            }}else{ Modifier.fillMaxWidth() }, horizontalArrangement = Arrangement.SpaceBetween)
+            {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     Text(
                         habit.name,
@@ -115,12 +116,12 @@ fun HabitItemReorderable(
 
             }
             Spacer(Modifier.height(20.dp))
-            WeekCalendar (habit, viewModel.habitRepository, addHabit = { date ->
+            WeekCalendar(habit, viewModel.habitRepository, addHabit = { date ->
                 viewModel.addHabitEntry(
                     habitId = habit.id,
                     completionDate = date
                 )
-            }, deleteHabit = {date ->
+            }, deleteHabit = { date ->
                 viewModel.deleteEntryByDateAndHabitId(
                     habitId = habit.id,
                     date = date.toEpochDay()
@@ -174,3 +175,13 @@ fun HabitItemReorderable(
         }
     }
 }
+
+//@Composable
+//private fun reorderableRow() {
+//    Row(modifier = with(reorderableListScope) {
+//        Modifier
+//            .longPressDraggableHandle()
+//            .fillMaxWidth()
+//    }, horizontalArrangement = Arrangement.SpaceBetween)
+//    {}
+//}

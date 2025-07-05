@@ -61,20 +61,7 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                         .padding(innerPadding)
                         .fillMaxWidth()
                 ) {
-                    FullDataGridCalender(habitObject,
-                        viewModel.habitRepository,
-                        addHabit = { date ->
-                            viewModel.addHabitEntry(
-                                habitObject.id,
-                                completionDate = date
-                            )
-                        },
-                        deleteHabit = { date ->
-                            viewModel.deleteEntryByDateAndHabitId(
-                                habitObject.id,
-                                date.toEpochDay()
-                            )
-                        })
+
                     MonthCalendar(
                         habitObject,
                         viewModel.habitRepository,

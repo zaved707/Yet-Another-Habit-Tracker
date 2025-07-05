@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -69,25 +70,28 @@ fun MainPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel)
             ) {
 
 
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ) {
+                    items(habits.value, key = { it.id }) { habit ->
 
-
-
-                LazyColumn(modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()) {
-                    items(habits.value.size) { index ->
-                        val habit = habits.value[index]
                         CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
-                            HabitItem(backStack, viewModel, habit)
+                            Box(Modifier.animateItem()){
+                            HabitItemReorderable(
+                                backStack = backStack,
+                                viewModel = viewModel,
+                                habit = habit,
+
+                                )}
 
                             Spacer(Modifier.height(40.dp))
-                            if (index == habits.value.size - 1) {
-                                Spacer(Modifier.height(40.dp))
-                            }
 
 
                         }
                     }
+                    item { Spacer(Modifier.height(40.dp)) }
 
 
                 }

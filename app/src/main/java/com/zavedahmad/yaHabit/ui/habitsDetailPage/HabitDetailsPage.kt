@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -73,49 +75,25 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                     Column(
                         Modifier
                             .padding(innerPadding)
-                            .padding(horizontal = 10.dp)
+                            .padding(horizontal = 10.dp).verticalScroll(rememberScrollState())
                     ) {
                         Text(habitDetails.description)
                         Spacer(Modifier.height(30.dp))
 
-//                        if (habitsPastYear != null) {
-//                            Text(findHabitClusters(habitsPastYear, timeSpanDays = 5, 3).toString())
-//                            Text(processDateTriples( findHabitClusters(habitsPastYear, timeSpanDays = 5, 3)).toString())
-//                        }
-                        Card {
-                            Box(Modifier.padding(vertical = 20.dp)) {
-                                LazyRow(reverseLayout = true) {
-                                    item { Spacer(modifier = Modifier.width(10.dp)) }
-                                    items(twelveMonths.size) { index ->
-                                        val month = twelveMonths[index]
-                                        Column(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalAlignment = Alignment.End
-                                        ) {
-                                            val monthName =
-                                                month.format(DateTimeFormatter.ofPattern("MMM"))
-                                            Text(monthName)
-                                            Box(
-                                                modifier = Modifier
-                                                    .height(100.dp)
-                                                    .aspectRatio(1.0f)
-                                                    .clickable(onClick = {})
-                                            ) {
-                                                Column(
-                                                    Modifier.fillMaxSize(),
-                                                    verticalArrangement = Arrangement.Center,
-                                                    horizontalAlignment = Alignment.CenterHorizontally
-                                                ) {
-
-                                                    MonthGrid(month, habitsPastYear)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    item { Spacer(modifier = Modifier.width(10.dp)) }
-                                }
+                        FullDataGridCalender(  habitData = habitAllData, addHabit = { date ->
+                            coroutineScope.launch(
+                                Dispatchers.IO
+                            ) {
+                                viewModel.habitRepository.addWithPartialCheck(
+                                    HabitCompletionEntity(
+                                        habitId = viewModel.navKey.habitId,
+                                        completionDate = date
+                                    )
+                                )
                             }
-                        }
+                        },
+                            deleteHabit = {})
+
                         Spacer(Modifier.height(40.dp))
                         MonthCalendarNew(
                             habitDetails,

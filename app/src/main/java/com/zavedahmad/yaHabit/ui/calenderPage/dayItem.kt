@@ -30,7 +30,12 @@ import com.materialkolor.ktx.lighten
 import java.time.LocalDate
 
 @Composable
-fun DayItem(date: LocalDate, state: String, addHabitEntry : () -> Unit, deleteHabit : () -> Unit ) {
+fun DayItem(
+    date: LocalDate,
+    state: String,
+    addHabitEntry: () -> Unit = {},
+    deleteHabit: () -> Unit= {}
+) {
 
 
     var bgColor = MaterialTheme.colorScheme.surfaceVariant
@@ -78,7 +83,7 @@ fun DayItem(date: LocalDate, state: String, addHabitEntry : () -> Unit, deleteHa
             }
 
 
-        }else if (state == "error") {
+        } else if (state == "error") {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.error),
                 shape = RoundedCornerShape(10.dp),
@@ -93,13 +98,14 @@ fun DayItem(date: LocalDate, state: String, addHabitEntry : () -> Unit, deleteHa
                         .fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ) {  Text(
-                    date.dayOfMonth.toString(),
-                    color = MaterialTheme.colorScheme.onPrimary
-                ) }
+                ) {
+                    Text(
+                        date.dayOfMonth.toString(),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
-        }
-        else if (state == "absolute") {
+        } else if (state == "absolute") {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(10.dp),
@@ -119,10 +125,12 @@ fun DayItem(date: LocalDate, state: String, addHabitEntry : () -> Unit, deleteHa
                         .fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ) {  Text(
-                    date.dayOfMonth.toString(),
-                    color = MaterialTheme.colorScheme.onPrimary
-                ) }
+                ) {
+                    Text(
+                        date.dayOfMonth.toString(),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
         } else if (state == "disabled") {
             Card(

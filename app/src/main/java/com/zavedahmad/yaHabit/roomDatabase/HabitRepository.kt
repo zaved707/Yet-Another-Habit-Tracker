@@ -53,9 +53,9 @@ class HabitRepository @Inject constructor(
     // HabitCompletionDao functions
     // Write operations
     suspend fun addWithPartialCheck(entry: HabitCompletionEntity) {
-        /*todo 1. get the habitEntity associated with the entry */
+        /* 1. get the habitEntity associated with the entry */
         val habitEntity = habitDao.getHabitById(entry.habitId)
-        /*  todo 2. get all entries from database  where date is date of entry.date + habitEntity.frequency -1 and entry.date - habitEntity.frequency -1 */
+        /*  2. get all entries from database  where date is date of entry.date + habitEntity.frequency -1 and entry.date - habitEntity.frequency -1 */
         val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
             habitEntity.id,
             entry.completionDate.minusDays((habitEntity.cycle - 1).toLong()),
@@ -67,27 +67,27 @@ class HabitRepository @Inject constructor(
             absoluteEntries?.any { it.completionDate == entry.completionDate } ?: false
         val currentEntryPresentInPartial =
             partialEntries?.any { it.completionDate == entry.completionDate } ?: false
-        /*   todo 3. get clustersOfStreaks from those entries */
+        /*    3. get clustersOfStreaks from those entries */
         val entriesList = absoluteEntries?.toMutableList() ?: mutableListOf()
         entriesList.add(entry)
 
         val clusters = findHabitClusters(entriesList, habitEntity.cycle, habitEntity.frequency)
-        /*    todo 4. if clusters are there then for each cluster extract the dates*/
+        /*     4. if clusters are there then for each cluster extract the dates*/
         val processedClusters = processDateTriples(clusters).toMutableList()
 
         val datesInLimitOfCycleOfDateBeingAdded = processedClusters.filter { date ->
 
-            date <=  entry.completionDate.plusDays(habitEntity.cycle.toLong() - 1) && date >= entry.completionDate.minusDays(
+            date <= entry.completionDate.plusDays(habitEntity.cycle.toLong() - 1) && date >= entry.completionDate.minusDays(
                 habitEntity.cycle.toLong() - 1
             )
         }
-        /* todo 5 for each day in the extracted dates from clusters if  entry does already exists in the entries then add a entry for that date with partial = true */
+        /*  5 for each day in the extracted dates from clusters if  entry does already exists in the entries then add a entry for that date with partial = true */
         val datesNotPresentInDataBase =
             datesInLimitOfCycleOfDateBeingAdded.filter { date ->
                 !entriesList.any { it.completionDate == date } && !(partialEntries?.any { it.completionDate == date }
                     ?: true)
             }
-        /* todo now add all datesNotPresentIndDatabase to database as partial Entries*/
+        /* now add all datesNotPresentIndDatabase to database as partial Entries*/
         datesNotPresentInDataBase.forEach { date ->
             addHabitCompletionEntry(
                 HabitCompletionEntity(
@@ -97,9 +97,9 @@ class HabitRepository @Inject constructor(
                 )
             )
         }
-        /*todo then add the entry as non partial*/
+        /*then add the entry as non partial*/
         println(datesNotPresentInDataBase.size)
-        /*todo add a condition where current Entry is partial. in that case turn it to absolute*/
+        /* add a condition where current Entry is partial. in that case turn it to absolute*/
         if (currentEntryPresentInPartial) {
             habitCompletionDao.deleteHabitCompletionEntry(
                 habitEntity.id,
@@ -108,7 +108,7 @@ class HabitRepository @Inject constructor(
 
         }
 
-        if (!currentEntryPresentInAbsolute ) {
+        if (!currentEntryPresentInAbsolute) {
             println("adding date to database")
             addHabitCompletionEntry(
                 HabitCompletionEntity(
@@ -119,7 +119,10 @@ class HabitRepository @Inject constructor(
         }
 
     }
-    suspend fun deleteWithPartialCheck(entry: HabitCompletionEntity) {}
+
+    suspend fun deleteWithPartialCheck(entry: HabitCompletionEntity) {
+
+    }
 
     suspend fun addHabitCompletionEntry(entry: HabitCompletionEntity) {
         habitCompletionDao.addHabitCompletionEntry(entry)

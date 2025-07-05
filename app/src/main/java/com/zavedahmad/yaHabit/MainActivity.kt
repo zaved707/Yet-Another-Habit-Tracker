@@ -34,6 +34,7 @@ import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPage
 import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
+import com.zavedahmad.yaHabit.ui.mainPage.MainPage
 
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageReorderable
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
@@ -127,7 +128,7 @@ class RecipePickerActivity : ComponentActivity() {
 
                                                 Column {
 
-                                                    MainPageReorderable(
+                                                    MainPage(
                                                         backStack,
                                                         viewModelMainPage
                                                     )
@@ -203,10 +204,10 @@ class RecipePickerActivity : ComponentActivity() {
                                 },
                                 transitionSpec = {
                                     slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(
-                                        targetOffsetX = { -it/2 })
+                                        targetOffsetX = { -it / 2 })
                                 },
                                 predictivePopTransitionSpec = {
-                                    slideInHorizontally(initialOffsetX = { -it/2 }) togetherWith slideOutHorizontally(
+                                    slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
                                         targetOffsetX = { it })
                                 }
                             )

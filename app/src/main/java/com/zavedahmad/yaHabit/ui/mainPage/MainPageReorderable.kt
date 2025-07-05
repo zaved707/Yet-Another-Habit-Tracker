@@ -101,13 +101,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                Button(onClick = {
-                    coroutineScope.launch {
-                        viewModel.habitRepository.addWithPartialCheck(
-                            HabitCompletionEntity(habitId = 2, completionDate = LocalDate.parse("2025-06-18"))
-                        )
-                    }
-                }) { Text("Add Entity With Partial Test") }
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -126,9 +120,9 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 
                                 HabitItemReorderable(
-                                    backStack,
-                                    viewModel,
-                                    habit,
+                                   backStack =  backStack,
+                                    viewModel =viewModel,
+                                    habit = habit,
                                     reorderableListScope = this,
                                     isDragging
                                 )
