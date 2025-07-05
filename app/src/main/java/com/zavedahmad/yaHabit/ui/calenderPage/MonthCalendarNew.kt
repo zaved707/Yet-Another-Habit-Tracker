@@ -44,7 +44,7 @@ fun MonthCalendarNew(
         firstDayOfWeek = daysOfWeek.first(),
     )
     LaunchedEffect(calendarState.firstVisibleMonth) {
-        println(calendarState.firstVisibleMonth)
+
         if (calendarState.firstVisibleMonth.yearMonth < YearMonth.now().minusMonths(5)) {
             calendarState.endMonth = calendarState.firstVisibleMonth.yearMonth.plusMonths(5)
         } else {

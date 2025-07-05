@@ -75,24 +75,31 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                     Column(
                         Modifier
                             .padding(innerPadding)
-                            .padding(horizontal = 10.dp).verticalScroll(rememberScrollState())
+                            .padding(horizontal = 10.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
                         Text(habitDetails.description)
                         Spacer(Modifier.height(30.dp))
 
-                        FullDataGridCalender(  habitData = habitAllData, addHabit = { date ->
-                            coroutineScope.launch(
-                                Dispatchers.IO
-                            ) {
-                                viewModel.habitRepository.addWithPartialCheck(
-                                    HabitCompletionEntity(
-                                        habitId = viewModel.navKey.habitId,
-                                        completionDate = date
+                        FullDataGridCalender(
+                            habitData = habitAllData, addHabit = { date ->
+                                coroutineScope.launch(
+                                    Dispatchers.IO
+                                ) {
+                                    viewModel.habitRepository.addWithPartialCheck(
+                                        HabitCompletionEntity(
+                                            habitId = viewModel.navKey.habitId,
+                                            completionDate = date
+                                        )
                                     )
-                                )
-                            }
-                        },
-                            deleteHabit = {})
+                                }
+                            },
+                            deleteHabit =  {date ->
+                        viewModel.deleteHabitEntryWithPartialCheck(
+                            habitId = habitDetails.id,
+                            date = date
+                        )
+                    })
 
                         Spacer(Modifier.height(40.dp))
                         MonthCalendarNew(
@@ -110,7 +117,12 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                                     )
                                 }
                             },
-                            deleteHabit = {date -> viewModel.deleteHabitEntryWithPartialCheck(habitId = habitDetails.id, date =   date)},
+                            deleteHabit = { date ->
+                                viewModel.deleteHabitEntryWithPartialCheck(
+                                    habitId = habitDetails.id,
+                                    date = date
+                                )
+                            },
                             habitData = habitAllData
                         )
                         Row(Modifier.fillMaxWidth()) {

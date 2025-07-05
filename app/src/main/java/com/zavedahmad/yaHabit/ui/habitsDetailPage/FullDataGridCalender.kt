@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,14 +55,13 @@ fun FullDataGridCalender(
 //    val habitDataSorted = habitData.sortedBy { it.completionDate }
     val sortedDays = habitData?.sortedBy { it.completionDate }
 
-    val startMonth = remember {
-        sortedDays?.first()?.completionDate?.yearMonth ?: currentMonth.minusMonths(12)
-    } // Adjust as needed
+    val startMonth = currentMonth.minusMonths(12)
+    // Adjust as needed
     val lastDay = sortedDays?.first()?.completionDate ?: LocalDate.now()
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
     val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
     val dateToday = LocalDate.now()
-    val gridHeight = 180           // CHANGE this to change grid height
+    val gridHeight = 500        // CHANGE this to change grid height
 
 
     val calendarState = rememberHeatMapCalendarState(
@@ -70,6 +70,15 @@ fun FullDataGridCalender(
         firstVisibleMonth = currentMonth,
         firstDayOfWeek = firstDayOfWeek,
     )
+    LaunchedEffect(calendarState.firstVisibleMonth) {
+        calendarState.startMonth = calendarState.firstVisibleMonth.yearMonth.minusMonths(12)
+
+        if (calendarState.firstVisibleMonth.yearMonth < YearMonth.now().minusMonths(12)) {
+            calendarState.endMonth = calendarState.firstVisibleMonth.yearMonth.plusMonths(12)
+        } else {
+            calendarState.endMonth = YearMonth.now()
+        }
+    }
 
     Card() {
         Box(
@@ -77,87 +86,99 @@ fun FullDataGridCalender(
                 .padding(vertical = 10.dp)
                 .padding(end = 5.dp)
         ) {
-            HeatMapCalendar(
-                weekHeaderPosition = HeatMapWeekHeaderPosition.End,
-                weekHeader = { weekDay ->
-                    Row(
-                        Modifier
-
-                            .height((gridHeight / 8).dp),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Spacer(Modifier.width(5.dp))
-                        Text(
-                            weekDay.name.slice(0..2),
-                            fontSize = (gridHeight / 8 / 2).sp
-                        )
-
-
-                    }
-                },
-                monthHeader = {
-
-                    if (LocalDate.now().yearMonth != it.yearMonth) {
-                        Text(
-                            it.yearMonth.month.toString(),
-                            fontSize = (gridHeight / 8 / 3 * 2).sp, textAlign = TextAlign.Start
-                        )
-                    }else{
-                        Spacer(Modifier.height((gridHeight / 8).dp))
-                    }
-                },
-                modifier = Modifier
-                    .height(gridHeight.dp)
-                    .fillMaxWidth(),
-                state = calendarState,
-                dayContent = { day, _ ->
-                    var dayState = ""
-                    if (habitData != null) {
-                        val datesMatching = habitData.filter { it.completionDate == day.date }
-                        if (datesMatching.size > 1) {
-                            dayState = "error"
-                        } else if (datesMatching.size == 1) {
-                            dayState = if (datesMatching[0].partial) {
-                                if (day.date > dateToday) {
-                                    "partialDisabled"
-                                } else {
-                                    "partial"
-                                }
-                            } else {
-                                if (day.date > dateToday) {
-                                    "absoluteDisabled"
-                                } else {
-                                    "absolute"
-                                }
-                            }
-                        } else {
-                            if (day.date > dateToday) {
-                                dayState = "incompleteDisabled"
-                            } else {
-                                dayState = "incomplete"
-                            }
-                        }
-                    }
-                    if (dayState != "incompleteDisabled" && dayState != "absoluteDisabled" && dayState != "partialDisabled") {
-                        Box(
+            Column {
+                //Text("first visible Month ${calendarState.firstVisibleMonth.yearMonth} \n last visibleMonth: ${calendarState.lastVisibleMonth.yearMonth} \n startMonth ${calendarState.startMonth} \n endMonth ${calendarState.endMonth}")
+                HeatMapCalendar(
+                    weekHeaderPosition = HeatMapWeekHeaderPosition.End,
+                    weekHeader = { weekDay ->
+                        Row(
                             Modifier
 
-                                .height((gridHeight / 8).dp)
-                                .aspectRatio(1f),
+                                .height((gridHeight / 8).dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Spacer(Modifier.width(5.dp))
+                            Text(
+                                weekDay.name.slice(0..2),
+                                fontSize = (gridHeight / 8 / 2).sp
+                            )
 
-                            ) {
-                            Box(Modifier.padding((gridHeight / 80).dp)) {
-                                GridDayItem(
-                                    dayState,
-                                    addHabit = { addHabit(day.date) },
-                                    deleteHabit = { deleteHabit(day.date) },
-                                    date = day.date
+
+                        }
+                    },
+                    monthHeader = {
+
+                        if (LocalDate.now().yearMonth != it.yearMonth ) {
+                            Column (Modifier.height((gridHeight / 8 ).dp)){
+                            Text(
+                                it.yearMonth.month.toString().slice(0..2),
+                                fontSize = (gridHeight / 8 / 3 * 2).sp, textAlign = TextAlign.Start
+                            )}
+                        } else {
+                            if (LocalDate.now().dayOfMonth > 15) {
+                                Text(
+                                    it.yearMonth.month.toString().slice(0..2),
+                                    fontSize = (gridHeight / 8 / 3 * 2).sp,
+                                    textAlign = TextAlign.Start
                                 )
+                            } else {
+                                Spacer(Modifier.height((gridHeight / 8 ).dp))
                             }
                         }
+                    },
+                    modifier = Modifier
+                        .height(gridHeight.dp)
+                        .fillMaxWidth(),
+                    state = calendarState,
+                    dayContent = { day, heatMapWeek ->
+                        var dayState = ""
+                        if (habitData != null) {
+                            val datesMatching = habitData.filter { it.completionDate == day.date }
+                            if (datesMatching.size > 1) {
+                                dayState = "error"
+                            } else if (datesMatching.size == 1) {
+                                dayState = if (datesMatching[0].partial) {
+                                    if (day.date > dateToday) {
+                                        "partialDisabled"
+                                    } else {
+                                        "partial"
+                                    }
+                                } else {
+                                    if (day.date > dateToday) {
+                                        "absoluteDisabled"
+                                    } else {
+                                        "absolute"
+                                    }
+                                }
+                            } else {
+                                if (day.date > dateToday) {
+                                    dayState = "incompleteDisabled"
+                                } else {
+                                    dayState = "incomplete"
+                                }
+                            }
+                        }
+                        if ((dayState != "incompleteDisabled" && dayState != "absoluteDisabled" && dayState != "partialDisabled") ||  heatMapWeek.days.any{it.date == LocalDate.now()} ) {
+                            Box(
+                                Modifier
 
-                    }
-                })
+                                    .height((gridHeight / 8).dp)
+                                    .aspectRatio(1f),
+
+                                ) {
+                                Box(Modifier.padding((gridHeight / 80).dp)) {
+                                    GridDayItem(
+                                        dayState,
+                                        addHabit = { addHabit(day.date) },
+                                        deleteHabit = { deleteHabit(day.date) },
+                                        date = day.date
+                                    )
+                                }
+                            }
+
+                        }
+                    })
+            }
         }
     }
 }
