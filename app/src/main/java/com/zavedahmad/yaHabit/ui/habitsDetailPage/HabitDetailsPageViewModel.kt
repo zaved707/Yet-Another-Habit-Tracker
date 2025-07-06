@@ -2,7 +2,6 @@ package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
@@ -53,7 +52,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     }
     fun getHabitAllData(){
         viewModelScope.launch(Dispatchers.IO) {
-            habitRepository.getAllHabitEntriesById(navKey.habitId).collect { _habitAllData.value = it }
+            habitRepository.getAllHabitCompletionsByIdFlow(navKey.habitId).collect { _habitAllData.value = it }
         }
     }
     fun getLastYearData() {

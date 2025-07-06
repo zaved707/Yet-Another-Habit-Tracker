@@ -117,6 +117,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
         }
 
     }
+    // These are all the buttons
     Row {
         options.forEachIndexed { index, item ->
             val isChecked = streakChecked.value == index
@@ -303,7 +304,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                                 } else {
                                     isCycleValidCustom.value = false
                                     cycleLengthCustom.value = it
-                                    viewModel.setHabitFrequency(it.toInt())
+                                    viewModel.setHabitCycle(it.toInt())
                                 }
                             }
 

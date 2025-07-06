@@ -65,7 +65,7 @@ fun MonthCalendar(
     LaunchedEffect(Unit) {
 
         coroutineScope.launch(Dispatchers.IO) {
-            habitRepository.getAllHabitEntriesById(habit.id).collect { habitData.value = it }
+            habitRepository.getAllHabitCompletionsByIdFlow(habit.id).collect { habitData.value = it }
         }
 
 

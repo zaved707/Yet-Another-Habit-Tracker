@@ -92,22 +92,29 @@ class AddHabitPageViewModel @AssistedInject constructor(
         _habitDescription.value = description
     }
 
+    fun repairPartials() {
+
+    }
+
     fun addHabit() {
         if (navKey.habitId != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-               habitRepository.editItem(
-                    HabitEntity(
-                        id = navKey.habitId,
-                        name = habitName.value,
-                        color = _selectedColor.value,
-                        description = _habitDescription.value,
-                        index = _existingHabitData.value?.index ?: 0,
-                        streakType = _habitStreakType.value,
-                        frequency = _habitFrequency.value ?: 2,
-                        cycle = _habitCycle.value ?: 7
+            val newHabitEntity = HabitEntity(
+                id = navKey.habitId,
+                name = habitName.value,
+                color = _selectedColor.value,
+                description = _habitDescription.value,
+                index = _existingHabitData.value?.index ?: 0,
+                streakType = _habitStreakType.value,
+                frequency = _habitFrequency.value ?: 2,
+                cycle = _habitCycle.value ?: 7
 
-                    )
+            )
+            viewModelScope.launch(Dispatchers.IO) {
+                habitRepository.editItem(
+                    newHabitEntity
+
                 )
+                habitRepository.repairPartials(newHabitEntity)
             }
         } else {
             viewModelScope.launch(Dispatchers.IO) {

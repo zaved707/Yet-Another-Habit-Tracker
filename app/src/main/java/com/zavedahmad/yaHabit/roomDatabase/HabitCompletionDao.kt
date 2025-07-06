@@ -13,8 +13,12 @@ interface HabitCompletionDao {
     suspend fun addHabitCompletionEntry(habitCompletionEntity: HabitCompletionEntity)
 
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id")
-    fun getHabitCompletionsById(id : Int): Flow<List<HabitCompletionEntity>?>
+    fun getHabitCompletionsByIdFlow(id : Int): Flow<List<HabitCompletionEntity>?>
 
+    @Query("SELECT * FROM habitCompletion WHERE habitId = :id")
+    fun getHabitCompletionsById(id : Int): List<HabitCompletionEntity>?
+    @Query("SELECT * FROM habitCompletion WHERE habitId = :id AND partial = 0")
+    fun getAbsoluteHabitCompletionsById(id : Int): List<HabitCompletionEntity>?
     @Query("SELECT * FROM habitCompletion WHERE completionDate = :date")
     fun getHabitCompletionsByDate(date : Long): Flow<List<HabitCompletionEntity>>
 
@@ -23,6 +27,8 @@ interface HabitCompletionDao {
     @Query("DELETE FROM habitCompletion WHERE habitId = :habitId AND completionDate = :completionDate")
     suspend fun deleteHabitCompletionEntry(habitId: Int, completionDate: LocalDate)
 
+    @Query("DELETE FROM habitCompletion WHERE habitId = :habitId AND partial = 1")
+    suspend fun deleteAllPartialFromId(habitId :Int)
     @Query("SELECT * FROM habitCompletion WHERE habitId = :habitId AND completionDate > :completionDate" )
     fun getEntriesAfterDate(habitId: Int, completionDate : Long): Flow<List<HabitCompletionEntity>?>
 }

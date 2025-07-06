@@ -121,6 +121,38 @@ class HabitRepository @Inject constructor(
 
     }
 
+
+    suspend  fun repairPartials( newHabitEntity: HabitEntity){
+
+        // todo get all absolute entries of the habit
+            val habitAbsoluteEntries = getAllAbsoluteHabitCompletionsById(newHabitEntity.id)
+        // get absolute clusters
+            if(habitAbsoluteEntries != null){
+                val clusters = findHabitClusters(habitAbsoluteEntries, newHabitEntity.cycle, newHabitEntity.frequency)
+        // parse clusters
+                val processedClusters = processDateTriples(clusters)
+
+        // from processed clusters remove all the absolute dates
+                val removedAbsoluteFromProcessedDates = processedClusters.filter { it !in habitAbsoluteEntries.map { it -> it.completionDate } }
+
+        // delete all partial from database
+                habitCompletionDao.deleteAllPartialFromId(newHabitEntity.id)
+
+        // add all the rest of dates as partials to database
+                removedAbsoluteFromProcessedDates.forEach { addHabitCompletionEntry(
+                    HabitCompletionEntity(completionDate = it, habitId = newHabitEntity.id, partial = true)) }
+
+            }
+
+
+
+
+
+
+
+
+    }
+
     suspend fun deleteWithPartialCheck(entry: HabitCompletionEntity) {
         // todo extract cycle from 2*cycle in past and future of the entry.completionDate ,
         val habitEntity = habitDao.getHabitById(entry.habitId)
@@ -174,8 +206,15 @@ class HabitRepository @Inject constructor(
     }
 
     // Read operations
-    fun getAllHabitEntriesById(id: Int): Flow<List<HabitCompletionEntity>?> {
-        return habitCompletionDao.getHabitCompletionsById(id)
+    suspend fun getAllHabitCompletionsById(habitId : Int) :  List<HabitCompletionEntity>?{
+        return habitCompletionDao.getHabitCompletionsById(habitId)
+    }
+
+    suspend fun getAllAbsoluteHabitCompletionsById(habitId : Int) :  List<HabitCompletionEntity>?{
+        return habitCompletionDao.getAbsoluteHabitCompletionsById(habitId)
+    }
+    fun getAllHabitCompletionsByIdFlow(id: Int): Flow<List<HabitCompletionEntity>?> {
+        return habitCompletionDao.getHabitCompletionsByIdFlow(id)
     }
 
 

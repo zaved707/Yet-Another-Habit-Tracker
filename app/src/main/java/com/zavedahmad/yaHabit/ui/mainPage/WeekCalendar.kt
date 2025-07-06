@@ -3,12 +3,9 @@ package com.zavedahmad.yaHabit.ui.mainPage
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
@@ -56,7 +53,7 @@ fun WeekCalendar(
     LaunchedEffect(Unit) {
 
         coroutineScope.launch(Dispatchers.IO) {
-            habitRepository.getAllHabitEntriesById(habit.id).collect { habitData.value = it }
+            habitRepository.getAllHabitCompletionsByIdFlow(habit.id).collect { habitData.value = it }
         }
 
 

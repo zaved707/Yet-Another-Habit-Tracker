@@ -49,7 +49,7 @@ class CalendarPageViewModel @AssistedInject constructor(
     }
     fun getHabitData() {
         viewModelScope.launch(Dispatchers.IO) {
-            habitRepository.getAllHabitEntriesById(navKey.habitId).collect { _habitData.value = it }
+            habitRepository.getAllHabitCompletionsByIdFlow(navKey.habitId).collect { _habitData.value = it }
         }
 
     }
