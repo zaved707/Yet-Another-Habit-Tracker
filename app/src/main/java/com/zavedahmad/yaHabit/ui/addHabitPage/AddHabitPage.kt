@@ -1,6 +1,5 @@
 package com.zavedahmad.yaHabit.ui.addHabitPage
 
-import android.graphics.drawable.Icon
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,20 +16,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
@@ -40,7 +34,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -52,11 +45,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -84,7 +75,6 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
         var title = "Add Habit"
 
 
-
         val name by viewModel.habitName.collectAsStateWithLifecycle()
         val description by viewModel.habitDescription.collectAsStateWithLifecycle()
 
@@ -92,53 +82,23 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
         val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
 
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-        val daysRequiredForStreakCustom = rememberSaveable { mutableStateOf("3") }
-        val isDaysRequiredValidCustom = rememberSaveable { mutableStateOf(true) }
-        val daysRequiredForStreakWeek = rememberSaveable { mutableStateOf("3") }
-        val daysRequiredForStreakMonth = rememberSaveable { mutableStateOf("3") }
-        val streakLengthCustom = rememberSaveable { mutableStateOf("14") }
-        val isStreakLengthValidCustom = rememberSaveable { mutableStateOf(true) }
-        val isDaysRequiredValidMonth = rememberSaveable { mutableStateOf(true) }
-        val isDaysRequiredValidWeek = rememberSaveable { mutableStateOf(true) }
-        val isErrorCustom by remember { derivedStateOf { !(isDaysRequiredValidCustom.value && isStreakLengthValidCustom.value) } }
-        val options = listOf("Everyday", "Weekly", "Monthly", "Custom")
-        val streakChecked = rememberSaveable { mutableStateOf(0) }
+
+
+        val frequencySelectorError = rememberSaveable { mutableStateOf(false) }
+
         val errorCommon = remember {
-            // TODO: Figure this part out. Currently it's showing error when no error is there. Need to fix it.
             derivedStateOf {
-                if (!isNameError.value) {
-                    if (streakChecked.value == 1 && !isDaysRequiredValidWeek.value) {
-                        true
-                    } else if (streakChecked.value == 2 && !isDaysRequiredValidMonth.value) {
-                        true
-                    } else if (streakChecked.value == 3 && isErrorCustom) {
-                        true
-                    } else {
-                        false
-                    }
-                } else {
-                    true
-                }
+                !(!isNameError.value && !frequencySelectorError.value)
+
             }
         }
 
+        LaunchedEffect(Unit){
         if (viewModel.navKey.habitId != null) {
             title = "Edit Habit"
-            if(existingHabitData?.streakType == "everyday"){
-                streakChecked.value = 0
+        }}
 
-            }else if(existingHabitData?.streakType == "week"){
-                daysRequiredForStreakWeek.value  = existingHabitData.frequency.toString()
-                streakChecked.value = 1
-            }else if(existingHabitData?.streakType == "month"){
-                streakChecked.value = 2
-                daysRequiredForStreakMonth.value = existingHabitData.frequency.toString()
-            }else if(existingHabitData?.streakType == "custom"){
-                streakChecked.value = 3
-                streakLengthCustom.value = existingHabitData.cycle.toString()
-                daysRequiredForStreakCustom.value = existingHabitData.frequency.toString()
-            }
-        }
+
         CustomTheme(
             theme = themeReal.value,
             primaryColor = setColor.value,
@@ -204,258 +164,15 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                     )
 
                     Spacer(Modifier.height(20.dp))
-                    LaunchedEffect(streakChecked.value) {
-                        if (streakChecked.value == 0) {
-                            viewModel.setHabitFrequency(1)
-                            viewModel.setHabitCycle(1)
-                            viewModel.setHabitStreakType("everyday")
-                        } else if (streakChecked.value == 1) {
-                            viewModel.setHabitFrequency(
-                                daysRequiredForStreakWeek.value.toIntOrNull() ?: 3
-                            )
-                            viewModel.setHabitCycle(7)
-                            viewModel.setHabitStreakType("week")
-                        } else if (streakChecked.value == 2) {
-                            viewModel.setHabitFrequency(
-                                daysRequiredForStreakMonth.value.toIntOrNull() ?: 3
-                            )
-                            viewModel.setHabitCycle(30)
-                            viewModel.setHabitStreakType("month")
-                        } else if (streakChecked.value == 3) {
-                            viewModel.setHabitFrequency(
-                                daysRequiredForStreakCustom.value.toIntOrNull() ?: 3
-                            )
-                            viewModel.setHabitCycle(streakLengthCustom.value.toIntOrNull() ?: 14)
-                            viewModel.setHabitStreakType("custom")
-                        }
 
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Frequency", fontSize = 20.sp)
-                    }
-                    Spacer(Modifier.height(10.dp))
-                    HorizontalDivider()
+
+
+
+
                     Spacer(Modifier.height(20.dp))
-                    Row {
-                        options.forEachIndexed { index, item ->
-                            val isChecked = streakChecked.value == index
-                            ToggleButton(
-                                checked = isChecked, shapes = when (index) {
-                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
-                                        pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
-                                        shape = ButtonGroupDefaults.connectedLeadingButtonPressShape
-                                    )
 
-                                    options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes(
-                                        pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
-                                        shape = ButtonGroupDefaults.connectedTrailingButtonPressShape
-                                    )
-
-                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes(
-                                        pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
-                                        shape = ButtonGroupDefaults.connectedMiddleButtonPressShape
-                                    )
-                                }, onCheckedChange = {
-                                    if (!isChecked) {
-
-                                        streakChecked.value = index
-                                    }
-                                })
-
-                            {
-                                Row {  /*AnimatedVisibility(visible = streakChecked.value == index) {
-                                Icon(Icons.Default.Check, contentDescription = "selected", modifier = Modifier.size(15.dp))
-                            }*/
-                                    Text(item)
-                                }
-                            }
-                        }
-                    }
-
-                    AnimatedVisibility(visible = streakChecked.value == 1) {
-                        Column {
-                            InvalidValueIndicator(
-                                Modifier.fillMaxWidth(0.5f),
-                                visible = !isDaysRequiredValidWeek.value
-                            )
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextField(
-                                    modifier = Modifier.width(70.dp),
-                                    value = daysRequiredForStreakWeek.value,
-                                    colors = TextFieldDefaults.colors(
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent
-                                    ),
-                                    onValueChange = {
-                                        if (it.toIntOrNull() != null) {
-                                            if (it.toInt() < 7 && it.toInt() > 0) {
-                                                daysRequiredForStreakWeek.value = it
-                                                isDaysRequiredValidWeek.value = true
-                                                viewModel.setHabitFrequency(it.toInt())
-                                            } else if (it.toIntOrNull() == 0) {
-                                                daysRequiredForStreakWeek.value = it
-                                                isDaysRequiredValidWeek.value = false
-
-                                            }
-
-
-                                        } else {
-                                            daysRequiredForStreakWeek.value = ""
-                                            isDaysRequiredValidWeek.value = false
-                                        }
-                                    })
-                                Spacer(Modifier.width(10.dp))
-                                Text("times per Week")
-
-                            }
-                        }
-                    }
-                    AnimatedVisibility(visible = streakChecked.value == 2) {
-                        Column {
-                            InvalidValueIndicator(
-                                Modifier.fillMaxWidth(0.5f),
-                                visible = !isDaysRequiredValidMonth.value
-                            )
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextField(
-                                    modifier = Modifier.width(70.dp),
-                                    value = daysRequiredForStreakMonth.value,
-                                    colors = TextFieldDefaults.colors(
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent
-                                    ),
-                                    onValueChange = {
-                                        if (it.toIntOrNull() != null) {
-                                            if (it.toInt() < 30 && it.toInt() > 0) {
-                                                daysRequiredForStreakMonth.value = it
-                                                isDaysRequiredValidMonth.value = true
-                                                viewModel.setHabitFrequency(it.toInt())
-                                            } else if (it.toIntOrNull() == 0) {
-                                                daysRequiredForStreakMonth.value = it
-                                                isDaysRequiredValidMonth.value = false
-
-                                            }
-                                        } else {
-                                            daysRequiredForStreakMonth.value = ""
-                                            isDaysRequiredValidMonth.value = false
-                                        }
-                                    })
-                                Spacer(Modifier.width(10.dp))
-                                Text("times per Month")
-
-                            }
-                        }
-                    }
-                    AnimatedVisibility(visible = streakChecked.value == 3) {
-                        Column(
-                            Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-
-                            InvalidValueIndicator(
-                                Modifier.fillMaxWidth(0.5f),
-                                visible = isErrorCustom
-                            )
-
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextField(
-                                    modifier = Modifier.width(70.dp),
-                                    value =
-                                        daysRequiredForStreakCustom.value,
-
-
-                                    colors = TextFieldDefaults.colors(
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent
-                                    ), onValueChange = {
-                                        val num = it.toIntOrNull()
-                                        if (num != null) {
-                                            if (num < 999) {
-                                                if (streakLengthCustom.value.isNotEmpty() && num >= streakLengthCustom.value.toInt()) {
-                                                    daysRequiredForStreakCustom.value = it
-                                                    isDaysRequiredValidCustom.value = false
-                                                    viewModel.setHabitFrequency(it.toInt())
-                                                    isStreakLengthValidCustom.value = true
-                                                } else {
-                                                    isDaysRequiredValidCustom.value = true
-                                                    daysRequiredForStreakCustom.value =
-                                                        num.toString()
-                                                    viewModel.setHabitFrequency(it.toInt())
-                                                }
-                                            }
-
-                                        } else {
-                                            daysRequiredForStreakCustom.value = ""
-                                            isDaysRequiredValidCustom.value = false
-                                        }
-                                    },
-                                    keyboardOptions =
-                                        KeyboardOptions(keyboardType = KeyboardType.Number)
-                                )
-                                Spacer(Modifier.width(10.dp))
-                                Text("times per")
-                                Spacer(Modifier.width(10.dp))
-                                TextField(
-                                    modifier = Modifier.width(70.dp),
-                                    value = streakLengthCustom.value,
-                                    colors = TextFieldDefaults.colors(
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent
-                                    ), onValueChange = {
-
-                                        val num = it.toIntOrNull()
-                                        if (num != null) {
-                                            if (num <= 999 && num > 0) {
-                                                if (daysRequiredForStreakCustom.value.isNotEmpty() && num > daysRequiredForStreakCustom.value.toInt()) {
-                                                    streakLengthCustom.value = it
-                                                    isStreakLengthValidCustom.value = true
-                                                    viewModel.setHabitCycle(it.toInt())
-                                                    isDaysRequiredValidCustom.value = true
-                                                } else {
-                                                    isStreakLengthValidCustom.value = false
-                                                    streakLengthCustom.value = it
-                                                    viewModel.setHabitFrequency(it.toInt())
-                                                }
-                                            }
-
-                                        } else {
-                                            streakLengthCustom.value = ""
-                                            isStreakLengthValidCustom.value = false
-                                        }
-
-                                    },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                                )
-                                Spacer(Modifier.width(10.dp))
-                                Text("days")
-
-                                /*AnimatedVisibility(visible = isErrorCustom) {
-                                    Icon(
-                                        Icons.Default.Close,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.error
-                                    )
-                                }*/
-                                /* AnimatedVisibility(visible = !isErrorCustom) {
-                                     Icon(Icons.Default.Check, contentDescription = "")
-                                 }*/
-                                Spacer(Modifier.height(20.dp))
-                            }
-                        }
-                    }
                     Spacer(Modifier.height(20.dp))
+
                     TextField(
 
                         modifier = Modifier
@@ -479,8 +196,14 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
                         )
                     Spacer(Modifier.height(20.dp))
-
-
+                    Text("Frequency", fontSize = 20.sp)
+                    Spacer(Modifier.height(10.dp))
+                    HorizontalDivider()
+                    FrequencySelector(
+                        viewModel,
+                        onErrorValueChange = { it ->
+                            frequencySelectorError.value = it
+                        })
 
 
 
@@ -503,22 +226,3 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
     }
 }
 
-@Composable
-fun InvalidValueIndicator(modifier: Modifier = Modifier, visible: Boolean) {
-    AnimatedVisibility(modifier = modifier, visible = visible) {
-        Box(
-            Modifier
-                .clip(RoundedCornerShape(50.dp))
-                .background(MaterialTheme.colorScheme.error),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                "Invalid Values",
-                Modifier.padding(5.dp),
-                color = MaterialTheme.colorScheme.onError,
-                fontSize = 15.sp
-            )
-        }
-    }
-
-}
