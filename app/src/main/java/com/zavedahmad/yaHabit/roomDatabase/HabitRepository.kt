@@ -122,39 +122,45 @@ class HabitRepository @Inject constructor(
     }
 
 
-    suspend  fun repairPartials( newHabitEntity: HabitEntity){
+    suspend fun repairPartials(newHabitEntity: HabitEntity) {
 
-        // todo get all absolute entries of the habit
-            val habitAbsoluteEntries = getAllAbsoluteHabitCompletionsById(newHabitEntity.id)
+        //  get all absolute entries of the habit
+        val habitAbsoluteEntries = getAllAbsoluteHabitCompletionsById(newHabitEntity.id)
         // get absolute clusters
-            if(habitAbsoluteEntries != null){
-                val clusters = findHabitClusters(habitAbsoluteEntries, newHabitEntity.cycle, newHabitEntity.frequency)
-        // parse clusters
-                val processedClusters = processDateTriples(clusters)
+        if (habitAbsoluteEntries != null) {
+            val clusters = findHabitClusters(
+                habitAbsoluteEntries,
+                newHabitEntity.cycle,
+                newHabitEntity.frequency
+            )
+            // parse clusters
+            val processedClusters = processDateTriples(clusters)
 
-        // from processed clusters remove all the absolute dates
-                val removedAbsoluteFromProcessedDates = processedClusters.filter { it !in habitAbsoluteEntries.map { it -> it.completionDate } }
+            // from processed clusters remove all the absolute dates
+            val removedAbsoluteFromProcessedDates =
+                processedClusters.filter { it !in habitAbsoluteEntries.map { it -> it.completionDate } }
 
-        // delete all partial from database
-                habitCompletionDao.deleteAllPartialFromId(newHabitEntity.id)
+            // delete all partial from database
+            habitCompletionDao.deleteAllPartialFromId(newHabitEntity.id)
 
-        // add all the rest of dates as partials to database
-                removedAbsoluteFromProcessedDates.forEach { addHabitCompletionEntry(
-                    HabitCompletionEntity(completionDate = it, habitId = newHabitEntity.id, partial = true)) }
-
+            // add all the rest of dates as partials to database
+            removedAbsoluteFromProcessedDates.forEach {
+                addHabitCompletionEntry(
+                    HabitCompletionEntity(
+                        completionDate = it,
+                        habitId = newHabitEntity.id,
+                        partial = true
+                    )
+                )
             }
 
-
-
-
-
-
+        }
 
 
     }
 
     suspend fun deleteWithPartialCheck(entry: HabitCompletionEntity) {
-        // todo extract cycle from 2*cycle in past and future of the entry.completionDate ,
+        // extract cycle from 2*cycle in past and future of the entry.completionDate ,
         val habitEntity = habitDao.getHabitById(entry.habitId)
 
         val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
@@ -163,15 +169,15 @@ class HabitRepository @Inject constructor(
             entry.completionDate.plusDays((habitEntity.cycle * 2 - 2).toLong())
         )
         println(entries?.size)
-        // todo seperate in partial and absolute lists
+        //  seperate in partial and absolute lists
         val partialEntries = entries?.filter { entry -> entry.partial == true }
         val absoluteEntries = entries?.filter { entry -> entry.partial != true }
 
-        // todo remove entry.completiondate item from Absolute List
+        // remove entry.completiondate item from Absolute List
         val absoluteWithoutCurrentDay =
             absoluteEntries?.filter { item -> item.completionDate != entry.completionDate }
 
-        // todo get clusters of the new absolute List and get their dates
+        // get clusters of the new absolute List and get their dates
         val clusters = findHabitClusters(
             absoluteWithoutCurrentDay ?: mutableListOf(),
             habitEntity.cycle,
@@ -181,21 +187,34 @@ class HabitRepository @Inject constructor(
         val processedClusters = processDateTriples(clusters)
 
         processedClusters
-        //todo check the items which are present in all extracted list from db. and are not present in the new
+        // check the items which are present in all extracted list from db. and are not present in the new
 
-        val entriesToPurge = partialEntries?.filter { item -> item.completionDate !in processedClusters }
+        var entriesToPurge =
+            partialEntries?.filter { item -> item.completionDate !in processedClusters }
+        entriesToPurge = entriesToPurge?.filter {
+            it.completionDate >= entry.completionDate.minusDays((habitEntity.cycle - 1).toLong()) && it.completionDate <= entry.completionDate.plusDays(
+                (habitEntity.cycle - 1).toLong()
+            )
+        }
 
 
-        // todo remove those entries from db
+        // remove those entries from db
         entriesToPurge?.forEach { deleteHabitCompletionEntry(it.habitId, it.completionDate) }
         // remove the current date item
         deleteHabitCompletionEntry(habitEntity.id, entry.completionDate)
         // checking if current entity will change to partial or not
-        if (entry.completionDate in processedClusters){
-            addHabitCompletionEntry(HabitCompletionEntity(habitId =  habitEntity.id , completionDate = entry.completionDate, partial = true))
+        if (entry.completionDate in processedClusters) {
+            addHabitCompletionEntry(
+                HabitCompletionEntity(
+                    habitId = habitEntity.id,
+                    completionDate = entry.completionDate,
+                    partial = true
+                )
+            )
         }
 
     }
+
     // No checks
     suspend fun addHabitCompletionEntry(entry: HabitCompletionEntity) {
         habitCompletionDao.addHabitCompletionEntry(entry)
@@ -206,13 +225,14 @@ class HabitRepository @Inject constructor(
     }
 
     // Read operations
-    suspend fun getAllHabitCompletionsById(habitId : Int) :  List<HabitCompletionEntity>?{
+    suspend fun getAllHabitCompletionsById(habitId: Int): List<HabitCompletionEntity>? {
         return habitCompletionDao.getHabitCompletionsById(habitId)
     }
 
-    suspend fun getAllAbsoluteHabitCompletionsById(habitId : Int) :  List<HabitCompletionEntity>?{
+    fun getAllAbsoluteHabitCompletionsById(habitId: Int): List<HabitCompletionEntity>? {
         return habitCompletionDao.getAbsoluteHabitCompletionsById(habitId)
     }
+
     fun getAllHabitCompletionsByIdFlow(id: Int): Flow<List<HabitCompletionEntity>?> {
         return habitCompletionDao.getHabitCompletionsByIdFlow(id)
     }

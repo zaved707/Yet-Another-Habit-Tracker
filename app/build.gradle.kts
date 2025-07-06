@@ -68,6 +68,10 @@ android {
 }
 
 dependencies {
+
+
+    implementation ("io.github.ehsannarmani:compose-charts:0.1.7")
+
     implementation(libs.reorderable)
     //calander
     implementation("com.kizitonwose.calendar:compose:2.7.0")
