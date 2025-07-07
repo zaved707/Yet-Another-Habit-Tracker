@@ -90,7 +90,10 @@ class HabitRepository @Inject constructor(
                 !entriesList.any { it.completionDate == date } && !(partialEntries?.any { it.completionDate == date }
                     ?: true)
             }
+
         /* now add all datesNotPresentIndDatabase to database as partial Entries*/
+        db.runInTransaction {
+            runBlocking {
         datesNotPresentInDataBase.forEach { date ->
             addHabitCompletionEntry(
                 HabitCompletionEntity(
@@ -101,7 +104,7 @@ class HabitRepository @Inject constructor(
             )
         }
         /*then add the entry as non partial*/
-        println(datesNotPresentInDataBase.size)
+
         /* add a condition where current Entry is partial. in that case turn it to absolute*/
         if (currentEntryPresentInPartial) {
             habitCompletionDao.deleteHabitCompletionEntry(
@@ -118,10 +121,10 @@ class HabitRepository @Inject constructor(
                     habitId = habitEntity.id,
                     completionDate = entry.completionDate
                 )
-            )
+            )}
         }
 
-    }
+    }}
 
 
     suspend fun repairPartials(newHabitEntity: HabitEntity) {
