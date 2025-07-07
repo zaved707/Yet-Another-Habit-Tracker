@@ -94,7 +94,9 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
 
                         Spacer(Modifier.height(40.dp))
                         PieChartDetail(habitAllData)
-                        ColumnChartWidget(habitAllData)
+
+                            ColumnChartWidget(habitAllData)
+//                            Spacer(Modifier.height(100.dp))
                         /* MonthCalendarNew(
 
                              addHabit = { date ->
