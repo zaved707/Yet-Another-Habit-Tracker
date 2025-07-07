@@ -3,12 +3,14 @@ package com.zavedahmad.yaHabit.roomDatabase
 import com.zavedahmad.yaHabit.utils.findHabitClusters
 import com.zavedahmad.yaHabit.utils.processDateTriples
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
 
 class HabitRepository @Inject constructor(
     val habitDao: HabitDao,
-    val habitCompletionDao: HabitCompletionDao
+    val habitCompletionDao: HabitCompletionDao,
+    val db: MainDatabase
 ) {
     // HabitDao functions
     // Write operations
@@ -199,18 +201,28 @@ class HabitRepository @Inject constructor(
 
 
         // remove those entries from db
-        entriesToPurge?.forEach { deleteHabitCompletionEntry(it.habitId, it.completionDate) }
-        // remove the current date item
-        deleteHabitCompletionEntry(habitEntity.id, entry.completionDate)
-        // checking if current entity will change to partial or not
-        if (entry.completionDate in processedClusters) {
-            addHabitCompletionEntry(
-                HabitCompletionEntity(
-                    habitId = habitEntity.id,
-                    completionDate = entry.completionDate,
-                    partial = true
-                )
-            )
+        db.runInTransaction {
+            runBlocking {
+                entriesToPurge?.forEach {
+                    deleteHabitCompletionEntry(
+                        it.habitId,
+                        it.completionDate
+                    )
+                }
+
+                // remove the current date item
+                deleteHabitCompletionEntry(habitEntity.id, entry.completionDate)
+                // checking if current entity will change to partial or not
+                if (entry.completionDate in processedClusters) {
+                    addHabitCompletionEntry(
+                        HabitCompletionEntity(
+                            habitId = habitEntity.id,
+                            completionDate = entry.completionDate,
+                            partial = true
+                        )
+                    )
+                }
+            }
         }
 
     }

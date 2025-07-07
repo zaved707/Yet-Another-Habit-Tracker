@@ -93,10 +93,10 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
 
 
                         Spacer(Modifier.height(40.dp))
+                        StreakChartWidget(habitAllData)
                         PieChartDetail(habitAllData)
 
                             ColumnChartWidget(habitAllData)
-                        StreakChartWidget(habitAllData)
 //                            Spacer(Modifier.height(100.dp))
                         /* MonthCalendarNew(
 

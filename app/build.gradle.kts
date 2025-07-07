@@ -48,7 +48,7 @@ android {
     buildTypes {
         release {
 
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -78,7 +78,7 @@ dependencies {
     //room imports
     val roomVersion = "2.7.1"
 
-    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
     //Material kolor -- custom colors
 
