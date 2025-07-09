@@ -78,7 +78,7 @@ dependencies {
     //room imports
     val roomVersion = "2.7.1"
 
-    implementation("androidx.room:room-ktx:$roomVersion")
+    implementation("androidx.room:room-runtime:$roomVersion")
 
     //Material kolor -- custom colors
 

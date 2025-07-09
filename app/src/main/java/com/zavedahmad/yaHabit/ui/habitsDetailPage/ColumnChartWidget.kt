@@ -47,23 +47,40 @@ import kotlin.collections.listOf
 @Composable
 fun ColumnChartWidget(habitAllData: List<HabitCompletionEntity>?) {
     val yearToShow = remember { mutableStateOf(Year.now()) }
-    val currentYearData  by remember { derivedStateOf {   habitAllData?.filter { Year.from(it.completionDate) == yearToShow.value }}}
-    val allMonths by remember { derivedStateOf { ( 1..12).map { i -> YearMonth.of(yearToShow.value.value, i) }}}
+    val currentYearData by remember(habitAllData) {
+        derivedStateOf {
+            habitAllData?.filter { Year.from(it.completionDate) == yearToShow.value } ?: emptyList()
+        }
+    }
+
+    val allMonths by remember {
+        derivedStateOf {
+            (1..12).map { i ->
+                YearMonth.of(
+                    yearToShow.value.value,
+                    i
+                )
+            }
+        }
+    }
 
     val barColor = MaterialTheme.colorScheme.primary
 
-    val data by remember(habitAllData,yearToShow) {derivedStateOf {
+    val data by remember(habitAllData, yearToShow) {
+        derivedStateOf {
 
-        allMonths.map { month ->
-            Bars(
-                label = month.month.name.slice(0..2), values = listOf(
-                    Bars.Data(
-                        value = currentYearData?.filter { it.completionDate.yearMonth == month }?.size?.toDouble()
-                            ?: 0.0, color = SolidColor(barColor)
+                allMonths.map { month ->
+                    Bars(
+                        label = month.month.name.slice(0..2), values = listOf(
+                            Bars.Data(
+                                value = currentYearData?.filter { it.completionDate.yearMonth == month }?.size?.toDouble()
+                                    ?: 0.0, color = SolidColor(barColor)
+                            )
+                        )
                     )
-                )
-            )
-        }}
+                }
+
+        }
 
 
     }
@@ -95,9 +112,32 @@ fun ColumnChartWidget(habitAllData: List<HabitCompletionEntity>?) {
 
 
     }
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
-        Card(onClick = {yearToShow.value = yearToShow.value.minusYears(1)}) { Icon(Icons.Default.ArrowBackIosNew, contentDescription = "", modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) }
-        Text(text =  yearToShow.value.toString(),Modifier.clickable(onClick = {yearToShow.value = Year.now()}),)
-        Card (onClick = {yearToShow.value = yearToShow.value.plusYears(1)}){ Icon(Icons.AutoMirrored.Default.ArrowForwardIos, contentDescription = "", modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) }
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Card(onClick = {
+            yearToShow.value = yearToShow.value.minusYears(1)
+        }) {
+            Icon(
+                Icons.Default.ArrowBackIosNew,
+                contentDescription = "",
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+            )
+        }
+        Text(
+            text = yearToShow.value.toString(),
+            Modifier.clickable(onClick = { yearToShow.value = Year.now() }),
+        )
+        Card(onClick = {
+            yearToShow.value = yearToShow.value.plusYears(1)
+        }) {
+            Icon(
+                Icons.AutoMirrored.Default.ArrowForwardIos,
+                contentDescription = "",
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+            )
+        }
     }
 }
