@@ -2,42 +2,31 @@ package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
-import com.valentinilk.shimmer.shimmer
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.ui.calenderPage.DayItem
 import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
-import com.zavedahmad.yaHabit.utils.convertHabitCompletionEntityListToDatesList
-import com.zavedahmad.yaHabit.utils.findHabitClusters
-import com.zavedahmad.yaHabit.utils.processDateTriples
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun WeekCalendar(
+fun WeekCalendarNew(
 
-    habit: HabitEntity,
-    habitRepository: HabitRepository,
     addHabit: (date: LocalDate) -> Unit,
-    deleteHabit: (date: LocalDate) -> Unit
+    deleteHabit: (date: LocalDate) -> Unit,
+    initialWeekString: String? = null,
+    habitData: List<HabitCompletionEntity>?
 ) {
     val todayDate = LocalDate.now()
     val daysOfWeek = daysOfWeek()
-    val habitData = rememberSaveable { mutableStateOf<List<HabitCompletionEntity>?>(null) }
+
     val state = rememberWeekCalendarState(
         startDate = todayDate.minusDays(10),
         endDate = todayDate,
@@ -45,7 +34,7 @@ fun WeekCalendar(
     )
 
 
-    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(state.firstVisibleWeek) {
         if (state.firstVisibleWeek.days.any { it.date == todayDate }) {
 //            state.startDate = state.firstVisibleWeek.days.first().date.minusDays(14)
@@ -56,25 +45,17 @@ fun WeekCalendar(
         }
 
     }
-    LaunchedEffect(Unit) {
 
-        coroutineScope.launch(Dispatchers.IO) {
-            habitRepository.getAllHabitCompletionsByIdFlow(habit.id).collect { habitData.value = it }
-        }
-
-
-    }
-    if (habitData.value == null){
+    if (habitData == null){
         Column (Modifier.alpha(0.5f)){
             DaysOfWeekTitle(daysOfWeek)
             WeekCalendar(dayContent = {DayItem(date = it.date, state = "")}, state = state) { }
         }
 
     }else{
-    habitData.value?.let { habitData ->
-        val dates = convertHabitCompletionEntityListToDatesList(habitData)
-        val partialAndAbsoluteCombinedList =
-            processDateTriples(findHabitClusters(habitData, habit.cycle, habit.frequency))
+
+
+
         val dateToday = LocalDate.now()
         Column {
 
@@ -119,7 +100,7 @@ fun WeekCalendar(
                 })
         }, state = state)
 
-    }}}
+    }}
 
 }
 

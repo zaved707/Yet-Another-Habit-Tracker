@@ -43,7 +43,7 @@ fun DayItem(
     Box(
         Modifier
             .fillMaxWidth()
-            .aspectRatio(1.0f),
+          ,
 
         contentAlignment = Alignment.Center
     ) {

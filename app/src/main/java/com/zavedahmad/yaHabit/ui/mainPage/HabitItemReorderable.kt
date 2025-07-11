@@ -19,7 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.ui.calenderPage.MonthCalendar
+import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
@@ -46,6 +51,7 @@ fun HabitItemReorderable(
     reorderableListScope: ReorderableCollectionItemScope? = null,
     isDragging: Boolean = false
 ) {
+
     val coroutineScope = rememberCoroutineScope()
     val color = if (isDragging) {
         CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
@@ -59,6 +65,16 @@ fun HabitItemReorderable(
     } else {
         CardDefaults.outlinedCardElevation()
     }
+    val habitData = rememberSaveable { mutableStateOf<List<HabitCompletionEntity>?>(null) }
+    val showDialog= rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+
+        coroutineScope.launch(Dispatchers.IO) {
+            viewModel.habitRepository.getAllHabitCompletionsByIdFlow(habit.id).collect { habitData.value = it }
+        }
+
+
+    }
     OutlinedCard(
         modifier =
             Modifier
@@ -67,6 +83,7 @@ fun HabitItemReorderable(
 
         colors = color,
         onClick = { backStack.add(Screen.HabitDetailsPageRoute(habit.id)) }) {
+        ConfirmationDialog(visible = showDialog.value, confirmAction = {}, onDismiss = {showDialog.value = false})
         Column(
             Modifier
                 .fillMaxWidth()
@@ -120,8 +137,26 @@ fun HabitItemReorderable(
 
 
             }
+
             Spacer(Modifier.height(20.dp))
-            WeekCalendar(habit, viewModel.habitRepository,
+            WeekCalendarNew(addHabit = {date ->
+                coroutineScope.launch(
+                    Dispatchers.IO
+                ) {
+                    viewModel.habitRepository.addWithPartialCheck(
+                        HabitCompletionEntity(
+                            habitId = habit.id,
+                            completionDate = date
+                        )
+                    )
+                }
+            }, deleteHabit = { date ->
+                viewModel.deleteHabitEntryWithPartialCheck(
+                    habitId = habit.id,
+                    date = date
+                )
+            }, habitData = habitData.value)
+            /*WeekCalendar(habit, viewModel.habitRepository,
                 addHabit = {date ->
                     coroutineScope.launch(
                         Dispatchers.IO
@@ -138,7 +173,7 @@ fun HabitItemReorderable(
                     habitId = habit.id,
                     date = date
                 )
-            })
+            })*/
 
 //            WeekCalendarOld(viewModel, habit)
 
@@ -179,7 +214,8 @@ fun HabitItemReorderable(
                     }
                     IconButton(
                         modifier = Modifier,
-                        onClick = { viewModel.deleteHabitById(habit.id) }) {
+                        onClick = { /*viewModel.deleteHabitById(habit.id)*/
+                        showDialog.value = true}) {
                         Icon(Icons.Default.Delete, contentDescription = "")
                     }
                 }
