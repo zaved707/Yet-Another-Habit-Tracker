@@ -13,7 +13,7 @@
 # limitations under the License.
 
 [versions]
-agp = "8.10.1"
+agp = "8.11.1"
 kotlin = "2.2.0-RC2"
 kotlinSerialization = "2.1.21"
 coreKtx = "1.16.0"

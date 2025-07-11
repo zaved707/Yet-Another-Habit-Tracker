@@ -56,27 +56,27 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
         CustomTheme(theme = themeReal.value, primaryColor = habitObject.color) {
             Scaffold { innerPadding ->
 
-                Column (
+                Column(
                     Modifier
                         .padding(innerPadding)
                         .fillMaxWidth()
                 ) {
 
-                    MonthCalendar(
-                        habitObject,
-                        viewModel.habitRepository,
-                        addHabit = { date ->
-                            viewModel.addHabitEntry(
-                                habitObject.id,
-                                completionDate = date
-                            )
-                        },
-                        deleteHabit = { date ->
-                            viewModel.deleteEntryByDateAndHabitId(
-                                habitObject.id,
-                                date
-                            )
-                        })
+//                    MonthCalendarNew(
+//                        addHabit = { date ->
+//                            viewModel.addHabitEntry(
+//                                habitObject.id,
+//                                completionDate = date
+//                            )
+//                        },
+//                        deleteHabit = { date ->
+//                            viewModel.deleteEntryByDateAndHabitId(
+//                                habitObject.id,
+//                                date
+//                            )
+//                        },
+//                        habitData = viewModel.habitRepository,
+//                    )
 
 
                 }

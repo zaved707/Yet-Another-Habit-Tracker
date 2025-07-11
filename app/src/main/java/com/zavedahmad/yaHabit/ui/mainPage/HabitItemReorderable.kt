@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,8 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.ui.calenderPage.MonthCalendar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import java.time.YearMonth
 
@@ -42,6 +46,7 @@ fun HabitItemReorderable(
     reorderableListScope: ReorderableCollectionItemScope? = null,
     isDragging: Boolean = false
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val color = if (isDragging) {
         CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
 
@@ -116,13 +121,20 @@ fun HabitItemReorderable(
 
             }
             Spacer(Modifier.height(20.dp))
-            WeekCalendar(habit, viewModel.habitRepository, addHabit = { date ->
-                viewModel.addHabitEntry(
-                    habitId = habit.id,
-                    completionDate = date
-                )
+            WeekCalendar(habit, viewModel.habitRepository,
+                addHabit = {date ->
+                    coroutineScope.launch(
+                        Dispatchers.IO
+                    ) {
+                        viewModel.habitRepository.addWithPartialCheck(
+                            HabitCompletionEntity(
+                                habitId = habit.id,
+                                completionDate = date
+                            )
+                        )
+                    }
             }, deleteHabit = { date ->
-                viewModel.deleteEntryByDateAndHabitId(
+                viewModel.deleteHabitEntryWithPartialCheck(
                     habitId = habit.id,
                     date = date
                 )

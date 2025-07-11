@@ -1,7 +1,5 @@
 todo pieChart is disabled then it shows a disabled visual via color.
 todo use transactions
-add a circle graph for telling how many partial and how many absolute
-todo bar graph not working when starting with a data with zero habit entries
 todo add graphs on details page
 todo make a page for Reordering
 todo make a page for both the calendar views Combined for editing
@@ -19,6 +17,8 @@ todo POSTPONED load date data of whats visible plus the streak days in past. thi
 todo POSTPONED add category as a primary key to habits
 done check that the entry that goes in to repository is has id 0 so make sure it doesn't replace the entry already there with the id 0
 done app crashing in zero entries  // app was crashing because init was reffering to a variable which was not yet initialized
+done add a circle graph for telling how many partial and how many absolute
+done bar graph not working when starting with a data with zero habit entries
 done now add all datesNotPresentIndDatabase to database as partial Entries
 done  add delete button
 done check if name is not empty

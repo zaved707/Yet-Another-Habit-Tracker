@@ -1,14 +1,18 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
+import com.valentinilk.shimmer.shimmer
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
@@ -21,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WeekCalendar(
 
@@ -30,7 +35,7 @@ fun WeekCalendar(
     deleteHabit: (date: LocalDate) -> Unit
 ) {
     val todayDate = LocalDate.now()
-
+    val daysOfWeek = daysOfWeek()
     val habitData = rememberSaveable { mutableStateOf<List<HabitCompletionEntity>?>(null) }
     val state = rememberWeekCalendarState(
         startDate = todayDate.minusDays(10),
@@ -58,28 +63,39 @@ fun WeekCalendar(
 
 
     }
+    if (habitData.value == null){
+        Column (Modifier.shimmer()){
+            DaysOfWeekTitle(daysOfWeek)
+            WeekCalendar(dayContent = {DayItem(date = it.date, state = "")}, state = state) { }
+        }
+
+    }else{
     habitData.value?.let { habitData ->
         val dates = convertHabitCompletionEntityListToDatesList(habitData)
         val partialAndAbsoluteCombinedList =
             processDateTriples(findHabitClusters(habitData, habit.cycle, habit.frequency))
         val dateToday = LocalDate.now()
         Column {
-        val daysOfWeek = daysOfWeek()
+
         DaysOfWeekTitle(daysOfWeek)
         WeekCalendar(dayContent = { day ->
             var dayState = ""
-
-            if (dates.any { it == day.date }) {
-                if (day.date > dateToday) {
-                    dayState = "absoluteDisabled"
+           val datesMatching = habitData.filter { it.completionDate == day.date }
+            if (datesMatching.size > 1) {
+                dayState = "error"
+            } else if (datesMatching.size == 1) {
+                dayState = if (datesMatching[0].partial) {
+                    if (day.date > dateToday) {
+                        "partialDisabled"
+                    } else {
+                        "partial"
+                    }
                 } else {
-                    dayState = "absolute"
-                }
-            } else if (partialAndAbsoluteCombinedList.any { it == day.date }) {
-                if (day.date > dateToday) {
-                    dayState = "partialDisabled"
-                } else {
-                    dayState = "partial"
+                    if (day.date > dateToday) {
+                        "absoluteDisabled"
+                    } else {
+                        "absolute"
+                    }
                 }
             } else {
                 if (day.date > dateToday) {
@@ -102,7 +118,7 @@ fun WeekCalendar(
                 })
         }, state = state)
 
-    }}
+    }}}
 
 }
 

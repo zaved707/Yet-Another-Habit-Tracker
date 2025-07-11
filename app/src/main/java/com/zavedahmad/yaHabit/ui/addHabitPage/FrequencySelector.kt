@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -118,10 +119,10 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
 
     }
     // These are all the buttons
-    Row {
+    Row (Modifier.fillMaxWidth()){
         options.forEachIndexed { index, item ->
             val isChecked = streakChecked.value == index
-            ToggleButton(
+            ToggleButton(modifier = Modifier.weight(1f),
                 checked = isChecked, shapes = when (index) {
                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
                         pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
@@ -148,17 +149,24 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                 Row {  /*AnimatedVisibility(visible = streakChecked.value == index) {
                                 Icon(Icons.Default.Check, contentDescription = "selected", modifier = Modifier.size(15.dp))
                             }*/
-                    Text(item)
+                    Text(item, overflow = TextOverflow.Ellipsis, maxLines = 1)
                 }
             }
         }
     }
+    AnimatedVisibility(visible = streakChecked.value == 0) {
+        Column { Text("Everyday") }
+    }
+
+
     AnimatedVisibility(visible = streakChecked.value == 1) {
         Column {
             InvalidValueIndicator(
                 Modifier.fillMaxWidth(0.5f),
                 visible = !isFrequencyValidWeek.value
             )
+            Text("Weekly")
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -200,6 +208,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                 Modifier.fillMaxWidth(0.5f),
                 visible = !isFrequencyValidMonth.value
             )
+            Text("Monthly")
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -238,12 +247,11 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             InvalidValueIndicator(
                 Modifier.fillMaxWidth(0.5f),
                 visible = isErrorCustom
             )
-
+            Text("Custom")
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically

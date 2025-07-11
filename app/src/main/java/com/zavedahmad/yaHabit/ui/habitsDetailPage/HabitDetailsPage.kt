@@ -71,7 +71,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                         Spacer(Modifier.height(30.dp))
 
                         FullDataGridCalender(
-                            habitData = habitAllData, addHabit = { date ->
+                            habitData = habitAllData,
+                            addHabit = { date ->
                                 coroutineScope.launch(
                                     Dispatchers.IO
                                 ) {
@@ -96,7 +97,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                         StreakChartWidget(habitAllData)
                         PieChartDetail(habitAllData)
 
-                            ColumnChartWidget(habitAllData)
+                        ColumnChartWidget(habitAllData)
 //                            Spacer(Modifier.height(100.dp))
                         /* MonthCalendarNew(
 
@@ -120,7 +121,11 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                              },
                              habitData = habitAllData
                          )*/
-                        Card(Modifier.fillMaxWidth().height(100.dp)) {  }
+                        Card(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        ) { }
                         Text(
                             "Past Month",
                             fontSize = 30.sp,

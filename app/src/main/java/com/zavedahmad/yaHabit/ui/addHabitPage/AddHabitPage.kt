@@ -197,8 +197,10 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
                         )
                     Spacer(Modifier.height(20.dp))
-                    Text("Frequency", fontSize = 20.sp)
-                    Spacer(Modifier.height(10.dp))
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                        Text("Frequency", fontSize = 20.sp)
+                    }
+                        Spacer(Modifier.height(10.dp))
                     HorizontalDivider()
                     FrequencySelector(
                         viewModel,

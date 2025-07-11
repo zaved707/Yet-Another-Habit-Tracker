@@ -42,18 +42,22 @@ android {
             isEnable = true
             reset() // Clears the default list of ABIs
             include("arm64-v8a") // Only include arm64-v8a
-            isUniversalApk = false // Disable universal APK (optional, if you don't want a universal APK)
+            isUniversalApk =
+                false // Disable universal APK (optional, if you don't want a universal APK)
         }
     }
     buildTypes {
         release {
 
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -68,9 +72,13 @@ android {
 }
 
 dependencies {
+    // glance for widgets
+    implementation("androidx.glance:glance-appwidget:1.1.1")
+    // For interop APIs with Material 3
+    implementation("androidx.glance:glance-material3:1.1.1")
+    // end
 
-
-    implementation ("io.github.ehsannarmani:compose-charts:0.1.7")
+    implementation("io.github.ehsannarmani:compose-charts:0.1.7")
 
     implementation(libs.reorderable)
     //calander
