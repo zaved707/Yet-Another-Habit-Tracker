@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 
     alias(libs.plugins.hilt)
+    id("kotlin-parcelize")
     alias(libs.plugins.ksp)
 }
 

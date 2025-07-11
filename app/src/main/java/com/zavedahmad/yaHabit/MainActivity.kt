@@ -205,7 +205,8 @@ class RecipePickerActivity : ComponentActivity() {
                                 transitionSpec = {
                                     slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(
                                         targetOffsetX = { -it / 2 })
-                                },
+                                }, popTransitionSpec ={ slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
+                                    targetOffsetX = { it })} ,
                                 predictivePopTransitionSpec = {
                                     slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
                                         targetOffsetX = { it })

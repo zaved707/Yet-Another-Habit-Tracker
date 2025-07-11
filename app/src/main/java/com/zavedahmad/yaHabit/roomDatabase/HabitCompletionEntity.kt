@@ -1,10 +1,12 @@
 package com.zavedahmad.yaHabit.roomDatabase
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
-
+@Parcelize
 @Entity(
     tableName = "habitCompletion",
     foreignKeys = [ForeignKey(
@@ -19,4 +21,4 @@ data class HabitCompletionEntity(
     val completionDate: LocalDate,
     val partial : Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
-)
+): Parcelable
