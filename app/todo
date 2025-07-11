@@ -1,12 +1,11 @@
 
 todo make a page for Reordering
-todo make a page for both the calendar views Combined for editing
-
+todo test calander page properly
 todo add a option for no color choosing
-todo bug in full details widget its not showing past 12 months if habit list is empty also crashing if list is empty
 
 todo a button on habit card to check today's habit
-todo chnage navigation animations
+
+todo  improve  navigation animations
 todo when habits list is empty show a page
 todo add delete modal
 todo make a common confirmation modal
@@ -14,9 +13,11 @@ todo POSTPONED add a category table
 todo POSTPONED load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo POSTPONED add category as a primary key to habits
 done check that the entry that goes in to repository is has id 0 so make sure it doesn't replace the entry already there with the id 0
+done  bug in full details widget its not showing past 12 months if habit list is empty also crashing if list is empty
 done app crashing in zero entries  // app was crashing because init was reffering to a variable which was not yet initialized
 done   add graphs on details page
 done  use transactions
+done make a page for both the calendar views Combined for editing
 done add a circle graph for telling how many partial and how many absolute
 done bar graph not working when starting with a data with zero habit entries
 done now add all datesNotPresentIndDatabase to database as partial Entries

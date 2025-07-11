@@ -84,11 +84,6 @@ fun FullDataGridCalender(
     }
 
 
-        Box(
-            Modifier
-                .padding(vertical = 10.dp)
-                .padding(end = 5.dp)
-        ) {
             Column {
                 //Text("first visible Month ${calendarState.firstVisibleMonth.yearMonth} \n last visibleMonth: ${calendarState.lastVisibleMonth.yearMonth} \n startMonth ${calendarState.startMonth} \n endMonth ${calendarState.endMonth}")
                 HeatMapCalendar(
@@ -184,6 +179,6 @@ fun FullDataGridCalender(
                         }
                     })
 
-        }
+
     }
 }
