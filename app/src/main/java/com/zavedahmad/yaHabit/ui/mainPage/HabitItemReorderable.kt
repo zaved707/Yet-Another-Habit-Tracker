@@ -31,12 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
-import com.zavedahmad.yaHabit.ui.calenderPage.MonthCalendar
+import com.zavedahmad.yaHabit.ui.calenderPage.MonthCalendarData
 import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -156,6 +155,7 @@ fun HabitItemReorderable(
                     date = date
                 )
             }, habitData = habitData.value)
+
             /*WeekCalendar(habit, viewModel.habitRepository,
                 addHabit = {date ->
                     coroutineScope.launch(

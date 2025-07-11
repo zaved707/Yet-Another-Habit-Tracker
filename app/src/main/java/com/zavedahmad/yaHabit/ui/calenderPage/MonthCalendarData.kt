@@ -14,13 +14,11 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun MonthCalendarNew(
+fun MonthCalendarData(
 
 
     addHabit: (date: LocalDate) -> Unit,

@@ -50,6 +50,9 @@ fun FullDataGridCalender(
     deleteHabit: (date: LocalDate) -> Unit = {},
     initialMonthString: String? = null,
     habitData: List<HabitCompletionEntity>? = null
+    ,gridHeight : Int = 190,
+    showDate : Boolean = false,
+    interactive: Boolean = false
 ) {
     val currentMonth = remember { YearMonth.now() }
 //    val habitDataSorted = habitData.sortedBy { it.completionDate }
@@ -61,7 +64,7 @@ fun FullDataGridCalender(
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
     val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
     val dateToday = LocalDate.now()
-    val gridHeight = 190      // CHANGE this to change grid height
+       // CHANGE this to change grid height
 
 
     val calendarState = rememberHeatMapCalendarState(
@@ -80,7 +83,7 @@ fun FullDataGridCalender(
         }
     }
 
-    Card() {
+
         Box(
             Modifier
                 .padding(vertical = 10.dp)
@@ -100,7 +103,7 @@ fun FullDataGridCalender(
                             Spacer(Modifier.width(5.dp))
                             Text(
                                 weekDay.name.slice(0..2),
-                                fontSize = (gridHeight / 8 / 2).sp
+                                fontSize = 15.sp
                             )
 
 
@@ -109,16 +112,16 @@ fun FullDataGridCalender(
                     monthHeader = {
 
                         if (LocalDate.now().yearMonth != it.yearMonth ) {
-                            Column (Modifier.height((gridHeight / 8 ).dp)){
+                            Column (Modifier.height((gridHeight / 8 ).dp), verticalArrangement = Arrangement.Bottom){
                             Text(
                                 it.yearMonth.month.toString().slice(0..2),
-                                fontSize = (gridHeight / 8 / 3 * 2).sp, textAlign = TextAlign.Start
+                                fontSize =15.sp, textAlign = TextAlign.Start
                             )}
                         } else {
                             if (LocalDate.now().dayOfMonth > 15) {
                                 Text(
                                     it.yearMonth.month.toString().slice(0..2),
-                                    fontSize = (gridHeight / 8 / 3 * 2).sp,
+                                    fontSize = 15.sp,
                                     textAlign = TextAlign.Start
                                 )
                             } else {
@@ -171,14 +174,16 @@ fun FullDataGridCalender(
                                         dayState,
                                         addHabit = { addHabit(day.date) },
                                         deleteHabit = { deleteHabit(day.date) },
-                                        date = day.date
+                                        date = day.date,
+                                        showDate = showDate,
+                                        interactive = interactive
                                     )
                                 }
                             }
 
                         }
                     })
-            }
+
         }
     }
 }

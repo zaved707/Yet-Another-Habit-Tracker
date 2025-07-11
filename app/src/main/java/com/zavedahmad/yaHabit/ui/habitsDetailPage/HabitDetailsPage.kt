@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,12 +22,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
@@ -45,6 +52,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
     val coroutineScope = rememberCoroutineScope()
+    val dialogueVisible = rememberSaveable { mutableStateOf(false) }
     if (themeReal == null) {
         ComposeTemplateTheme("system") {
             Box(
@@ -61,6 +69,44 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
         } else {
             CustomTheme(theme = themeReal.value, primaryColor = habitDetails.color) {
                 Scaffold(topBar = { LargeTopAppBar(title = { Text(habitDetails.name) }) }) { innerPadding ->
+                    if (dialogueVisible.value) {
+
+
+
+                            Dialog(
+                                onDismissRequest = { dialogueVisible.value = false },
+                                properties = DialogProperties(
+                                    usePlatformDefaultWidth = false // This is the key change
+                                )
+                            ) {
+                                Box(Modifier.background(MaterialTheme.colorScheme.surface).fillMaxWidth()) {
+                                FullDataGridCalender(
+                                    addHabit = { date ->
+                                        coroutineScope.launch(
+                                            Dispatchers.IO
+                                        ) {
+                                            viewModel.habitRepository.addWithPartialCheck(
+                                                HabitCompletionEntity(
+                                                    habitId = viewModel.navKey.habitId,
+                                                    completionDate = date
+                                                )
+                                            )
+                                        }
+                                    },
+                                    deleteHabit = { date ->
+                                        viewModel.deleteHabitEntryWithPartialCheck(
+                                            habitId = habitDetails.id,
+                                            date = date
+                                        )
+                                    },
+                                    habitData = habitAllData,
+                                    gridHeight = 350,
+                                    showDate = true,
+                                    interactive = true
+                                )
+                            }
+                        }
+                    }
                     Column(
                         Modifier
                             .padding(innerPadding)
@@ -70,28 +116,33 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                         Text(habitDetails.description)
                         Spacer(Modifier.height(30.dp))
 
-                        FullDataGridCalender(
-                            habitData = habitAllData,
-                            addHabit = { date ->
-                                coroutineScope.launch(
-                                    Dispatchers.IO
-                                ) {
-                                    viewModel.habitRepository.addWithPartialCheck(
-                                        HabitCompletionEntity(
-                                            habitId = viewModel.navKey.habitId,
-                                            completionDate = date
+                        Box(
+                            Modifier
+                                .clickable(onClick = { dialogueVisible.value = true })
+                                .clip(RoundedCornerShape(20.dp))
+                        ) {
+                            FullDataGridCalender(
+                                habitData = habitAllData,
+                                addHabit = { date ->
+                                    coroutineScope.launch(
+                                        Dispatchers.IO
+                                    ) {
+                                        viewModel.habitRepository.addWithPartialCheck(
+                                            HabitCompletionEntity(
+                                                habitId = viewModel.navKey.habitId,
+                                                completionDate = date
+                                            )
                                         )
+                                    }
+                                },
+                                deleteHabit = { date ->
+                                    viewModel.deleteHabitEntryWithPartialCheck(
+                                        habitId = habitDetails.id,
+                                        date = date
                                     )
                                 }
-                            },
-                            deleteHabit = { date ->
-                                viewModel.deleteHabitEntryWithPartialCheck(
-                                    habitId = habitDetails.id,
-                                    date = date
-                                )
-                            }
-                        )
-
+                            )
+                        }
 
                         Spacer(Modifier.height(40.dp))
                         StreakChartWidget(habitAllData)

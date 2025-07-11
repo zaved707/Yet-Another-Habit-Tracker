@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,52 +18,74 @@ import java.time.LocalDate
 fun GridDayItem(
     state: String = "error",
     addHabit : () -> Unit = {},
-    date : LocalDate? = null,
+    date : LocalDate,
     deleteHabit : () -> Unit = {},
+    showDate : Boolean = false,
+    interactive: Boolean = false
 ) {
     var buttonAction = {}
-    val bgColor = when (state) {
+    val (bgColor, textColor) = when (state) {
         "absolute" -> {
             buttonAction = deleteHabit
-            MaterialTheme.colorScheme.primary
-        } "absoluteDisabled" -> {
+            Pair(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary)
+        }
+        "absoluteDisabled" -> {
             buttonAction = addHabit
-            MaterialTheme.colorScheme.inverseSurface.copy(0.5f)
+            Pair(
+                MaterialTheme.colorScheme.inverseSurface.copy(0.5f),
+                MaterialTheme.colorScheme.inverseOnSurface
+            )
         }
 
 
         "partial" -> {
             buttonAction = addHabit
-            MaterialTheme.colorScheme.primary.copy(0.5f)
+            Pair(
+                MaterialTheme.colorScheme.primary.copy(0.5f),
+                MaterialTheme.colorScheme.onPrimary
+            )
         }
         "partialDisabled" -> {
             buttonAction = addHabit
-            MaterialTheme.colorScheme.inverseSurface.copy(0.2f)
+            Pair(
+                MaterialTheme.colorScheme.inverseSurface.copy(0.2f),
+                MaterialTheme.colorScheme.inverseOnSurface
+            )
         }
 
 
-        "incompleteDisabled" -> {buttonAction = addHabit
-            MaterialTheme.colorScheme.surface.copy(0.5f)}
-        "incomplete" -> {buttonAction = addHabit
-            MaterialTheme.colorScheme.surface}
+        "incompleteDisabled" -> {
+            buttonAction = addHabit
+            Pair(
+                MaterialTheme.colorScheme.surfaceVariant.copy(0.5f),
+                MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        "incomplete" -> {
+            buttonAction = addHabit
+            Pair(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+        }
         else -> {
             buttonAction = addHabit
-            MaterialTheme.colorScheme.error
+            Pair(MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.onError)
         }
     }
 
+    val modifier = if (interactive) {
+        Modifier.combinedClickable(onClick = {}, onLongClick = { buttonAction() })
+    } else Modifier
 
     Box(
-        Modifier
+        modifier
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(5.dp))
-
             .background(color = bgColor)
-            .combinedClickable(onClick = {}, onLongClick = { buttonAction() }),
-
+            ,
         contentAlignment = Alignment.Center
     ) {
-
+        if (showDate){
+            Text(date.dayOfMonth.toString(), color = textColor)
+        }
 
     }
 }

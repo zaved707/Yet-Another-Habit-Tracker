@@ -53,7 +53,13 @@ class CalendarPageViewModel @AssistedInject constructor(
         }
 
     }
-
+    fun deleteHabitEntryWithPartialCheck(date: LocalDate, habitId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.deleteWithPartialCheck(
+                HabitCompletionEntity(habitId, date)
+            )
+        }
+    }
     fun getHabitDetails() {
         viewModelScope.launch(Dispatchers.IO) {
             _habitObject.value = habitRepository.getHabitDetailsById(navKey.habitId)

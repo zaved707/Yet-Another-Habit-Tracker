@@ -28,7 +28,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun MonthCalendar(
+fun MonthCalendarRepository(
     habit: HabitEntity,
     habitRepository: HabitRepository,
     addHabit: (date: LocalDate) -> Unit,
