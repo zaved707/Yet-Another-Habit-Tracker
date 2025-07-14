@@ -44,8 +44,12 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
 
+    private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
+    val amoledTheme = _amoledTheme.asStateFlow()
+
     init {
         collectThemeMode()
+        collectAmoledTheme()
         getHabitDetails()
         getLastYearData()
         getHabitAllData()
@@ -88,5 +92,13 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
             }
         }
     }
+    fun collectAmoledTheme() {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesDao.getPreferenceFlow("AmoledTheme").collect { preference ->
+                _amoledTheme.value = preference ?: PreferenceEntity("AmoledTheme", "false")
+            }
+        }
+    }
+
 
 }

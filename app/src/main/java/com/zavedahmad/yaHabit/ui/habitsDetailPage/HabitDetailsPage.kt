@@ -68,13 +68,15 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
     val habitAllData = viewModel.habitAllData.collectAsStateWithLifecycle().value
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
+    val isAmoledColor by viewModel.amoledTheme.collectAsStateWithLifecycle()
+
     val coroutineScope = rememberCoroutineScope()
     val dialogueVisible = rememberSaveable { mutableStateOf(false) }
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
 
-    if (themeReal == null) {
+    if (themeReal == null || isAmoledColor == null) {
         ComposeTemplateTheme("system") {
             Box(
                 Modifier
@@ -88,7 +90,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                 LoadingIndicator()
             }
         } else {
-            CustomTheme(theme = themeReal.value, primaryColor = habitDetails.color) {
+            CustomTheme(theme = themeReal.value, primaryColor = habitDetails.color,isAmoled = isAmoledColor?.value == "true" ) {
                 Scaffold(Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
                     MediumFlexibleTopAppBar(
                         title = { Text(habitDetails.name, fontWeight = FontWeight.Bold) },

@@ -49,10 +49,14 @@ class MainPageViewModel @Inject constructor(
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
 
+    private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
+    val amoledTheme = _amoledTheme.asStateFlow()
     init {
+        collectAmoledTheme()
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.getHabitsFlowSortedByIndex().collect { it -> _habits.value = it }
         }
+
         collectThemeMode()
     }
     fun changeReorderableMode(value : Boolean){
@@ -119,6 +123,15 @@ class MainPageViewModel @Inject constructor(
             }
         }
     }
+
+    fun collectAmoledTheme() {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesDao.getPreferenceFlow("AmoledTheme").collect { preference ->
+                _amoledTheme.value = preference ?: PreferenceEntity("AmoledTheme", "false")
+            }
+        }
+    }
+
 
     fun move(from: Int, to: Int) {
         viewModelScope.launch(Dispatchers.IO) {

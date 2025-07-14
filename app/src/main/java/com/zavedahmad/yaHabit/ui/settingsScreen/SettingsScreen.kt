@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -57,7 +59,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
     var isThemeDialogActive by remember { mutableStateOf(false) }
     val dynamicColor = viewModel.dynamicColor.collectAsStateWithLifecycle().value
     val themeNow by viewModel.themeMode.collectAsStateWithLifecycle()
-    val amoledColors =  viewModel.amoledTheme.collectAsStateWithLifecycle().value
+    val amoledColors = viewModel.amoledTheme.collectAsStateWithLifecycle().value
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -185,13 +187,14 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                             }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
                     }
                 })
+
             SettingsItem(
                 icon = Icons.Default.InvertColors,
                 title = "Amoled",
-
+                description = "use Amoled Colors (only for dark theme).",
                 task = {},
                 actions = {
-                    Row {
+                    Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
                         VerticalDivider()
                         Spacer(Modifier.width(20.dp))
                         Switch(
@@ -223,10 +226,17 @@ fun SettingsItem(
             .clickable(onClick = { task() })
             .fillMaxWidth()
             .padding(20.dp)
-            .height(50.dp), horizontalArrangement = Arrangement.Absolute.SpaceBetween
+            .height(IntrinsicSize.Min), // Use IntrinsicSize.Min to allow flexible height
+        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically // Center items vertically
 
     ) {
-        Row (verticalAlignment = Alignment.CenterVertically){
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(0.7f),
+            verticalAlignment = Alignment.CenterVertically
+        ) { // Added weight to allow this Row to take available space
             Icon(
                 modifier = Modifier.padding(10.dp),
                 imageVector = icon,
@@ -248,7 +258,10 @@ fun SettingsItem(
             }
         }
         if (actions != {}) {
-            Row {
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) { // Added fillMaxHeight to the actions Row
 
 
                 actions()

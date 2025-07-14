@@ -79,7 +79,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
+    val isAmoledColor by viewModel.amoledTheme.collectAsStateWithLifecycle()
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
@@ -87,7 +87,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
         listUpdatedChannel.trySend(Unit)
     }
 
-    if (themeReal == null) {
+    if (themeReal == null || isAmoledColor == null) {
         ComposeTemplateTheme("system") {
             Box(
                 Modifier
@@ -215,7 +215,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
                     items(habits.value, key = { it.id }) { habit ->
                         ReorderableItem(reorderableLazyListState, key = habit.id) { isDragging ->
-                            CustomTheme(theme = themeReal.value, primaryColor = habit.color) {
+                            CustomTheme(theme = themeReal.value, primaryColor = habit.color,isAmoled = isAmoledColor?.value == "true" ) {
 
 
                                 // Text("id :  ${habit.id.toString()}, index: ${habit.index}")

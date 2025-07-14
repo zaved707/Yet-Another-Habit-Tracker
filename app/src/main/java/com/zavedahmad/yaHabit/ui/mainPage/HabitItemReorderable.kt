@@ -225,7 +225,7 @@ fun HabitItemReorderable(
                             Column { }
                             Row {
                                 val currentMonth = YearMonth.now()
-                                IconButton(
+                               /* IconButton(
                                     modifier = Modifier,
                                     onClick = {
                                         backStack.add(
@@ -236,7 +236,7 @@ fun HabitItemReorderable(
                                         )
                                     }) {
                                     Icon(Icons.Default.CalendarMonth, contentDescription = "")
-                                }
+                                }*/
                                 IconButton(
                                     modifier = Modifier,
                                     onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
