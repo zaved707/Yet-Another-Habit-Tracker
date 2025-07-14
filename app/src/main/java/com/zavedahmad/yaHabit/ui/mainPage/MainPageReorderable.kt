@@ -1,10 +1,14 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,23 +18,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
@@ -56,6 +74,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
+    val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     LaunchedEffect(habits.value) {
         listUpdatedChannel.trySend(Unit)
     }
@@ -72,14 +91,66 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
-            topBar = { MyMediumTopABCommon(backStack, scrollBehavior, "Habits") },
+            topBar = {
+                MediumFlexibleTopAppBar(
+                    title = {
+                        Text(
+                            "Habits",
+                            fontWeight = FontWeight.Bold
+                        )
+                    }, // todo dropdown menu in the top bar
+                    actions = {
+
+                        if(isReorderableMode.value
+                        ){
+                            Button(
+                                onClick = {
+
+
+                                    viewModel.changeReorderableMode(false)
+
+                                },
+                                modifier = Modifier,
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                            ) {
+                                Icon(
+                                    Icons.Default.Check,
+                                    contentDescription = "turn off reorderable mode"
+                                )
+                            }
+                        }
+
+                             if(!isReorderableMode.value
+                             ){
+                            Row {
+
+                            IconButton(onClick = { backStack.add(Screen.SettingsPageRoute) }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Settings,
+                                    contentDescription = "Settings"
+                                )
+                            }
+                            Menu(viewModel)
+                                }
+                        }
+
+
+                    },
+
+                    scrollBehavior = scrollBehavior
+                )
+            },
             floatingActionButton = {
+                AnimatedVisibility(
+                    visible = !isReorderableMode.value,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                 ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
                     Text("Add Habit")
-                }
+                }}
             }
         ) { innerPadding ->
-
 
             val lazyListState = rememberLazyListState()
             val reorderableLazyListState =
@@ -102,6 +173,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     .padding(innerPadding)
             ) {
 
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -120,11 +192,13 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 
                                 HabitItemReorderable(
-                                   backStack =  backStack,
-                                    viewModel =viewModel,
+                                    backStack = backStack,
+                                    viewModel = viewModel,
                                     habit = habit,
                                     reorderableListScope = this,
-                                    isDragging
+
+                                    isDragging = isDragging,
+                                    isReorderableMode = isReorderableMode.value
                                 )
 
 //                                Spacer(Modifier.height(40.dp))
@@ -142,3 +216,25 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
     }
 }
 
+@Composable
+fun Menu(viewModel: MainPageViewModel) {
+    val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
+    val menuVisible = rememberSaveable { mutableStateOf(false) }
+    IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
+        Icon(
+            imageVector = Icons.Outlined.MoreVert,
+            contentDescription = "More"
+        )
+    }
+    DropdownMenu(
+        expanded = menuVisible.value, // Set to true to show the menu
+        onDismissRequest = { menuVisible.value = false }
+    ) {
+        DropdownMenuItem(text = {
+            Row {
+                Text("Reorder Mode")
+
+            }
+        }, onClick = { viewModel.changeReorderableMode(!isReorderableMode.value) })
+    }
+}

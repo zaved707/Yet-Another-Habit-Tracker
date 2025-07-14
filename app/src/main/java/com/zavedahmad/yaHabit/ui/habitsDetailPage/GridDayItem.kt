@@ -42,7 +42,7 @@ fun GridDayItem(
             buttonAction = addHabit
             Pair(
                 MaterialTheme.colorScheme.primary.copy(0.5f),
-                MaterialTheme.colorScheme.onPrimary
+                MaterialTheme.colorScheme.onBackground.copy(0.6f)
             )
         }
         "partialDisabled" -> {

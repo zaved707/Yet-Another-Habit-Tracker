@@ -128,7 +128,7 @@ class RecipePickerActivity : ComponentActivity() {
 
                                                 Column {
 
-                                                    MainPage(
+                                                    MainPageReorderable(
                                                         backStack,
                                                         viewModelMainPage
                                                     )

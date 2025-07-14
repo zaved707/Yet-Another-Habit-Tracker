@@ -1,5 +1,6 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,13 +45,15 @@ import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import java.time.YearMonth
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitItemReorderable(
     backStack: SnapshotStateList<NavKey>,
     viewModel: MainPageViewModel,
     habit: HabitEntity,
     reorderableListScope: ReorderableCollectionItemScope? = null,
-    isDragging: Boolean = false
+    isDragging: Boolean = false,
+    isReorderableMode: Boolean = false
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -65,11 +70,12 @@ fun HabitItemReorderable(
         CardDefaults.outlinedCardElevation()
     }
     val habitData = rememberSaveable { mutableStateOf<List<HabitCompletionEntity>?>(null) }
-    val showDialog= rememberSaveable { mutableStateOf(false) }
+    val showDialog = rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) {
 
         coroutineScope.launch(Dispatchers.IO) {
-            viewModel.habitRepository.getAllHabitCompletionsByIdFlow(habit.id).collect { habitData.value = it }
+            viewModel.habitRepository.getAllHabitCompletionsByIdFlow(habit.id)
+                .collect { habitData.value = it }
         }
 
 
@@ -81,19 +87,26 @@ fun HabitItemReorderable(
         elevation = cardElevation,
 
         colors = color,
-        onClick = { backStack.add(Screen.HabitDetailsPageRoute(habit.id)) }) {
-        ConfirmationDialog(visible = showDialog.value, confirmAction = {}, onDismiss = {showDialog.value = false})
+        onClick ={ if (!isReorderableMode) { backStack.add(Screen.HabitDetailsPageRoute(habit.id)) }})
+    {
+        ConfirmationDialog(
+            visible = showDialog.value,
+            text = "Do you want to delete this Habit?",
+            confirmAction = { viewModel.deleteHabitById(habit.id) },
+            onDismiss = { showDialog.value = false },
+            confirmationColor = MaterialTheme.colorScheme.error
+        )
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Row(modifier = if(reorderableListScope != null){with(reorderableListScope) {
-                Modifier
-                    .longPressDraggableHandle()
-                    .fillMaxWidth()
-            }}else{ Modifier.fillMaxWidth() }, horizontalArrangement = Arrangement.SpaceBetween)
+            Row(
+                modifier =
+
+                    Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            )
             {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     Text(
@@ -107,18 +120,37 @@ fun HabitItemReorderable(
                             fontWeight = FontWeight.Bold
                         )
                     )
-                    Text(
-                        habit.description,
+                    if (habit.description != "") {
 
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        style = TextStyle(
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
+                        Text(
+                            habit.description,
+
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            style = TextStyle(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
 
+                    }
+                }
+                if (isReorderableMode) {
+                    IconButton(
+                        onClick = {},
+                        modifier = if (reorderableListScope != null) {
+                            with(reorderableListScope) {
+                                Modifier
+                                    .draggableHandle()
+                            }
+                        } else {
+                            Modifier
+                        }
+
+                    ) {
+                        Icon(Icons.Default.DragHandle, contentDescription = "Reorder")
+                    }
                 }
                 /*IconButton(
                     modifier = with(reorderableListScope) {
@@ -136,87 +168,90 @@ fun HabitItemReorderable(
 
 
             }
-
-            Spacer(Modifier.height(20.dp))
-            WeekCalendarNew(addHabit = {date ->
-                coroutineScope.launch(
-                    Dispatchers.IO
-                ) {
-                    viewModel.habitRepository.addWithPartialCheck(
-                        HabitCompletionEntity(
-                            habitId = habit.id,
-                            completionDate = date
-                        )
-                    )
-                }
-            }, deleteHabit = { date ->
-                viewModel.deleteHabitEntryWithPartialCheck(
-                    habitId = habit.id,
-                    date = date
-                )
-            }, habitData = habitData.value)
-
-            /*WeekCalendar(habit, viewModel.habitRepository,
-                addHabit = {date ->
-                    coroutineScope.launch(
-                        Dispatchers.IO
-                    ) {
-                        viewModel.habitRepository.addWithPartialCheck(
-                            HabitCompletionEntity(
-                                habitId = habit.id,
-                                completionDate = date
-                            )
-                        )
-                    }
-            }, deleteHabit = { date ->
-                viewModel.deleteHabitEntryWithPartialCheck(
-                    habitId = habit.id,
-                    date = date
-                )
-            })*/
-
-//            WeekCalendarOld(viewModel, habit)
-
-
-        }
-
-        HorizontalDivider()
-
-        Column(
-            Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.Start
-        ) {
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column { }
-                Row {
-                    val currentMonth = YearMonth.now()
-                    IconButton(
-                        modifier = Modifier,
-                        onClick = {
-                            backStack.add(
-                                Screen.CalenderPageRoute(
-                                    month = currentMonth.toString(),
-                                    habit.id
+            AnimatedVisibility(visible = !isReorderableMode) {
+                Column(Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.height(20.dp))
+                    WeekCalendarNew(addHabit = { date ->
+                        coroutineScope.launch(
+                            Dispatchers.IO
+                        ) {
+                            viewModel.habitRepository.addWithPartialCheck(
+                                HabitCompletionEntity(
+                                    habitId = habit.id,
+                                    completionDate = date
                                 )
                             )
-                        }) {
-                        Icon(Icons.Default.CalendarMonth, contentDescription = "")
-                    }
-                    IconButton(
-                        modifier = Modifier,
-                        onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
-                        Icon(Icons.Default.Edit, contentDescription = "")
-                    }
-                    IconButton(
-                        modifier = Modifier,
-                        onClick = { /*viewModel.deleteHabitById(habit.id)*/
-                        showDialog.value = true}) {
-                        Icon(Icons.Default.Delete, contentDescription = "")
+                        }
+                    }, deleteHabit = { date ->
+                        viewModel.deleteHabitEntryWithPartialCheck(
+                            habitId = habit.id,
+                            date = date
+                        )
+                    }, habitData = habitData.value)
+
+                    /*WeekCalendar(habit, viewModel.habitRepository,
+                        addHabit = {date ->
+                            coroutineScope.launch(
+                                Dispatchers.IO
+                            ) {
+                                viewModel.habitRepository.addWithPartialCheck(
+                                    HabitCompletionEntity(
+                                        habitId = habit.id,
+                                        completionDate = date
+                                    )
+                                )
+                            }
+                    }, deleteHabit = { date ->
+                        viewModel.deleteHabitEntryWithPartialCheck(
+                            habitId = habit.id,
+                            date = date
+                        )
+                    })*/
+
+//            WeekCalendarOld(viewModel, habit)
+                    Spacer(Modifier.height(20.dp))
+
+                    HorizontalDivider()
+
+                    Column(
+                        Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column { }
+                            Row {
+                                val currentMonth = YearMonth.now()
+                                IconButton(
+                                    modifier = Modifier,
+                                    onClick = {
+                                        backStack.add(
+                                            Screen.CalenderPageRoute(
+                                                month = currentMonth.toString(),
+                                                habit.id
+                                            )
+                                        )
+                                    }) {
+                                    Icon(Icons.Default.CalendarMonth, contentDescription = "")
+                                }
+                                IconButton(
+                                    modifier = Modifier,
+                                    onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
+                                    Icon(Icons.Default.Edit, contentDescription = "")
+                                }
+                                IconButton(
+                                    modifier = Modifier,
+                                    onClick = { /*viewModel.deleteHabitById(habit.id)*/
+                                        showDialog.value = true
+                                    }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "")
+                                }
+                            }
+                        }
                     }
                 }
             }

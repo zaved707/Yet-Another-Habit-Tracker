@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.components
 
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 
@@ -29,10 +31,11 @@ import androidx.compose.ui.unit.dp
 fun ConfirmationDialog(
     visible: Boolean,
     text: String = "do you want to confirm this?",
-    confirmText: String = "confirm",
-    cancelText: String = "cancel",
+    confirmText: String = "Confirm!",
+    cancelText: String = "Cancel?",
     confirmAction: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    confirmationColor : Color = MaterialTheme.colorScheme.primary
 ) {
     if (visible) {
         Dialog(onDismissRequest = { onDismiss() }) {
@@ -52,10 +55,10 @@ fun ConfirmationDialog(
                     ) {
                         Button(modifier = Modifier.weight(1f),
                             onClick = { onDismiss() },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                         ) { Text(cancelText, color = MaterialTheme.colorScheme.onSurface) }
                         Spacer(Modifier.width(20.dp))
-                        Button(modifier = Modifier.weight(1f), onClick = { confirmAction() }) { Text(confirmText) }
+                        Button(modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = confirmationColor), onClick = { confirmAction() }) { Text(confirmText) }
                     }
                 }
             }

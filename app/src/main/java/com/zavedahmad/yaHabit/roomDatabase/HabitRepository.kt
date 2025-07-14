@@ -14,11 +14,14 @@ class HabitRepository @Inject constructor(
 ) {
     // HabitDao functions
     // Write operations
+
     suspend fun move(fromIndex: Int, toIndex: Int) {
         val entity = habitDao.getHabitByIndex(fromIndex)
-        habitDao.pluck(entity.index)
-        habitDao.vacant(toIndex)
-        habitDao.changeIndex(toIndex, entity.id)
+        db.runInTransaction {runBlocking {
+            habitDao.pluck(entity.index)
+            habitDao.vacant(toIndex)
+            habitDao.changeIndex(toIndex, entity.id)
+        }}
     }
 
 

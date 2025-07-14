@@ -44,7 +44,8 @@ class MainPageViewModel @Inject constructor(
 
     private val _habits = MutableStateFlow<List<HabitEntity>>(emptyList())
     val habits: StateFlow<List<HabitEntity>> = _habits
-
+    private val _isReorderableMode = MutableStateFlow(false)
+    val isReorderableMode = _isReorderableMode.asStateFlow()
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
 
@@ -54,6 +55,10 @@ class MainPageViewModel @Inject constructor(
         }
         collectThemeMode()
     }
+    fun changeReorderableMode(value : Boolean){
+        _isReorderableMode.value = value
+    }
+
 
     fun moveHabits(from: Int, to: Int) {
         _habits.value = _habits.value.toMutableList().apply { add(to, removeAt(from)) }
@@ -116,7 +121,7 @@ class MainPageViewModel @Inject constructor(
     }
 
     fun move(from: Int, to: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             habitRepository.move(from, to)
         }
     }
