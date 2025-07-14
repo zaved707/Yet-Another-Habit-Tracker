@@ -21,6 +21,16 @@ This is a mordern and simple habit tracker for android.
 Download the app from Releases and then install on your android phone to use.
 
 
+## Screenshots
+
+<div style="display: flex; flex-direction: row; gap: 10px;">
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/Media/ScreenShots/img.png?raw=true" alt="App Screenshot 1" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/Media/ScreenShots/img_1.png?raw=true" alt="App Screenshot 2" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/Media/ScreenShots/img_2.png?raw=true" alt="App Screenshot 3" width="200"/>
+</div>
+
+
+
 ## Technologies Used
 - [jetpack Compose](https://developer.android.com/compose) for ui building and state management
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection
