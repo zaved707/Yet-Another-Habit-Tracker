@@ -17,8 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
@@ -40,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,9 +57,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
+import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +71,7 @@ import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
+fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotStateList<NavKey>) {
     val habitsPastYear = viewModel.habitsPastYear.collectAsStateWithLifecycle().value
     val habitDetails = viewModel.habitDetails.collectAsStateWithLifecycle().value
     val month = YearMonth.now()
@@ -96,7 +103,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
                 Scaffold(Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
                     MediumFlexibleTopAppBar(
                         title = { Text(habitDetails.name, fontWeight = FontWeight.Bold) },
-
+                        actions = {Menu(viewModel,backStack)},
                         scrollBehavior = scrollBehavior
                     )
                 }) { innerPadding ->
@@ -263,6 +270,43 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel) {
     }
 }
 
-fun addMoreMonths(month: YearMonth): List<YearMonth> {
-    return (0..12).map { month.minusMonths(it.toLong()) }
+@Composable
+private fun Menu(viewModel: HabitDetailsPageViewModel,backStack: SnapshotStateList<NavKey>) {
+    val showDialog = rememberSaveable { mutableStateOf(false) }
+    ConfirmationDialog(
+        visible = showDialog.value,
+        text = "Do you want to delete this Habit?",
+        confirmAction = {showDialog.value = false
+            backStack.removeLastOrNull()
+            viewModel.deleteHabitById(viewModel.navKey.habitId) },
+        onDismiss = { showDialog.value = false },
+        confirmationColor = MaterialTheme.colorScheme.error
+    )
+
+    val menuVisible = rememberSaveable { mutableStateOf(false) }
+    IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
+        Icon(
+            imageVector = Icons.Outlined.MoreVert,
+            contentDescription = "More"
+        )
+    }
+    DropdownMenu(
+        expanded = menuVisible.value, // Set to true to show the menu
+        onDismissRequest = { menuVisible.value = false }
+    ) {
+        DropdownMenuItem(text = {
+            Row {
+                Text("Edit Habit")
+
+            }
+        }, onClick = { menuVisible.value = false
+            backStack.add(Screen.AddHabitPageRoute(viewModel.navKey.habitId))})
+        DropdownMenuItem(text = {
+            Row {
+                Text("Delete Habit")
+
+            }
+        }, onClick = { menuVisible.value = false
+        showDialog.value  = true})
+    }
 }

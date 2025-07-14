@@ -184,7 +184,7 @@ class RecipePickerActivity : ComponentActivity() {
                                                             factory.create(key)
                                                         }
                                                     )
-                                                HabitDetailsPage(habitDetailsPageViewModel)
+                                                HabitDetailsPage(habitDetailsPageViewModel, backStack)
 
 
                                             }

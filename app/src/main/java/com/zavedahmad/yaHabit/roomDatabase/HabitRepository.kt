@@ -17,11 +17,13 @@ class HabitRepository @Inject constructor(
 
     suspend fun move(fromIndex: Int, toIndex: Int) {
         val entity = habitDao.getHabitByIndex(fromIndex)
-        db.runInTransaction {runBlocking {
-            habitDao.pluck(entity.index)
-            habitDao.vacant(toIndex)
-            habitDao.changeIndex(toIndex, entity.id)
-        }}
+        db.runInTransaction {
+            runBlocking {
+                habitDao.pluck(entity.index)
+                habitDao.vacant(toIndex)
+                habitDao.changeIndex(toIndex, entity.id)
+            }
+        }
     }
 
 
@@ -43,8 +45,16 @@ class HabitRepository @Inject constructor(
         habitDao.addHabit(habitEntity)
     }
 
-    suspend fun deleteHabit(id: Int) {
-        habitDao.deleteHabitById(id)
+    fun deleteHabit(id: Int) { // this deletes with index check
+        db.runInTransaction {
+            runBlocking {
+                val habitEntity = getHabitDetailsById(id)
+                // first pluck from this place
+                habitDao.pluck(habitEntity.index)
+                // then delete the habit
+                habitDao.deleteHabitById(id)
+            }
+        }
     }
 
     // Read operations
@@ -97,37 +107,39 @@ class HabitRepository @Inject constructor(
         /* now add all datesNotPresentIndDatabase to database as partial Entries*/
         db.runInTransaction {
             runBlocking {
-        datesNotPresentInDataBase.forEach { date ->
-            addHabitCompletionEntry(
-                HabitCompletionEntity(
-                    habitId = habitEntity.id,
-                    completionDate = date,
-                    partial = true
-                )
-            )
+                datesNotPresentInDataBase.forEach { date ->
+                    addHabitCompletionEntry(
+                        HabitCompletionEntity(
+                            habitId = habitEntity.id,
+                            completionDate = date,
+                            partial = true
+                        )
+                    )
+                }
+                /*then add the entry as non partial*/
+
+                /* add a condition where current Entry is partial. in that case turn it to absolute*/
+                if (currentEntryPresentInPartial) {
+                    habitCompletionDao.deleteHabitCompletionEntry(
+                        habitEntity.id,
+                        entry.completionDate
+                    )
+
+                }
+
+                if (!currentEntryPresentInAbsolute) {
+                    println("adding date to database")
+                    addHabitCompletionEntry(
+                        HabitCompletionEntity(
+                            habitId = habitEntity.id,
+                            completionDate = entry.completionDate
+                        )
+                    )
+                }
+            }
+
         }
-        /*then add the entry as non partial*/
-
-        /* add a condition where current Entry is partial. in that case turn it to absolute*/
-        if (currentEntryPresentInPartial) {
-            habitCompletionDao.deleteHabitCompletionEntry(
-                habitEntity.id,
-                entry.completionDate
-            )
-
-        }
-
-        if (!currentEntryPresentInAbsolute) {
-            println("adding date to database")
-            addHabitCompletionEntry(
-                HabitCompletionEntity(
-                    habitId = habitEntity.id,
-                    completionDate = entry.completionDate
-                )
-            )}
-        }
-
-    }}
+    }
 
 
     suspend fun repairPartials(newHabitEntity: HabitEntity) {

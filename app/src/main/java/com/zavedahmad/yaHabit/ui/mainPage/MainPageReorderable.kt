@@ -98,7 +98,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                             "Habits",
                             fontWeight = FontWeight.Bold
                         )
-                    }, // todo dropdown menu in the top bar
+                    },
                     actions = {
 
                         if(isReorderableMode.value
@@ -217,7 +217,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 }
 
 @Composable
-fun Menu(viewModel: MainPageViewModel) {
+private fun Menu(viewModel: MainPageViewModel) {
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     IconButton(onClick = { menuVisible.value = !menuVisible.value }) {

@@ -72,6 +72,9 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
             )
         }
     }
+    fun deleteHabitById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
+    }
     fun getHabitDetails() {
         viewModelScope.launch(Dispatchers.IO) {
             _habitDetails.value = habitDao.getHabitById(navKey.habitId)
