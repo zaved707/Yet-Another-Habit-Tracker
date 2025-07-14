@@ -2,6 +2,7 @@ package com.zavedahmad.yaHabit.ui.settingsScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.InvertColors
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -21,9 +24,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,8 +55,9 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     var isThemeDialogActive by remember { mutableStateOf(false) }
-
+    val dynamicColor = viewModel.dynamicColor.collectAsStateWithLifecycle().value
     val themeNow by viewModel.themeMode.collectAsStateWithLifecycle()
+    val amoledColors =  viewModel.amoledTheme.collectAsStateWithLifecycle().value
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -162,6 +168,40 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 title = "Theme Mode",
                 description = themeNow?.value ?: "system",
                 task = { isThemeDialogActive = true })
+            SettingsItem(
+                icon = Icons.Default.Palette,
+                title = "Dynamic Color",
+
+                task = {},
+                actions = {
+                    Row {
+                        VerticalDivider()
+                        Spacer(Modifier.width(20.dp))
+                        Switch(
+                            checked = if (dynamicColor?.value == null) {
+                                false
+                            } else {
+                                dynamicColor.value == "true"
+                            }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
+                    }
+                })
+            SettingsItem(
+                icon = Icons.Default.InvertColors,
+                title = "Amoled",
+
+                task = {},
+                actions = {
+                    Row {
+                        VerticalDivider()
+                        Spacer(Modifier.width(20.dp))
+                        Switch(
+                            checked = if (amoledColors?.value == null) {
+                                false
+                            } else {
+                                amoledColors.value == "true"
+                            }, onCheckedChange = { viewModel.setAmoledTheme(it.toString()) })
+                    }
+                })
 
         }
 
@@ -170,32 +210,48 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
 }
 
 @Composable
-fun SettingsItem(icon: ImageVector, title: String, description: String?, task: () -> Unit) {
+fun SettingsItem(
+    icon: ImageVector,
+    title: String,
+    description: String? = null,
+    task: () -> Unit,
+    actions: @Composable () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
             .clickable(onClick = { task() })
             .fillMaxWidth()
-            .padding(20.dp),
+            .padding(20.dp)
+            .height(50.dp), horizontalArrangement = Arrangement.Absolute.SpaceBetween
 
-        ) {
-        Icon(
-            modifier = Modifier.padding(10.dp),
-            imageVector = icon,
-            contentDescription = description
-        )
-        Spacer(Modifier.width(20.dp))
-        Column {
-            Text(
-                title,
-                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
+    ) {
+        Row (verticalAlignment = Alignment.CenterVertically){
+            Icon(
+                modifier = Modifier.padding(10.dp),
+                imageVector = icon,
+                contentDescription = description
             )
-            description?.let {
+            Spacer(Modifier.width(20.dp))
+            Column {
                 Text(
-                    description,
-                    style = TextStyle(fontWeight = FontWeight.ExtraLight, fontSize = 15.sp),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    title,
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 )
+                description?.let {
+                    Text(
+                        description,
+                        style = TextStyle(fontWeight = FontWeight.ExtraLight, fontSize = 15.sp),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                }
+            }
+        }
+        if (actions != {}) {
+            Row {
+
+
+                actions()
             }
         }
     }

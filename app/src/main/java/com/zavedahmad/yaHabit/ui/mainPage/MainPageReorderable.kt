@@ -15,11 +15,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.FormatListBulleted
+import androidx.compose.material.icons.filled.KeyOff
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
@@ -46,9 +52,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
@@ -88,6 +96,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             )
         }
     } else {
+
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
@@ -172,7 +181,28 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
+                val pagerState = rememberPagerState(pageCount = {
+                    1
+                })
 
+                if (habits.value.isEmpty()) {
+                    VerticalPager(state = pagerState) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.FormatListBulleted,
+                                modifier = Modifier.size(200.dp),
+                                contentDescription = "placeholderr",
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                            Text("You Have not Yet added any Habits \n click the button below to add one",textAlign = TextAlign.Center)
+
+                        }
+                    }
+                } else {
 
                 LazyColumn(
                     modifier = Modifier
@@ -211,7 +241,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 
                 }
-            }
+            }}
         }
     }
 }

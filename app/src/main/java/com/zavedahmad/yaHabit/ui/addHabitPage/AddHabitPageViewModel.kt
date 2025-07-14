@@ -34,6 +34,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
 
     val colors = listOf<Color>(
 
+        Color(0xFFFFD700), // Vibrant Gold (Gold)
 
         Color(0xFFBA55D3), // Vibrant Orchid (MediumOrchid)
 
@@ -45,7 +46,6 @@ class AddHabitPageViewModel @AssistedInject constructor(
 
         Color(0xFFADFF2F), // Vibrant Green Yellow (GreenYellow)
 
-        Color(0xFFFFD700), // Vibrant Gold (Gold)
 
         Color(0xFFFF8C00), // Vibrant Dark Orange (DarkOrange)
 

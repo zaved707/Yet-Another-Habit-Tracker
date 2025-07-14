@@ -24,6 +24,7 @@ fun CustomTheme(
     primaryColor: Color? = null,
     secondaryColor: Color? = null,
     tertiaryColor: Color? = null,
+    isAmoled: Boolean = true,
     theme: String,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
@@ -55,7 +56,7 @@ fun CustomTheme(
                 secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
                 tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
                 isDark = darkTheme,
-
+                isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
                 style = PaletteStyle.Vibrant,
                 contrastLevel = 0.5 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
@@ -66,9 +67,9 @@ fun CustomTheme(
                 secondary = secondaryColor ?: PurpleGrey80,
                 tertiary = tertiaryColor ?: Pink80,
                 isDark = darkTheme,
-
+                isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
-                style = PaletteStyle.Expressive,
+                style = PaletteStyle.Vibrant,
                 contrastLevel = 0.0 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
             )
         }

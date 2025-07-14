@@ -1,4 +1,4 @@
-todo IMPORTANT In Repository make a way to delete with index checks
+todo selection
 todo add a way to choose amoled theme in settings
 todo add a way to select color for app theme in settings
 todo change size of grid calender in details page
@@ -16,6 +16,7 @@ todo make a common confirmation modal
 todo POSTPONED add a category table
 todo POSTPONED load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo POSTPONED add category as a primary key to habits
+doneIMPORTANT In Repository make a way to delete with index checks
 done check that the entry that goes in to repository is has id 0 so make sure it doesn't replace the entry already there with the id 0
 done  bug in full details widget its not showing past 12 months if habit list is empty also crashing if list is empty
 done app crashing in zero entries  // app was crashing because init was reffering to a variable which was not yet initialized

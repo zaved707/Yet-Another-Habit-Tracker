@@ -13,15 +13,23 @@ import javax.inject.Inject
 
 @HiltViewModel()
 class SettingsViewModel @Inject constructor(val preferencesDao: PreferencesDao) : ViewModel() {
-    private val _userInput = MutableStateFlow("")
 
 
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
 
+    private val _dynamicColor = MutableStateFlow<PreferenceEntity?>(null)
+    val dynamicColor = _dynamicColor.asStateFlow()
+
+    private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
+    val amoledTheme = _amoledTheme.asStateFlow()
+
+
     init {
 
         collectThemeMode()
+        collectDynamicColor()
+        collectAmoledTheme()
     }
 
     fun setTheme(value: String) {
@@ -35,6 +43,34 @@ class SettingsViewModel @Inject constructor(val preferencesDao: PreferencesDao) 
         viewModelScope.launch(Dispatchers.IO) {
             preferencesDao.getPreferenceFlow("ThemeMode").collect { preference ->
                 _themeMode.value = preference ?: PreferenceEntity("ThemeMode", "system")
+            }
+        }
+    }
+
+    fun setDynamicColor(value: String) {
+        viewModelScope.launch {
+            preferencesDao.updatePreference(PreferenceEntity("DynamicColor", value))
+        }
+    }
+
+    fun collectDynamicColor() {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesDao.getPreferenceFlow("DynamicColor").collect { preference ->
+                _dynamicColor.value = preference ?: PreferenceEntity("DynamicColor", "false")
+            }
+        }
+    }
+
+    fun setAmoledTheme(value: String) {
+        viewModelScope.launch {
+            preferencesDao.updatePreference(PreferenceEntity("AmoledTheme", value))
+        }
+    }
+
+    fun collectAmoledTheme() {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesDao.getPreferenceFlow("AmoledTheme").collect { preference ->
+                _amoledTheme.value = preference ?: PreferenceEntity("AmoledTheme", "false")
             }
         }
     }

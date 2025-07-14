@@ -141,6 +141,11 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                        Text("Basic", fontSize = 20.sp)
+                    }
+                    HorizontalDivider()
+                    Spacer(Modifier.height(20.dp))
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
                         value = name,
@@ -164,13 +169,12 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         singleLine = true
                     )
 
-                    Spacer(Modifier.height(20.dp))
 
 
 
 
 
-                    Spacer(Modifier.height(20.dp))
+
 
                     Spacer(Modifier.height(20.dp))
 
@@ -200,8 +204,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                         Text("Frequency", fontSize = 20.sp)
                     }
-                        Spacer(Modifier.height(10.dp))
                     HorizontalDivider()
+                        Spacer(Modifier.height(20.dp))
                     FrequencySelector(
                         viewModel,
                         onErrorValueChange = { it ->

@@ -87,16 +87,14 @@ class RecipePickerActivity : ComponentActivity() {
 
             val viewModelMainPage = hiltViewModel<MainPageViewModel>()
 
-            val isTopMainPageRoute =
-                if (backStack.lastOrNull() is Screen.MainPageRoute || backStack.lastOrNull() is Screen.TestingPageRoute || backStack.lastOrNull() is Screen.FavouritePageRoute) {
-                    true
-                } else {
-                    false
-                }
+
             val settingsViewModel = hiltViewModel<SettingsViewModel>()
             val theme by settingsViewModel.themeMode.collectAsStateWithLifecycle()
+            val isDynamicColor by settingsViewModel.dynamicColor.collectAsStateWithLifecycle()
+            val isAmoledColor by settingsViewModel.amoledTheme.collectAsStateWithLifecycle()
             val themeReal = theme
-            if (themeReal == null) {
+            val realDynamicColors = isDynamicColor
+            if (themeReal == null || realDynamicColors == null || isAmoledColor == null) {
                 ComposeTemplateTheme("system") {
                     Box(
                         Modifier
@@ -106,8 +104,8 @@ class RecipePickerActivity : ComponentActivity() {
                 }
             } else {
 
-                ComposeTemplateTheme(themeReal.value) {
-                    CustomTheme(theme = themeReal.value, useExistingTheme = true) {
+                ComposeTemplateTheme(themeReal.value, dynamicColor = realDynamicColors.value == "true") {
+                    CustomTheme(theme = themeReal.value, useExistingTheme = true, isAmoled = isAmoledColor?.value == "true") {
 
                         Box(modifier = Modifier.padding()) {
 
