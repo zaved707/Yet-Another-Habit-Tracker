@@ -109,7 +109,7 @@ fun WeekCalendar(
             DayItem(
                 day.date,
                 state = dayState,
-                addHabitEntry = {
+                addHabit = {
                    addHabit(day.date)
                 },
                 deleteHabit = {

@@ -16,7 +16,7 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun WeekCalendarNew(
+fun WeekCalendarData(
 
     addHabit: (date: LocalDate) -> Unit,
     deleteHabit: (date: LocalDate) -> Unit,
@@ -88,10 +88,10 @@ fun WeekCalendarNew(
 
 
 
-            DayItem(
+            DayItemNew(
                 day.date,
                 state = dayState,
-                addHabitEntry = {
+                addHabit = {
                    addHabit(day.date)
                 },
                 deleteHabit = {

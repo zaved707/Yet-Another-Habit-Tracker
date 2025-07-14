@@ -92,7 +92,7 @@ fun MonthCalendarData(
                     DayItem(
                         date = day.date,
                         dayState,
-                        addHabitEntry = { addHabit(day.date) },
+                        addHabit = { addHabit(day.date) },
                         deleteHabit = { deleteHabit(day.date) })
                 }
             )

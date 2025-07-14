@@ -38,7 +38,6 @@ import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
-import com.zavedahmad.yaHabit.ui.calenderPage.MonthCalendarData
 import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -171,7 +170,7 @@ fun HabitItemReorderable(
             AnimatedVisibility(visible = !isReorderableMode) {
                 Column(Modifier.fillMaxWidth()) {
                     Spacer(Modifier.height(20.dp))
-                    WeekCalendarNew(addHabit = { date ->
+                    WeekCalendarData(addHabit = { date ->
                         coroutineScope.launch(
                             Dispatchers.IO
                         ) {

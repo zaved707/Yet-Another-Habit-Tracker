@@ -5,26 +5,19 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kizitonwose.calendar.core.CalendarDay
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import java.time.LocalDate
@@ -33,9 +26,10 @@ import java.time.LocalDate
 fun DayItem(
     date: LocalDate,
     state: String,
-    addHabitEntry: () -> Unit = {},
+    addHabit: () -> Unit = {},
     deleteHabit: () -> Unit= {}
 ) {
+
 
 
     var bgColor = MaterialTheme.colorScheme.surfaceVariant
@@ -58,7 +52,7 @@ fun DayItem(
                     .combinedClickable(
                         onClick = {},
                         onLongClick = {
-                            addHabitEntry()
+                            addHabit()
                         },
                         hapticFeedbackEnabled = true
                     )
@@ -245,7 +239,7 @@ fun DayItem(
                     .combinedClickable(
                         onClick = {},
                         onLongClick = {
-                            addHabitEntry()
+                            addHabit()
                         },
                         hapticFeedbackEnabled = true
                     )

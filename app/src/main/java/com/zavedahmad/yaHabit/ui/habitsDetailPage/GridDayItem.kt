@@ -17,10 +17,10 @@ import java.time.LocalDate
 @Composable
 fun GridDayItem(
     state: String = "error",
-    addHabit : () -> Unit = {},
-    date : LocalDate,
-    deleteHabit : () -> Unit = {},
-    showDate : Boolean = false,
+    addHabit: () -> Unit = {},
+    date: LocalDate,
+    deleteHabit: () -> Unit = {},
+    showDate: Boolean = false,
     interactive: Boolean = false
 ) {
     var buttonAction = {}
@@ -29,10 +29,11 @@ fun GridDayItem(
             buttonAction = deleteHabit
             Pair(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary)
         }
+
         "absoluteDisabled" -> {
             buttonAction = addHabit
             Pair(
-                MaterialTheme.colorScheme.inverseSurface.copy(0.5f),
+                MaterialTheme.colorScheme.inverseSurface.copy(0.8f),
                 MaterialTheme.colorScheme.inverseOnSurface
             )
         }
@@ -45,26 +46,32 @@ fun GridDayItem(
                 MaterialTheme.colorScheme.onBackground.copy(0.6f)
             )
         }
+
         "partialDisabled" -> {
-            buttonAction = addHabit
+
             Pair(
-                MaterialTheme.colorScheme.inverseSurface.copy(0.2f),
+                MaterialTheme.colorScheme.inverseSurface.copy(0.3f),
                 MaterialTheme.colorScheme.inverseOnSurface
             )
         }
 
 
         "incompleteDisabled" -> {
-            buttonAction = addHabit
+
             Pair(
-                MaterialTheme.colorScheme.surfaceVariant.copy(0.5f),
+                MaterialTheme.colorScheme.inverseSurface.copy(0.05f),
                 MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+
         "incomplete" -> {
             buttonAction = addHabit
-            Pair(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+            Pair(
+                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
+
         else -> {
             buttonAction = addHabit
             Pair(MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.onError)
@@ -79,11 +86,10 @@ fun GridDayItem(
         modifier
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(5.dp))
-            .background(color = bgColor)
-            ,
+            .background(color = bgColor),
         contentAlignment = Alignment.Center
     ) {
-        if (showDate){
+        if (showDate) {
             Text(date.dayOfMonth.toString(), color = textColor)
         }
 
