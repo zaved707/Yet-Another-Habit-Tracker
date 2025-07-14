@@ -1,3 +1,5 @@
+todo IMPORTANT Description NOt working for new Items
+todo make Readmefor App on Github
 todo Back BUtton in editHabitPage
 todo Back Button in HabitDetailsPage
 todo selection
@@ -6,6 +8,13 @@ todo change size of grid calender in details page
 todo add a option for no color choosing
 
 todo a button on habit card to check today's habit
+todo > Task :app:kspReleaseKotlin
+    w: [ksp] habitId column references a foreign key but it is not part of an index. This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
+     w: [ksp] The nullable `Collection` (kotlin.collections.List<com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity>?) return type in a DAO function is meaningless because Room will instead return an empty `Collection` if no rows are returned from the query.
+     w: [ksp] The nullable `Collection` (kotlin.collections.List<com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity>?) return type in a DAO function is meaningless because Room will instead return an empty `Collection` if no rows are returned from the query.
+     w: [ksp] The nullable `Collection` (kotlin.collections.List<com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity>?) return type in a DAO function is meaningless because Room will instead return an empty `Collection` if no rows are returned from the query.
+     w: [ksp] The nullable `Collection` (kotlin.collections.List<com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity>?) return type in a DAO function is meaningless because Room will instead return an empty `Collection` if no rows are returned from the query.
+     w: [ksp] The nullable `Collection` (kotlin.collections.List<com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity>?) return type in a DAO function is meaningless because Room will instead return an empty `Collection` if no rows are returned from the query.
 
 todo  improve  navigation animations
 todo POSTPONED add a category table
