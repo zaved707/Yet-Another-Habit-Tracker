@@ -114,7 +114,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
                     newHabitEntity
 
                 )
-                habitRepository.repairPartials(newHabitEntity)
+//                habitRepository.repairPartials(newHabitEntity)
             }
         } else {
             viewModelScope.launch(Dispatchers.IO) {

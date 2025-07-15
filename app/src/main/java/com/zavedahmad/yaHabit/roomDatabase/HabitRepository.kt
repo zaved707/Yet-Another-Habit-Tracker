@@ -43,7 +43,11 @@ class HabitRepository @Inject constructor(
     }
 
     suspend fun editItem(habitEntity: HabitEntity) {
-        habitDao.addHabit(habitEntity)
+        db.runInTransaction {
+            runBlocking {
+            habitDao.addHabit(habitEntity)
+            repairPartials(habitEntity)
+        }}
     }
 
     fun deleteHabit(id: Int) { // this deletes with index check
