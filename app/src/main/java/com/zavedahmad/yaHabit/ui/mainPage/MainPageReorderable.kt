@@ -23,6 +23,7 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.KeyOff
@@ -110,8 +111,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     },
                     actions = {
 
-                        if(isReorderableMode.value
-                        ){
+                        if (isReorderableMode.value
+                        ) {
                             Button(
                                 onClick = {
 
@@ -129,18 +130,26 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                             }
                         }
 
-                             if(!isReorderableMode.value
-                             ){
-                            Row {
+                        if (!isReorderableMode.value
+                        ) {
+                           Row{
+                               Button(
+                                   onClick = {
 
-                            IconButton(onClick = { backStack.add(Screen.SettingsPageRoute) }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Settings,
-                                    contentDescription = "Settings"
-                                )
+
+                                       backStack.add(Screen.AddHabitPageRoute())
+
+                                   },
+                                   modifier = Modifier,
+                                   colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                               ) {
+                                   Icon(
+                                       Icons.Default.AddCircle,
+                                       contentDescription = "turn off reorderable mode"
+                                   )
+                               }
+                                Menu(viewModel, backStack)
                             }
-                            Menu(viewModel)
-                                }
                         }
 
 
@@ -149,16 +158,17 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     scrollBehavior = scrollBehavior
                 )
             },
-            floatingActionButton = {
+           /* floatingActionButton = {
                 AnimatedVisibility(
                     visible = !isReorderableMode.value,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
-                ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
-                    Text("Add Habit")
-                }}
-            }
+                    ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
+                        Text("Add Habit")
+                    }
+                }
+            }*/
         ) { innerPadding ->
 
             val lazyListState = rememberLazyListState()
@@ -198,56 +208,67 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                 contentDescription = "placeholderr",
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                             )
-                            Text("You Have not Yet added any Habits \n click the button below to add one",textAlign = TextAlign.Center)
+                            Text(
+                                "You Have not Yet added any Habits \n click the '+' button  to add one",
+                                textAlign = TextAlign.Center
+                            )
 
                         }
                     }
                 } else {
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
 
-                    state = lazyListState,
-                    contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
+                        state = lazyListState,
+                        contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
 
-                    items(habits.value, key = { it.id }) { habit ->
-                        ReorderableItem(reorderableLazyListState, key = habit.id) { isDragging ->
-                            CustomTheme(theme = themeReal.value, primaryColor = habit.color,isAmoled = isAmoledColor?.value == "true" ) {
+                        items(habits.value, key = { it.id }) { habit ->
+                            ReorderableItem(
+                                reorderableLazyListState,
+                                key = habit.id
+                            ) { isDragging ->
+                                CustomTheme(
+                                    theme = themeReal.value,
+                                    primaryColor = habit.color,
+                                    isAmoled = isAmoledColor?.value == "true"
+                                ) {
 
 
-                                // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
+                                    // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
 
 
-                                HabitItemReorderable(
-                                    backStack = backStack,
-                                    viewModel = viewModel,
-                                    habit = habit,
-                                    reorderableListScope = this,
+                                    HabitItemReorderable(
+                                        backStack = backStack,
+                                        viewModel = viewModel,
+                                        habit = habit,
+                                        reorderableListScope = this,
 
-                                    isDragging = isDragging,
-                                    isReorderableMode = isReorderableMode.value
-                                )
+                                        isDragging = isDragging,
+                                        isReorderableMode = isReorderableMode.value
+                                    )
 
 //                                Spacer(Modifier.height(40.dp))
 
 
+                                }
                             }
                         }
+                        item { Spacer(Modifier.height(20.dp)) }
+
+
                     }
-                    item { Spacer(Modifier.height(70.dp)) }
-
-
                 }
-            }}
+            }
         }
     }
 }
 
 @Composable
-private fun Menu(viewModel: MainPageViewModel) {
+private fun Menu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
@@ -260,11 +281,18 @@ private fun Menu(viewModel: MainPageViewModel) {
         expanded = menuVisible.value, // Set to true to show the menu
         onDismissRequest = { menuVisible.value = false }
     ) {
+        DropdownMenuItem(text = { Row { Text("Settings") } }, onClick = {
+            menuVisible.value = false
+            backStack.add(Screen.SettingsPageRoute)
+        })
         DropdownMenuItem(text = {
             Row {
                 Text("Reorder Mode")
 
             }
-        }, onClick = { viewModel.changeReorderableMode(!isReorderableMode.value) })
+        }, onClick = {
+            viewModel.changeReorderableMode(!isReorderableMode.value)
+            menuVisible.value = false
+        })
     }
 }

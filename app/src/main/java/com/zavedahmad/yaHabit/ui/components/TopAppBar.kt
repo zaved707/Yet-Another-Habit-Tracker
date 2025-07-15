@@ -38,7 +38,8 @@ fun MyTopABCommon(
                         )
                     }
                 }
-            }},
-            scrollBehavior = scrollBehavior
-            )
-        }
+            }
+        },
+        scrollBehavior = scrollBehavior
+    )
+}

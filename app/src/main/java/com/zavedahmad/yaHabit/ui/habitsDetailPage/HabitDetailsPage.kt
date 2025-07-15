@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -93,6 +94,13 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
             CustomTheme(theme = themeReal.value, primaryColor = habitDetails.color,isAmoled = isAmoledColor?.value == "true" ) {
                 Scaffold(Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
                     MediumFlexibleTopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = { backStack.removeLastOrNull() }) {
+                                Icon(
+                                    Icons.AutoMirrored.Default.ArrowBack, contentDescription = "go back"
+                                )
+                            }
+                        },
                         title = { Text(habitDetails.name, fontWeight = FontWeight.Bold) },
                         actions = {Menu(viewModel,backStack)},
                         scrollBehavior = scrollBehavior

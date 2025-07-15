@@ -1,7 +1,4 @@
 todo IMPORTANT Description NOt working for new Items
-todo make Readmefor App on Github
-todo Back BUtton in editHabitPage
-todo Back Button in HabitDetailsPage
 todo selection
 todo add a way to select color for app theme in settings
 todo change size of grid calender in details page
@@ -21,6 +18,9 @@ todo POSTPONED add a category table
 todo POSTPONED test calander page properly
 todo POSTPONED load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo POSTPONED add category as a primary key to habits
+done make Readmefor App on Github
+done Back BUtton in editHabitPage
+done Back Button in HabitDetailsPage
 done add delete modal
 done  when habits list is empty show a page
 done make a common confirmation modal

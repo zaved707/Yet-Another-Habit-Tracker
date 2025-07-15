@@ -36,6 +36,7 @@ Download the app from Releases and then install on your android phone to use.
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection
 - [Room](https://developer.android.com/jetpack/androidx/releases/room) for database
 - [Reorderable](https://github.com/Calvin-LL/Reorderable) for Reorderable habits
+- navigation 3 for navigation 
 ## Roadmap
 - HomeScreen Widgets
 - Measurable Habit
