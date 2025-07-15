@@ -1,10 +1,8 @@
-todo IMPORTANT Description NOt working for new Items
-todo selection
-todo add a way to select color for app theme in settings
-todo change size of grid calender in details page
-todo add a option for no color choosing
-
+todo check  frequency selector chips change size to show full text on appi phone
+todo icon to the left of EveryDay or Weekly display in habitDetailsPage
 todo a button on habit card to check today's habit
+todo selection
+
 todo > Task :app:kspReleaseKotlin
     w: [ksp] habitId column references a foreign key but it is not part of an index. This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
      w: [ksp] The nullable `Collection` (kotlin.collections.List<com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity>?) return type in a DAO function is meaningless because Room will instead return an empty `Collection` if no rows are returned from the query.
@@ -14,6 +12,8 @@ todo > Task :app:kspReleaseKotlin
      w: [ksp] The nullable `Collection` (kotlin.collections.List<com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity>?) return type in a DAO function is meaningless because Room will instead return an empty `Collection` if no rows are returned from the query.
 
 todo  improve  navigation animations
+todo LOW PRIORITY add a option for no color choosing
+todo LOW PRIORITY add a way to select color for app theme in settings
 todo POSTPONED add a category table
 todo POSTPONED test calander page properly
 todo POSTPONED load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
@@ -22,9 +22,11 @@ done make Readmefor App on Github
 done Back BUtton in editHabitPage
 done Back Button in HabitDetailsPage
 done add delete modal
+done change size of grid calender in details page
 done  when habits list is empty show a page
 done make a common confirmation modal
 doneIMPORTANT In Repository make a way to delete with index checks
+done IMPORTANT Description NOt working for new Items
 done  in detailsPage make a action in scaffold where user can delete or edit the habit
 done add a way to choose amoled theme in settings
 done make a page for Reordering

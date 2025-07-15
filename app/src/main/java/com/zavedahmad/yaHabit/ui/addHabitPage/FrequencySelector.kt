@@ -122,7 +122,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
     Row (Modifier.fillMaxWidth()){
         options.forEachIndexed { index, item ->
             val isChecked = streakChecked.value == index
-            ToggleButton(modifier = Modifier.weight(1f),
+            ToggleButton(modifier =if(!isChecked) {Modifier.weight(1f)}else{Modifier},
                 checked = isChecked, shapes = when (index) {
                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
                         pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
