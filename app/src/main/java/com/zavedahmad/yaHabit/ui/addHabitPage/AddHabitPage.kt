@@ -214,7 +214,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                                 color = Color.Gray
                             )
                         },
-                        onValueChange = { viewModel.setHabitDescription(it) },
+                        onValueChange = {
+                            viewModel.setHabitDescription(it) },
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent

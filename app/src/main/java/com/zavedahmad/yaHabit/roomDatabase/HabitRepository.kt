@@ -33,6 +33,7 @@ class HabitRepository @Inject constructor(
             HabitEntity(
                 name = habitEntity.name,
                 color = habitEntity.color,
+                description = habitEntity.description,
                 index = max?.let { it + 1 } ?: 0,
                 cycle = habitEntity.cycle,
                 frequency = habitEntity.frequency,
