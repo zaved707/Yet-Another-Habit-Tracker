@@ -1,0 +1,9 @@
+<b>YA Habit Tracker</b> is a simple and effective tool to help you build and maintain positive habits. It helps you track your progress and stay motivated.
+
+<b>Features:</b>
+
+* Create and customize habits
+* Track your progress with a simple interface
+* View your streaks
+* Minimalist and user-friendly design
+* No ads and completely free to use

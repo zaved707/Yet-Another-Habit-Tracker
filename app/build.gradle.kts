@@ -42,7 +42,7 @@ android {
         abi {
             isEnable = true
             reset() // Clears the default list of ABIs
-            include("arm64-v8a") // Only include arm64-v8a
+            include("arm64-v8a", "armeabi-v7a") // Include both arm64-v8a and armeabi-v7a
             isUniversalApk =
                 false // Disable universal APK (optional, if you don't want a universal APK)
         }
