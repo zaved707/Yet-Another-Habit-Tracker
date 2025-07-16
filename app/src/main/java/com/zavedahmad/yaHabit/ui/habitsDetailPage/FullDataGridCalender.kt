@@ -49,9 +49,8 @@ fun FullDataGridCalender(
 
     deleteHabit: (date: LocalDate) -> Unit = {},
     initialMonthString: String? = null,
-    habitData: List<HabitCompletionEntity>? = null
-    ,gridHeight : Int = 190,
-    showDate : Boolean = false,
+    habitData: List<HabitCompletionEntity>? = null, gridHeight: Int = 190,
+    showDate: Boolean = false,
     interactive: Boolean = false
 ) {
     val currentMonth = remember { YearMonth.now() }
@@ -64,7 +63,7 @@ fun FullDataGridCalender(
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
     val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
     val dateToday = LocalDate.now()
-       // CHANGE this to change grid height
+    // CHANGE this to change grid height
 
 
     val calendarState = rememberHeatMapCalendarState(
@@ -84,100 +83,108 @@ fun FullDataGridCalender(
     }
 
 
-            Column {
-                //Text("first visible Month ${calendarState.firstVisibleMonth.yearMonth} \n last visibleMonth: ${calendarState.lastVisibleMonth.yearMonth} \n startMonth ${calendarState.startMonth} \n endMonth ${calendarState.endMonth}")
-                HeatMapCalendar(
-                    weekHeaderPosition = HeatMapWeekHeaderPosition.End,
-                    weekHeader = { weekDay ->
-                        Row(
-                            Modifier
+    Column {
+        //Text("first visible Month ${calendarState.firstVisibleMonth.yearMonth} \n last visibleMonth: ${calendarState.lastVisibleMonth.yearMonth} \n startMonth ${calendarState.startMonth} \n endMonth ${calendarState.endMonth}")
+        HeatMapCalendar(
+            weekHeaderPosition = HeatMapWeekHeaderPosition.End,
+            weekHeader = { weekDay ->
+                Row(
+                    Modifier
 
-                                .height((gridHeight / 8).dp),
-                            horizontalArrangement = Arrangement.Start
+                        .height((gridHeight / 8).dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Spacer(Modifier.width(5.dp))
+                    Text(
+                        weekDay.name.slice(0..2),
+                        fontSize = 15.sp
+                    )
+
+
+                }
+            },
+            monthHeader = {
+
+                if (LocalDate.now().yearMonth != it.yearMonth) {
+                    Column(
+                        Modifier.height((gridHeight / 8).dp),
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(
+                            it.yearMonth.month.toString().slice(0..2),
+                            fontSize = 15.sp, textAlign = TextAlign.Start
+                        )
+                    }
+                } else {
+                    if (LocalDate.now().dayOfMonth > 15) {
+                        Column(
+                            Modifier.height((gridHeight / 8).dp),
+                            verticalArrangement = Arrangement.Bottom
                         ) {
-                            Spacer(Modifier.width(5.dp))
-                            Text(
-                                weekDay.name.slice(0..2),
-                                fontSize = 15.sp
-                            )
-
-
-                        }
-                    },
-                    monthHeader = {
-
-                        if (LocalDate.now().yearMonth != it.yearMonth ) {
-                            Column (Modifier.height((gridHeight / 8 ).dp), verticalArrangement = Arrangement.Bottom){
                             Text(
                                 it.yearMonth.month.toString().slice(0..2),
-                                fontSize =15.sp, textAlign = TextAlign.Start
-                            )}
+                                fontSize = 15.sp, textAlign = TextAlign.Start
+                            )
+                        }
+                    } else {
+                        Spacer(Modifier.height((gridHeight / 8).dp))
+                    }
+                }
+            },
+            modifier = Modifier
+                .height(gridHeight.dp)
+                .fillMaxWidth(),
+            state = calendarState,
+            dayContent = { day, heatMapWeek ->
+                var dayState = ""
+                if (habitData != null) {
+                    val datesMatching = habitData.filter { it.completionDate == day.date }
+                    if (datesMatching.size > 1) {
+                        dayState = "error"
+                    } else if (datesMatching.size == 1) {
+                        dayState = if (datesMatching[0].partial) {
+                            if (day.date > dateToday) {
+                                "partialDisabled"
+                            } else {
+                                "partial"
+                            }
                         } else {
-                            if (LocalDate.now().dayOfMonth > 15) {
-                                Text(
-                                    it.yearMonth.month.toString().slice(0..2),
-                                    fontSize = 15.sp,
-                                    textAlign = TextAlign.Start
-                                )
+                            if (day.date > dateToday) {
+                                "absoluteDisabled"
                             } else {
-                                Spacer(Modifier.height((gridHeight / 8 ).dp))
+                                "absolute"
                             }
                         }
-                    },
-                    modifier = Modifier
-                        .height(gridHeight.dp)
-                        .fillMaxWidth(),
-                    state = calendarState,
-                    dayContent = { day, heatMapWeek ->
-                        var dayState = ""
-                        if (habitData != null) {
-                            val datesMatching = habitData.filter { it.completionDate == day.date }
-                            if (datesMatching.size > 1) {
-                                dayState = "error"
-                            } else if (datesMatching.size == 1) {
-                                dayState = if (datesMatching[0].partial) {
-                                    if (day.date > dateToday) {
-                                        "partialDisabled"
-                                    } else {
-                                        "partial"
-                                    }
-                                } else {
-                                    if (day.date > dateToday) {
-                                        "absoluteDisabled"
-                                    } else {
-                                        "absolute"
-                                    }
-                                }
-                            } else {
-                                if (day.date > dateToday) {
-                                    dayState = "incompleteDisabled"
-                                } else {
-                                    dayState = "incomplete"
-                                }
-                            }
+                    } else {
+                        if (day.date > dateToday) {
+                            dayState = "incompleteDisabled"
+                        } else {
+                            dayState = "incomplete"
                         }
-                        if ((dayState != "incompleteDisabled" && dayState != "absoluteDisabled" && dayState != "partialDisabled") ||  heatMapWeek.days.any{it.date == LocalDate.now()} ) {
-                            Box(
-                                Modifier
+                    }
+                }
+                if ((dayState != "incompleteDisabled" && dayState != "absoluteDisabled" && dayState != "partialDisabled") || heatMapWeek.days.any { it.date == LocalDate.now() }) {
+                    Box(
+                        Modifier
 
-                                    .height((gridHeight / 8).dp)
-                                    .aspectRatio(1f),
+                            .height((gridHeight / 8).dp)
+                            .aspectRatio(1f),
 
-                                ) {
-                                Box(Modifier.padding((gridHeight / 80).dp)) {
-                                    GridDayItem(
-                                        dayState,
-                                        addHabit = { addHabit(day.date) },
-                                        deleteHabit = { deleteHabit(day.date) },
-                                        date = day.date,
-                                        showDate = showDate,
-                                        interactive = interactive
-                                    )
-                                }
-                            }
-
+                        ) {
+                        Box(Modifier.padding((gridHeight / 80).dp)) {
+                            GridDayItem(
+                                dayState,
+                                addHabit = { addHabit(day.date) },
+                                deleteHabit = { deleteHabit(day.date) },
+                                date = day.date,
+                                showDate = showDate,
+                                interactive = interactive
+                            )
                         }
-                    })
+                    }
+
+                }
+            })
 
 
     }
