@@ -9,6 +9,12 @@
 </p>
 
 [![Build](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml/badge.svg)](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml)
+[<img src="https://shields.rbtlog.dev/simple/com.zavedahmad.yaHabit" alt="RB shield">](https://shields.rbtlog.dev/com.zavedahmad.yaHabit)
+
+<img src= "https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.zavedahmad.yaHabit"/>
+
+
+
 
 # YA Habit Tracker
 
@@ -25,8 +31,9 @@ This is a mordern and simple habit tracker for android.
 
 
 ## Installation
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="70"/>](https://apt.izzysoft.de/packages/com.zavedahmad.yaHabit)
 
-[![Get it on Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png)](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zaved707/Yet-Another-Habit-Tracker)
+[<img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" height="50"/>](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zaved707/Yet-Another-Habit-Tracker)
 
 OR
 

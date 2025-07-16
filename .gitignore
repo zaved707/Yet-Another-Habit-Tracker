@@ -9,3 +9,7 @@
 .cxx
 /app/release
 local.properties
+/app/debug/app-arm64-v8a-debug.apk
+/app/debug/app-armeabi-v7a-debug.apk
+/app/debug/app-universal-debug.apk
+/app/debug/output-metadata.json
