@@ -38,6 +38,7 @@ Download the app from Releases and then install on your android phone to use.
 - [Reorderable](https://github.com/Calvin-LL/Reorderable) for Reorderable habits
 - navigation 3 for navigation 
 ## Roadmap
+- Custom Starting  day of week
 - HomeScreen Widgets
 - Measurable Habit
  
