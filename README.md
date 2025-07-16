@@ -1,6 +1,7 @@
 
 ![Logo](https://raw.githubusercontent.com/zaved707/Yet-Another-Habit-Tracker/refs/heads/master/app/src/main/res/mipmap-hdpi/ic_launcher.webp)
 
+[![Build](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml/badge.svg)](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml)
 
 # YA Habit Tracker
 
