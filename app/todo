@@ -1,5 +1,5 @@
+todo settings feature to select start of week
 todo colorful text in settings page like whatsSaver
-todo check  frequency selector chips change size to show full text on appi phone
 todo icon to the left of EveryDay or Weekly display in habitDetailsPage
 todo a button on habit card to check today's habit
 todo selection
@@ -19,6 +19,7 @@ todo POSTPONED add a category table
 todo POSTPONED test calander page properly
 todo POSTPONED load date data of whats visible plus the streak days in past. this will ensure lazy data loading and reduce the load if the user has a lot of data.
 todo POSTPONED add category as a primary key to habits
+done  check  frequency selector chips change size to show full text on appi phone
 done make Readmefor App on Github
 done Back BUtton in editHabitPage
 done Back Button in HabitDetailsPage
