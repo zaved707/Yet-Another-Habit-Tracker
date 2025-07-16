@@ -51,14 +51,16 @@ android {
             isEnable = true
             reset() // Clears the default list of ABIs
             include("arm64-v8a", "armeabi-v7a") // Include both arm64-v8a and armeabi-v7a
-            isUniversalApk =
-                false // Disable universal APK (optional, if you don't want a universal APK)
+           isUniversalApk =
+                true // Disable universal APK (optional, if you don't want a universal APK)
         }
     }
     buildTypes {
         release {
 
             isMinifyEnabled =true
+            isShrinkResources = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

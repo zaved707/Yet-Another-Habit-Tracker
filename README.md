@@ -1,10 +1,14 @@
 
 
-[![Build](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml/badge.svg)](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml)
+
+
+
 <p align="center">
-  
-  <img src="https://raw.githubusercontent.com/zaved707/Yet-Another-Habit-Tracker/refs/heads/master/app/src/main/res/mipmap-hdpi/ic_launcher.webp" alt="Logo">
+
+  <img src="https://raw.githubusercontent.com/zaved707/Yet-Another-Habit-Tracker/refs/heads/master/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp" alt="Logo">
 </p>
+
+[![Build](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml/badge.svg)](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml)
 
 # YA Habit Tracker
 
@@ -44,7 +48,7 @@ Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/re
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection
 - [Room](https://developer.android.com/jetpack/androidx/releases/room) for database
 - [Reorderable](https://github.com/Calvin-LL/Reorderable) for Reorderable habits
-- navigation 3 for navigation 
+- navigation 3 for navigation
 ## Roadmap
 - Custom Starting  day of week
 - HomeScreen Widgets
