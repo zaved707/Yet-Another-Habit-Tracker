@@ -29,12 +29,20 @@ android {
     namespace = "com.zavedahmad.yaHabit"
     compileSdk = 36
 
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs (for IzzyOnDroid/F-Droid)
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles (for Google Play)
+        includeInBundle = false
+    }
+
+
     defaultConfig {
         applicationId = "com.zavedahmad.yaHabit"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.0.5"
+        versionCode = 3
+        versionName = "0.0.51"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

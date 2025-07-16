@@ -1,0 +1,37 @@
+name: Build Android App on Tag
+
+# Trigger the workflow when a tag starting with 'v' is pushed
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up JDK for Android
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17' # Android typically requires JDK 11 or 17
+          distribution: 'temurin'
+
+      # Step 3: Grant execute permission for gradlew
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Step 4: Build the Android app (debug build)
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      # Step 5: Upload the built APK as an artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk

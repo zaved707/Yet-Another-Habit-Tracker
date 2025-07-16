@@ -24,9 +24,9 @@ Download the app from Releases and then install on your android phone to use.
 ## Screenshots
 
 <div style="display: flex; flex-direction: row; gap: 10px;">
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/Media/ScreenShots/img.png?raw=true" alt="App Screenshot 1" width="200"/>
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/Media/ScreenShots/img_1.png?raw=true" alt="App Screenshot 2" width="200"/>
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/Media/ScreenShots/img_2.png?raw=true" alt="App Screenshot 3" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg?raw=true" alt="App Screenshot 1" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg?raw=true" alt="App Screenshot 2" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg?raw=true" alt="App Screenshot 3" width="200"/>
 </div>
 
 
