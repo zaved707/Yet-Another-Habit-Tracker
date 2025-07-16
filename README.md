@@ -17,9 +17,13 @@ This is a mordern and simple habit tracker for android.
 - Small Apk
 
 
-## Usage/Examples
+## Installation
 
-Download the app from Releases and then install on your android phone to use.
+[![Get it on Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png)](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zaved707/Yet-Another-Habit-Tracker)
+
+OR
+
+Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/releases) and then install on your android phone to use.
 
 
 ## Screenshots
