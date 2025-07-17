@@ -188,7 +188,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                             unfocusedIndicatorColor = Color.Transparent
                         ),
                         shape = RoundedCornerShape(50.dp),
-                        isError = isNameError.value,
+                        isError = false,
                         singleLine = true
                     )
 
