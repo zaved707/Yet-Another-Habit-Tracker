@@ -4,15 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
+import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import javax.inject.Inject
 
 @HiltViewModel()
-class SettingsViewModel @Inject constructor(val preferencesDao: PreferencesDao) : ViewModel() {
+class SettingsViewModel @Inject constructor(
+    val preferencesDao: PreferencesDao,
+    val preferencesRepository: PreferencesRepository
+) : ViewModel() {
 
 
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
@@ -24,14 +29,26 @@ class SettingsViewModel @Inject constructor(val preferencesDao: PreferencesDao) 
     private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
     val amoledTheme = _amoledTheme.asStateFlow()
 
+    private val _firstDayOfWeek = MutableStateFlow<DayOfWeek?>(null)
+    val firstDayOfWeek = _firstDayOfWeek.asStateFlow()
 
     init {
 
         collectThemeMode()
         collectDynamicColor()
         collectAmoledTheme()
+        collectFirstDayOfWeek()
     }
 
+    fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {
+        viewModelScope.launch {
+            preferencesRepository.setFirstDayOfWeek(dayOfWeek)
+        }
+    }
+    fun collectFirstDayOfWeek(){
+        viewModelScope.launch { preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it } }
+
+    }
     fun setTheme(value: String) {
         viewModelScope.launch {
             preferencesDao.updatePreference(PreferenceEntity("ThemeMode", value))

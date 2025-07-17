@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.InvertColors
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -36,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -50,6 +55,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
+import com.kizitonwose.calendar.core.daysOfWeek
+import java.time.DayOfWeek
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -58,8 +65,10 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
 
     var isThemeDialogActive by remember { mutableStateOf(false) }
     val dynamicColor = viewModel.dynamicColor.collectAsStateWithLifecycle().value
+    val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
     val themeNow by viewModel.themeMode.collectAsStateWithLifecycle()
     val amoledColors = viewModel.amoledTheme.collectAsStateWithLifecycle().value
+    val dialogueSelectWeekDayOpen = rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -187,7 +196,22 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                             }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
                     }
                 })
+            if (firstDayOfWeek != null) {
+            SettingsItem(
+                icon = Icons.Default.CalendarToday,
+                title = "Select First Day Of Week",
+                description = firstDayOfWeek.name,
+                task = { dialogueSelectWeekDayOpen.value = true },
+            )
 
+                ModalForWeekSelection(
+                    dialogueSelectWeekDayOpen.value,
+                    onDismissRequest = { dialogueSelectWeekDayOpen.value = false },
+                    currentlySelectedDay = firstDayOfWeek,
+                    onDaySelect = { dayOfWeek -> viewModel.setFirstWeekOfDay(dayOfWeek)
+                        dialogueSelectWeekDayOpen.value = false  }
+                )
+            }
             SettingsItem(
                 icon = Icons.Default.InvertColors,
                 title = "Amoled",
@@ -209,6 +233,34 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
         }
 
 
+    }
+}
+
+@Composable
+fun ModalForWeekSelection(isVisible: Boolean, onDismissRequest: () -> Unit, onDaySelect : (DayOfWeek)->Unit, currentlySelectedDay: DayOfWeek = DayOfWeek.SUNDAY) {
+
+    if (isVisible) {
+        Dialog(onDismissRequest = { onDismissRequest() }) {
+                Card(Modifier) {
+            Column(Modifier.fillMaxWidth(0.7f)) {
+                    for (i in 1..7) {
+                        val currentDay =  DayOfWeek.of(i)
+                        Card(onClick = {onDaySelect(currentDay)}) {
+                            Row (Modifier
+                                .padding(20.dp)
+                                .fillMaxWidth()) {
+                                Text(
+                                    currentDay.toString()
+                                )
+                                if (currentDay == currentlySelectedDay) {
+                                    Icon(Icons.Default.Check, contentDescription = "f")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
