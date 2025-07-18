@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -32,6 +33,7 @@ import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
 import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPage
 import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageViewModel
+import com.zavedahmad.yaHabit.ui.errorPages.SplashScreen
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
 
@@ -79,7 +81,9 @@ sealed class Screen : NavKey {
 class RecipePickerActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
         setEdgeToEdgeConfig()
         setContent {
 
@@ -94,18 +98,30 @@ class RecipePickerActivity : ComponentActivity() {
             val isAmoledColor by settingsViewModel.amoledTheme.collectAsStateWithLifecycle()
             val themeReal = theme
             val realDynamicColors = isDynamicColor
-            if (themeReal == null || realDynamicColors == null || isAmoledColor == null) {
-                ComposeTemplateTheme("system") {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surface)
-                    )
-                }
-            } else {
+            val firstDayOfWeek =
+                settingsViewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
+            val isReady =
+                !(themeReal == null || realDynamicColors == null || isAmoledColor == null || firstDayOfWeek == null)
+            splashScreen.setKeepOnScreenCondition { !isReady }
+            if (isReady)
 
-                ComposeTemplateTheme(themeReal.value, dynamicColor = realDynamicColors.value == "true") {
-                    CustomTheme(theme = themeReal.value, useExistingTheme = true, isAmoled = isAmoledColor?.value == "true") {
+            /* Box(
+                 Modifier
+                     .fillMaxSize()
+                     .background(MaterialTheme.colorScheme.surface)
+             )*/
+//                    SplashScreen()
+            {
+
+                ComposeTemplateTheme(
+                    themeReal.value,
+                    dynamicColor = realDynamicColors.value == "true"
+                ) {
+                    CustomTheme(
+                        theme = themeReal.value,
+                        useExistingTheme = true,
+                        isAmoled = isAmoledColor?.value == "true"
+                    ) {
 
                         Box(modifier = Modifier.padding()) {
 
@@ -182,7 +198,10 @@ class RecipePickerActivity : ComponentActivity() {
                                                             factory.create(key)
                                                         }
                                                     )
-                                                HabitDetailsPage(habitDetailsPageViewModel, backStack)
+                                                HabitDetailsPage(
+                                                    habitDetailsPageViewModel,
+                                                    backStack
+                                                )
 
 
                                             }
@@ -203,8 +222,10 @@ class RecipePickerActivity : ComponentActivity() {
                                 transitionSpec = {
                                     slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(
                                         targetOffsetX = { -it / 2 })
-                                }, popTransitionSpec ={ slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
-                                    targetOffsetX = { it })} ,
+                                }, popTransitionSpec = {
+                                    slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
+                                        targetOffsetX = { it })
+                                },
                                 predictivePopTransitionSpec = {
                                     slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
                                         targetOffsetX = { it })

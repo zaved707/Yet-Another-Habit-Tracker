@@ -83,6 +83,9 @@ android {
 }
 
 dependencies {
+
+        implementation( "androidx.core:core-splashscreen:1.0.0")
+
     // glance for widgets
     implementation("androidx.glance:glance-appwidget:1.1.1")
     // For interop APIs with Material 3

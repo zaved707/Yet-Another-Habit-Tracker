@@ -64,6 +64,7 @@ import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
+import com.zavedahmad.yaHabit.ui.errorPages.SplashScreen
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.channels.Channel
@@ -89,15 +90,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
         listUpdatedChannel.trySend(Unit)
     }
 
-    if (themeReal == null || isAmoledColor == null || firstDayOfWeek == null) {
-        ComposeTemplateTheme("system") {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface)
-            )
-        }
-    } else {
+    if (!(themeReal == null || isAmoledColor == null || firstDayOfWeek == null)) {
+
 
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

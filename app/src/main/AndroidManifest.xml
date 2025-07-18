@@ -27,7 +27,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Nav3Recipes"
+        android:theme="@style/Theme.yaHabit"
         android:enableOnBackInvokedCallback="true"
         android:name=".hilt.Nav3RecipesApplication"
         tools:targetApi="31">
@@ -35,7 +35,7 @@
             android:name=".RecipePickerActivity"
             android:exported="true"
 
-            android:theme="@style/Theme.Nav3Recipes">
+            android:theme="@style/Theme.yaHabit">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
