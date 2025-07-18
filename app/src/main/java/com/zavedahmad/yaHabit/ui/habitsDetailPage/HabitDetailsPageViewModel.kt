@@ -56,7 +56,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         collectAmoledTheme()
         collectFirstDayOfWeek()
         getHabitDetails()
-        getLastYearData()
+
         getHabitAllData()
     }
 
