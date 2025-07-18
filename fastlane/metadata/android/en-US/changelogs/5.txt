@@ -1,1 +1,2 @@
 - added settings to change start day of week
+- removed outline from add habit page
