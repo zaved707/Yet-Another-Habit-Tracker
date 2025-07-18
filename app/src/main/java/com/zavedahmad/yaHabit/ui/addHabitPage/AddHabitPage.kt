@@ -245,7 +245,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                     ) {
                         Text("Color", fontSize = 20.sp)
                     }
-                    Spacer(Modifier.height(10.dp))
+
                     HorizontalDivider()
                     Spacer(Modifier.height(20.dp))
                     ColorSelector(viewModel)
