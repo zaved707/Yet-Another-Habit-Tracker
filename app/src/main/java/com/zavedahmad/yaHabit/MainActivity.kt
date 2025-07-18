@@ -87,7 +87,7 @@ class RecipePickerActivity : ComponentActivity() {
         setEdgeToEdgeConfig()
         setContent {
 
-            val backStack = rememberNavBackStack<Screen>(Screen.MainPageRoute)
+            val backStack = rememberNavBackStack<Screen>(Screen.TestingPageRoute)
 
             val viewModelMainPage = hiltViewModel<MainPageViewModel>()
 

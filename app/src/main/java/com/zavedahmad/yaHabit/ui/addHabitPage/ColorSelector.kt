@@ -37,6 +37,7 @@ fun ColorSelector(viewModel: AddHabitPageViewModel) {
             .fillMaxWidth()
 
     ) {
+      
         LazyRow(verticalAlignment = Alignment.CenterVertically) {
 
             items(colors.size) { index ->
