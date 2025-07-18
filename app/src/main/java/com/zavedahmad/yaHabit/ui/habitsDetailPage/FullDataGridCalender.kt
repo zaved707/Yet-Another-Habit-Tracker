@@ -40,6 +40,7 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.core.yearMonth
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.ui.calenderPage.MonthHeader
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -51,7 +52,8 @@ fun FullDataGridCalender(
     initialMonthString: String? = null,
     habitData: List<HabitCompletionEntity>? = null, gridHeight: Int = 190,
     showDate: Boolean = false,
-    interactive: Boolean = false
+    interactive: Boolean = false,
+    firstDayOfWeek: DayOfWeek
 ) {
     val currentMonth = remember { YearMonth.now() }
 //    val habitDataSorted = habitData.sortedBy { it.completionDate }
@@ -61,7 +63,7 @@ fun FullDataGridCalender(
     // Adjust as needed
 
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
-    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() } // Available from the library
+   // Available from the library
     val dateToday = LocalDate.now()
     // CHANGE this to change grid height
 

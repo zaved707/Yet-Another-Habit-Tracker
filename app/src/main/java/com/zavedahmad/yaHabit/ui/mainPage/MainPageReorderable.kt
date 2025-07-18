@@ -77,6 +77,7 @@ import java.time.LocalDate
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
+    val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -88,7 +89,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
         listUpdatedChannel.trySend(Unit)
     }
 
-    if (themeReal == null || isAmoledColor == null) {
+    if (themeReal == null || isAmoledColor == null || firstDayOfWeek == null) {
         ComposeTemplateTheme("system") {
             Box(
                 Modifier
@@ -132,22 +133,22 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
                         if (!isReorderableMode.value
                         ) {
-                           Row{
-                               Button(
-                                   onClick = {
+                            Row {
+                                Button(
+                                    onClick = {
 
 
-                                       backStack.add(Screen.AddHabitPageRoute())
+                                        backStack.add(Screen.AddHabitPageRoute())
 
-                                   },
-                                   modifier = Modifier,
-                                   colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                               ) {
-                                   Icon(
-                                       Icons.Default.AddCircle,
-                                       contentDescription = "turn off reorderable mode"
-                                   )
-                               }
+                                    },
+                                    modifier = Modifier,
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                                ) {
+                                    Icon(
+                                        Icons.Default.AddCircle,
+                                        contentDescription = "turn off reorderable mode"
+                                    )
+                                }
                                 Menu(viewModel, backStack)
                             }
                         }
@@ -158,17 +159,17 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     scrollBehavior = scrollBehavior
                 )
             },
-           /* floatingActionButton = {
-                AnimatedVisibility(
-                    visible = !isReorderableMode.value,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
-                        Text("Add Habit")
-                    }
-                }
-            }*/
+            /* floatingActionButton = {
+                 AnimatedVisibility(
+                     visible = !isReorderableMode.value,
+                     enter = fadeIn(),
+                     exit = fadeOut()
+                 ) {
+                     ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
+                         Text("Add Habit")
+                     }
+                 }
+             }*/
         ) { innerPadding ->
 
             val lazyListState = rememberLazyListState()
@@ -248,7 +249,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                         reorderableListScope = this,
 
                                         isDragging = isDragging,
-                                        isReorderableMode = isReorderableMode.value
+                                        isReorderableMode = isReorderableMode.value,
+                                        firstDayOfWeek = firstDayOfWeek
                                     )
 
 //                                Spacer(Modifier.height(40.dp))

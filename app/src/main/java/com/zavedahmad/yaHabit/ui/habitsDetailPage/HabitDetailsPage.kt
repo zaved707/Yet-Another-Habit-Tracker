@@ -65,6 +65,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
     val habitsPastYear = viewModel.habitsPastYear.collectAsStateWithLifecycle().value
     val habitDetails = viewModel.habitDetails.collectAsStateWithLifecycle().value
     val month = YearMonth.now()
+    val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
     val twelveMonths = (0..12).map { month.minusMonths(it.toLong()) }
     val habitAllData = viewModel.habitAllData.collectAsStateWithLifecycle().value
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
@@ -77,7 +78,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
 
-    if (themeReal == null || isAmoledColor == null) {
+    if (themeReal == null || isAmoledColor == null || firstDayOfWeek == null) {
         ComposeTemplateTheme("system") {
             Box(
                 Modifier
@@ -142,7 +143,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                     habitData = habitAllData,
                                     gridHeight = 350,
                                     showDate = true,
-                                    interactive = true
+                                    interactive = true,
+                                    firstDayOfWeek = firstDayOfWeek
                                 )
                             }
                         }
@@ -203,7 +205,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                             habitId = habitDetails.id,
                                             date = date
                                         )
-                                    }
+                                    },
+                                    firstDayOfWeek = firstDayOfWeek
                                 )
                             }
 

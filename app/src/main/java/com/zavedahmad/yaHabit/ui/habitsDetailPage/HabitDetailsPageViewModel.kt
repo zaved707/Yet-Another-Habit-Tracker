@@ -10,6 +10,7 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
+import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 @HiltViewModel(assistedFactory = HabitDetailsPageViewModel.Factory::class)
@@ -27,7 +29,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
-    val habitRepository: HabitRepository
+    val habitRepository: HabitRepository, val preferencesRepository: PreferencesRepository
 
 ) : ViewModel() {
 
@@ -35,6 +37,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     interface Factory {
         fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
     }
+
     private val _habitAllData = MutableStateFlow<List<HabitCompletionEntity>?>(null)
     val habitAllData = _habitAllData.asStateFlow()
     private val _habitDetails = MutableStateFlow<HabitEntity?>(null)
@@ -43,28 +46,43 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitsPastYear: StateFlow<List<HabitCompletionEntity>?> = _habitsPastYear
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
-
+    private val _firstDayOfWeek = MutableStateFlow<DayOfWeek?>(null)
+    val firstDayOfWeek = _firstDayOfWeek.asStateFlow()
     private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
     val amoledTheme = _amoledTheme.asStateFlow()
 
     init {
         collectThemeMode()
         collectAmoledTheme()
+        collectFirstDayOfWeek()
         getHabitDetails()
         getLastYearData()
         getHabitAllData()
     }
-    fun getHabitAllData(){
+
+    fun getHabitAllData() {
         viewModelScope.launch(Dispatchers.IO) {
-            habitRepository.getAllHabitCompletionsByIdFlow(navKey.habitId).collect { _habitAllData.value = it }
+            habitRepository.getAllHabitCompletionsByIdFlow(navKey.habitId)
+                .collect { _habitAllData.value = it }
         }
     }
+    fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {
+        viewModelScope.launch {
+            preferencesRepository.setFirstDayOfWeek(dayOfWeek)
+        }
+    }
+    fun collectFirstDayOfWeek(){
+        viewModelScope.launch { preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it } }
+
+    }
+
     fun getLastYearData() {
         val dateNow = LocalDate.now()
         val dateAYearAgo = dateNow.minusYears(1).toEpochDay()
         viewModelScope.launch(Dispatchers.IO) {
 
-                habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo).collect {  _habitsPastYear.value = it }
+            habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo)
+                .collect { _habitsPastYear.value = it }
         }
     }
 
@@ -76,9 +94,11 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
             )
         }
     }
+
     fun deleteHabitById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
     }
+
     fun getHabitDetails() {
         viewModelScope.launch(Dispatchers.IO) {
             _habitDetails.value = habitDao.getHabitById(navKey.habitId)
@@ -92,6 +112,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
             }
         }
     }
+
     fun collectAmoledTheme() {
         viewModelScope.launch(Dispatchers.IO) {
             preferencesDao.getPreferenceFlow("AmoledTheme").collect { preference ->

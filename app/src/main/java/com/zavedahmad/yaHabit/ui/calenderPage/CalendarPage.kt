@@ -64,10 +64,11 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
     val options = listOf("Calendar", "Grid")
-    val  streakChecked = rememberSaveable { mutableStateOf(0) }
+    val streakChecked = rememberSaveable { mutableStateOf(0) }
     if (habitObject == null || themeReal == null) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-        LoadingIndicator()}
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            LoadingIndicator()
+        }
     } else {
         CustomTheme(theme = themeReal.value, primaryColor = habitObject.color) {
             Scaffold { innerPadding ->
@@ -75,14 +76,44 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                 Column(
                     Modifier
                         .padding(innerPadding)
-                        .fillMaxWidth().verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
                 ) {
 
 
                     AnimatedVisibility(visible = streakChecked.value == 0) {
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-                        Row (modifier = Modifier.width(400.dp) ){
-                        MonthCalendarData(
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Row(modifier = Modifier.width(400.dp)) {
+                                MonthCalendarData(
+                                    addHabit = { date ->
+                                        coroutineScope.launch(
+                                            Dispatchers.IO
+                                        ) {
+                                            viewModel.habitRepository.addWithPartialCheck(
+                                                HabitCompletionEntity(
+                                                    habitId = viewModel.navKey.habitId,
+                                                    completionDate = date
+                                                )
+                                            )
+                                        }
+                                    },
+                                    deleteHabit = { date ->
+                                        viewModel.deleteHabitEntryWithPartialCheck(
+                                            habitId = habitObject.id,
+                                            date = date
+                                        )
+                                    },
+                                    habitData = habitAllData,
+                                )
+
+                            }
+                        }
+                    }
+                    AnimatedVisibility(visible = streakChecked.value == 1) {
+                        FullDataGridCalender(
                             addHabit = { date ->
                                 coroutineScope.launch(
                                     Dispatchers.IO
@@ -102,34 +133,17 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                                 )
                             },
                             habitData = habitAllData,
+                            gridHeight = 350,
+                            showDate = true,
+                            interactive = true,
+                            firstDayOfWeek = DayOfWeek.SUNDAY
                         )
-
-                    }}}
-                    AnimatedVisibility(visible = streakChecked.value == 1) {
-                        FullDataGridCalender( addHabit = { date ->
-                            coroutineScope.launch(
-                                Dispatchers.IO
-                            ) {
-                                viewModel.habitRepository.addWithPartialCheck(
-                                    HabitCompletionEntity(
-                                        habitId = viewModel.navKey.habitId,
-                                        completionDate = date
-                                    )
-                                )
-                            }
-                        },
-                            deleteHabit = { date ->
-                                viewModel.deleteHabitEntryWithPartialCheck(
-                                    habitId = habitObject.id,
-                                    date = date
-                                )
-                            },
-                            habitData = habitAllData, gridHeight = 350, showDate = true, interactive = true)
                     }
-                    Row (Modifier.fillMaxWidth()){
+                    Row(Modifier.fillMaxWidth()) {
                         options.forEachIndexed { index, item ->
                             val isChecked = streakChecked.value == index
-                            ToggleButton(modifier = Modifier.weight(1f),
+                            ToggleButton(
+                                modifier = Modifier.weight(1f),
                                 checked = isChecked, shapes = when (index) {
                                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
                                         pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,

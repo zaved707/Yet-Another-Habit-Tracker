@@ -10,6 +10,7 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
+import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 data class habitWithEntries(
@@ -30,7 +32,8 @@ class MainPageViewModel @Inject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
-    val habitRepository: HabitRepository
+    val habitRepository: HabitRepository,
+    val preferencesRepository: PreferencesRepository
 ) :
     ViewModel() {
     override fun onCleared() {
@@ -48,7 +51,8 @@ class MainPageViewModel @Inject constructor(
     val isReorderableMode = _isReorderableMode.asStateFlow()
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
-
+    private val _firstDayOfWeek = MutableStateFlow<DayOfWeek?>(null)
+    val firstDayOfWeek = _firstDayOfWeek.asStateFlow()
     private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
     val amoledTheme = _amoledTheme.asStateFlow()
     init {
@@ -56,13 +60,21 @@ class MainPageViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.getHabitsFlowSortedByIndex().collect { it -> _habits.value = it }
         }
-
+        collectFirstDayOfWeek()
         collectThemeMode()
     }
     fun changeReorderableMode(value : Boolean){
         _isReorderableMode.value = value
     }
+    fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {
+        viewModelScope.launch {
+            preferencesRepository.setFirstDayOfWeek(dayOfWeek)
+        }
+    }
+    fun collectFirstDayOfWeek(){
+        viewModelScope.launch { preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it } }
 
+    }
 
     fun moveHabits(from: Int, to: Int) {
         _habits.value = _habits.value.toMutableList().apply { add(to, removeAt(from)) }

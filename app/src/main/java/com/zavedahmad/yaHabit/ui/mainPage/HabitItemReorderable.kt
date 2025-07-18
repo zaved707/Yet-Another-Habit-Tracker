@@ -42,6 +42,7 @@ import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
+import java.time.DayOfWeek
 import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -52,7 +53,8 @@ fun HabitItemReorderable(
     habit: HabitEntity,
     reorderableListScope: ReorderableCollectionItemScope? = null,
     isDragging: Boolean = false,
-    isReorderableMode: Boolean = false
+    isReorderableMode: Boolean = false,
+    firstDayOfWeek: DayOfWeek
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -86,7 +88,11 @@ fun HabitItemReorderable(
         elevation = cardElevation,
 
         colors = color,
-        onClick ={ if (!isReorderableMode) { backStack.add(Screen.HabitDetailsPageRoute(habit.id)) }})
+        onClick = {
+            if (!isReorderableMode) {
+                backStack.add(Screen.HabitDetailsPageRoute(habit.id))
+            }
+        })
     {
         ConfirmationDialog(
             visible = showDialog.value,
@@ -170,7 +176,8 @@ fun HabitItemReorderable(
             AnimatedVisibility(visible = !isReorderableMode) {
                 Column(Modifier.fillMaxWidth()) {
                     Spacer(Modifier.height(20.dp))
-                    WeekCalendarData(addHabit = { date ->
+                    WeekCalendarData(
+                        addHabit = { date ->
                         coroutineScope.launch(
                             Dispatchers.IO
                         ) {
@@ -186,7 +193,9 @@ fun HabitItemReorderable(
                             habitId = habit.id,
                             date = date
                         )
-                    }, habitData = habitData.value)
+                    }, habitData = habitData.value,
+                        firstDayOfWeek = firstDayOfWeek
+                    )
 
                     /*WeekCalendar(habit, viewModel.habitRepository,
                         addHabit = {date ->
@@ -225,18 +234,18 @@ fun HabitItemReorderable(
                             Column { }
                             Row {
                                 val currentMonth = YearMonth.now()
-                               /* IconButton(
-                                    modifier = Modifier,
-                                    onClick = {
-                                        backStack.add(
-                                            Screen.CalenderPageRoute(
-                                                month = currentMonth.toString(),
-                                                habit.id
-                                            )
-                                        )
-                                    }) {
-                                    Icon(Icons.Default.CalendarMonth, contentDescription = "")
-                                }*/
+                                /* IconButton(
+                                     modifier = Modifier,
+                                     onClick = {
+                                         backStack.add(
+                                             Screen.CalenderPageRoute(
+                                                 month = currentMonth.toString(),
+                                                 habit.id
+                                             )
+                                         )
+                                     }) {
+                                     Icon(Icons.Default.CalendarMonth, contentDescription = "")
+                                 }*/
                                 IconButton(
                                     modifier = Modifier,
                                     onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {

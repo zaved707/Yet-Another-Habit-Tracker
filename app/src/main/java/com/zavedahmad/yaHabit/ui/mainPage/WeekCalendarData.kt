@@ -8,10 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
+import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.ui.calenderPage.DayItem
 import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -21,7 +23,8 @@ fun WeekCalendarData(
     addHabit: (date: LocalDate) -> Unit,
     deleteHabit: (date: LocalDate) -> Unit,
     initialWeekString: String? = null,
-    habitData: List<HabitCompletionEntity>?
+    habitData: List<HabitCompletionEntity>?,
+    firstDayOfWeek: DayOfWeek
 ) {
     val todayDate = LocalDate.now()
     val daysOfWeek = daysOfWeek()
@@ -29,11 +32,17 @@ fun WeekCalendarData(
     val state = rememberWeekCalendarState(
         startDate = todayDate.minusDays(10),
         endDate = todayDate,
-        firstVisibleWeekDate = todayDate
+        firstVisibleWeekDate = todayDate,
+        firstDayOfWeek = firstDayOfWeek
     )
 
 
+    LaunchedEffect(firstDayOfWeek) {
 
+        state.firstDayOfWeek = firstDayOfWeek
+       state.scrollToWeek(todayDate)
+
+    }
     LaunchedEffect(state.firstVisibleWeek) {
         if (state.firstVisibleWeek.days.any { it.date == todayDate }) {
 //            state.startDate = state.firstVisibleWeek.days.first().date.minusDays(14)
@@ -58,7 +67,7 @@ fun WeekCalendarData(
         val dateToday = LocalDate.now()
         Column {
 
-        DaysOfWeekTitle(daysOfWeek)
+        DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
         WeekCalendar(dayContent = { day ->
             var dayState = ""
            val datesMatching = habitData.filter { it.completionDate == day.date }
