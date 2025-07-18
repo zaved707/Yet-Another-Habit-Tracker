@@ -1,2 +1,2 @@
 - added settings to change start day of week
-- removed outline from add habit page
+- removed error outline from title field in add habit page
