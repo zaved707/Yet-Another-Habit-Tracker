@@ -43,10 +43,10 @@ Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/re
 ## Screenshots
 
 <div style="display: flex; flex-direction: row; gap: 10px;">
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/8.jpg?raw=true" alt="App Screenshot 1" width="200"/>
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/9.jpg?raw=true" alt="App Screenshot 2" width="200"/>
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true" alt="App Screenshot 3" width="200"/>
-<img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/11.jpg?raw=true" alt="App Screenshot 3" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg?raw=true" alt="App Screenshot 1" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg?raw=true" alt="App Screenshot 2" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg?raw=true" alt="App Screenshot 3" width="200"/>
+<img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg?raw=true" alt="App Screenshot 3" width="200"/>
 </div>
 
 
