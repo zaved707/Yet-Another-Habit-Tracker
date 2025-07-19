@@ -49,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -173,7 +174,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 .padding(innerPadding)
 
         ) {
-
+            SettingsHeading("THEMING")
             SettingsItem(
                 Icons.Default.DarkMode,
                 title = "Theme Mode",
@@ -183,7 +184,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 icon = Icons.Default.Palette,
                 title = "Dynamic Color",
 
-                task = {},
+                task = {viewModel.setDynamicColor((!dynamicColor?.value.toBoolean()).toString())},
                 actions = {
                     Row {
                         VerticalDivider()
@@ -196,27 +197,12 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                             }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
                     }
                 })
-            if (firstDayOfWeek != null) {
-            SettingsItem(
-                icon = Icons.Default.CalendarToday,
-                title = "Select First Day Of Week",
-                description = firstDayOfWeek.name,
-                task = { dialogueSelectWeekDayOpen.value = true },
-            )
 
-                ModalForWeekSelection(
-                    dialogueSelectWeekDayOpen.value,
-                    onDismissRequest = { dialogueSelectWeekDayOpen.value = false },
-                    currentlySelectedDay = firstDayOfWeek,
-                    onDaySelect = { dayOfWeek -> viewModel.setFirstWeekOfDay(dayOfWeek)
-                        dialogueSelectWeekDayOpen.value = false  }
-                )
-            }
             SettingsItem(
                 icon = Icons.Default.InvertColors,
                 title = "Amoled",
                 description = "use Amoled Colors (only for dark theme).",
-                task = {},
+                task = {viewModel.setAmoledTheme((!amoledColors?.value.toBoolean()).toString())},
                 actions = {
                     Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
                         VerticalDivider()
@@ -230,6 +216,25 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                     }
                 })
 
+            SettingsHeading("DISPLAY")
+            SettingsItem(
+                icon = Icons.Default.CalendarToday,
+                title = "Select First Day Of Week",
+                description = firstDayOfWeek?.name,
+                task = { dialogueSelectWeekDayOpen.value = true },
+            )
+            if (firstDayOfWeek != null) {
+                ModalForWeekSelection(
+                    dialogueSelectWeekDayOpen.value,
+                    onDismissRequest = { dialogueSelectWeekDayOpen.value = false },
+                    currentlySelectedDay = firstDayOfWeek,
+                    onDaySelect = { dayOfWeek ->
+                        viewModel.setFirstWeekOfDay(dayOfWeek)
+                        dialogueSelectWeekDayOpen.value = false
+                    }
+                )
+            }
+
         }
 
 
@@ -237,18 +242,25 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
 }
 
 @Composable
-fun ModalForWeekSelection(isVisible: Boolean, onDismissRequest: () -> Unit, onDaySelect : (DayOfWeek)->Unit, currentlySelectedDay: DayOfWeek = DayOfWeek.SUNDAY) {
+fun ModalForWeekSelection(
+    isVisible: Boolean,
+    onDismissRequest: () -> Unit,
+    onDaySelect: (DayOfWeek) -> Unit,
+    currentlySelectedDay: DayOfWeek = DayOfWeek.SUNDAY
+) {
 
     if (isVisible) {
         Dialog(onDismissRequest = { onDismissRequest() }) {
-                Card(Modifier) {
-            Column(Modifier.fillMaxWidth(0.7f)) {
+            Card(Modifier) {
+                Column(Modifier.fillMaxWidth(0.7f)) {
                     for (i in 1..7) {
-                        val currentDay =  DayOfWeek.of(i)
-                        Card(onClick = {onDaySelect(currentDay)}) {
-                            Row (Modifier
-                                .padding(20.dp)
-                                .fillMaxWidth()) {
+                        val currentDay = DayOfWeek.of(i)
+                        Card(onClick = { onDaySelect(currentDay) }) {
+                            Row(
+                                Modifier
+                                    .padding(20.dp)
+                                    .fillMaxWidth()
+                            ) {
                                 Text(
                                     currentDay.toString()
                                 )
@@ -277,7 +289,7 @@ fun SettingsItem(
             .clip(RoundedCornerShape(20.dp))
             .clickable(onClick = { task() })
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(horizontal = 20.dp, vertical = 10.dp)
             .height(IntrinsicSize.Min), // Use IntrinsicSize.Min to allow flexible height
         horizontalArrangement = Arrangement.Absolute.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically // Center items vertically
@@ -322,3 +334,11 @@ fun SettingsItem(
     }
 }
 
+@Composable
+fun SettingsHeading(text: String) {
+    Row {
+        Spacer(Modifier.width(30.dp))
+        Text(text, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+    }
+
+}
