@@ -49,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -173,7 +174,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 .padding(innerPadding)
 
         ) {
-
+            SettingsHeading("THEMING")
             SettingsItem(
                 Icons.Default.DarkMode,
                 title = "Theme Mode",
@@ -183,10 +184,10 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 icon = Icons.Default.Palette,
                 title = "Dynamic Color",
 
-                task = {},
+                task = {viewModel.setDynamicColor((!dynamicColor?.value.toBoolean()).toString())},
                 actions = {
                     Row {
-                        VerticalDivider()
+//                        VerticalDivider()
                         Spacer(Modifier.width(20.dp))
                         Switch(
                             checked = if (dynamicColor?.value == null) {
@@ -196,30 +197,15 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                             }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
                     }
                 })
-            if (firstDayOfWeek != null) {
-            SettingsItem(
-                icon = Icons.Default.CalendarToday,
-                title = "Select First Day Of Week",
-                description = firstDayOfWeek.name,
-                task = { dialogueSelectWeekDayOpen.value = true },
-            )
 
-                ModalForWeekSelection(
-                    dialogueSelectWeekDayOpen.value,
-                    onDismissRequest = { dialogueSelectWeekDayOpen.value = false },
-                    currentlySelectedDay = firstDayOfWeek,
-                    onDaySelect = { dayOfWeek -> viewModel.setFirstWeekOfDay(dayOfWeek)
-                        dialogueSelectWeekDayOpen.value = false  }
-                )
-            }
             SettingsItem(
                 icon = Icons.Default.InvertColors,
                 title = "Amoled",
                 description = "use Amoled Colors (only for dark theme).",
-                task = {},
+                task = {viewModel.setAmoledTheme((!amoledColors?.value.toBoolean()).toString())},
                 actions = {
-                    Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                        VerticalDivider()
+                    Row( verticalAlignment = Alignment.CenterVertically) {
+                       // VerticalDivider()
                         Spacer(Modifier.width(20.dp))
                         Switch(
                             checked = if (amoledColors?.value == null) {
@@ -230,6 +216,25 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                     }
                 })
 
+            SettingsHeading("DISPLAY")
+            SettingsItem(
+                icon = Icons.Default.DarkMode,
+                title = "Select First Day Of Week",
+                description = firstDayOfWeek?.name,
+                task = { dialogueSelectWeekDayOpen.value = true },
+            )
+            if (firstDayOfWeek != null) {
+                ModalForWeekSelection(
+                    dialogueSelectWeekDayOpen.value,
+                    onDismissRequest = { dialogueSelectWeekDayOpen.value = false },
+                    currentlySelectedDay = firstDayOfWeek,
+                    onDaySelect = { dayOfWeek ->
+                        viewModel.setFirstWeekOfDay(dayOfWeek)
+                        dialogueSelectWeekDayOpen.value = false
+                    }
+                )
+            }
+
         }
 
 
@@ -237,18 +242,25 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
 }
 
 @Composable
-fun ModalForWeekSelection(isVisible: Boolean, onDismissRequest: () -> Unit, onDaySelect : (DayOfWeek)->Unit, currentlySelectedDay: DayOfWeek = DayOfWeek.SUNDAY) {
+fun ModalForWeekSelection(
+    isVisible: Boolean,
+    onDismissRequest: () -> Unit,
+    onDaySelect: (DayOfWeek) -> Unit,
+    currentlySelectedDay: DayOfWeek = DayOfWeek.SUNDAY
+) {
 
     if (isVisible) {
         Dialog(onDismissRequest = { onDismissRequest() }) {
-                Card(Modifier) {
-            Column(Modifier.fillMaxWidth(0.7f)) {
+            Card(Modifier) {
+                Column(Modifier.fillMaxWidth(0.7f)) {
                     for (i in 1..7) {
-                        val currentDay =  DayOfWeek.of(i)
-                        Card(onClick = {onDaySelect(currentDay)}) {
-                            Row (Modifier
-                                .padding(20.dp)
-                                .fillMaxWidth()) {
+                        val currentDay = DayOfWeek.of(i)
+                        Card(onClick = { onDaySelect(currentDay) }) {
+                            Row(
+                                Modifier
+                                    .padding(20.dp)
+                                    .fillMaxWidth()
+                            ) {
                                 Text(
                                     currentDay.toString()
                                 )
@@ -270,23 +282,23 @@ fun SettingsItem(
     title: String,
     description: String? = null,
     task: () -> Unit,
-    actions: @Composable () -> Unit = {}
+    actions: @Composable (() -> Unit)?  = null
 ) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
             .clickable(onClick = { task() })
             .fillMaxWidth()
-            .padding(20.dp)
-            .height(IntrinsicSize.Min), // Use IntrinsicSize.Min to allow flexible height
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            , // Use IntrinsicSize.Min to allow flexible height
         horizontalArrangement = Arrangement.Absolute.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically // Center items vertically
 
     ) {
         Row(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(0.7f),
+            modifier =  if (actions != null){Modifier
+
+                .fillMaxWidth(0.7f)}else{Modifier.fillMaxWidth()},
             verticalAlignment = Alignment.CenterVertically
         ) { // Added weight to allow this Row to take available space
             Icon(
@@ -295,7 +307,7 @@ fun SettingsItem(
                 contentDescription = description
             )
             Spacer(Modifier.width(20.dp))
-            Column {
+            Column(Modifier.fillMaxWidth()) {
                 Text(
                     title,
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
@@ -303,15 +315,15 @@ fun SettingsItem(
                 description?.let {
                     Text(
                         description,
-                        style = TextStyle(fontWeight = FontWeight.ExtraLight, fontSize = 15.sp),
+                        style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 15.sp),
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
             }
         }
-        if (actions != {}) {
+        if (actions != null) {
             Row(
-                modifier = Modifier.fillMaxHeight(),
+
                 verticalAlignment = Alignment.CenterVertically
             ) { // Added fillMaxHeight to the actions Row
 
@@ -322,3 +334,11 @@ fun SettingsItem(
     }
 }
 
+@Composable
+fun SettingsHeading(text: String) {
+    Row {
+        Spacer(Modifier.width(30.dp))
+        Text(text, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+    }
+
+}
