@@ -17,8 +17,11 @@ import java.time.LocalDate
     )]
 )
 data class HabitCompletionEntity(
+
     val habitId: Int,
     val completionDate: LocalDate,
     val partial : Boolean = false,
+    val repetitionsOnThisDay : Float = 1f,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
+
 ): Parcelable

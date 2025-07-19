@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,7 +19,7 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun WeekCalendarData(
+fun WeekCalendarDataNew(
 
     addHabit: (date: LocalDate) -> Unit,
     deleteHabit: (date: LocalDate) -> Unit,
@@ -40,7 +41,7 @@ fun WeekCalendarData(
     LaunchedEffect(firstDayOfWeek) {
 
         state.firstDayOfWeek = firstDayOfWeek
-       state.scrollToWeek(todayDate)
+        state.scrollToWeek(todayDate)
 
     }
     LaunchedEffect(state.firstVisibleWeek) {
@@ -54,61 +55,62 @@ fun WeekCalendarData(
 
     }
 
-    if (habitData == null){
-        Column (Modifier.alpha(0.5f)){
+    if (habitData == null) {
+        Column(Modifier.alpha(0.5f)) {
             DaysOfWeekTitle(daysOfWeek)
-            WeekCalendar(dayContent = {DayItem(date = it.date, state = "")}, state = state) { }
+            WeekCalendar(dayContent = { DayItem(date = it.date, state = "") }, state = state) { }
         }
 
-    }else{
-
+    } else {
 
 
         val dateToday = LocalDate.now()
         Column {
 
-        DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
-        WeekCalendar(dayContent = { day ->
-            var dayState = ""
-           val datesMatching = habitData.filter { it.completionDate == day.date }
-            if (datesMatching.size > 1) {
-                dayState = "error"
-            } else if (datesMatching.size == 1) {
-                dayState = if (datesMatching[0].partial) {
-                    if (day.date > dateToday) {
-                        "partialDisabled"
+            //DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
+            WeekCalendar(dayContent = { day ->
+                var dayState = ""
+                val datesMatching = habitData.filter { it.completionDate == day.date }
+                if (datesMatching.size > 1) {
+                    dayState = "error"
+                } else if (datesMatching.size == 1) {
+                    dayState = if (datesMatching[0].partial) {
+                        if (day.date > dateToday) {
+                            "partialDisabled"
+                        } else {
+                            "partial"
+                        }
                     } else {
-                        "partial"
+                        if (day.date > dateToday) {
+                            "absoluteDisabled"
+                        } else {
+                            "absolute"
+                        }
                     }
                 } else {
                     if (day.date > dateToday) {
-                        "absoluteDisabled"
+                        dayState = "incompleteDisabled"
                     } else {
-                        "absolute"
+                        dayState = "incomplete"
                     }
                 }
-            } else {
-                if (day.date > dateToday) {
-                    dayState = "incompleteDisabled"
-                } else {
-                    dayState = "incomplete"
-                }
-            }
 
 
 
-            DayItemNew(
-                day.date,
-                state = dayState,
-                addHabit = {
-                   addHabit(day.date)
-                },
-                deleteHabit = {
-                    deleteHabit(day.date)
-                })
-        }, state = state)
+                    DayItem3(
+                        day.date,
+                        state = dayState,
+                        addHabit = {
+                            addHabit(day.date)
+                        },
+                        deleteHabit = {
+                            deleteHabit(day.date)
+                        })
 
-    }}
+            }, state = state)
 
+        }
+    }
 }
+
 

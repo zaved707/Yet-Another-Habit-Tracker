@@ -83,7 +83,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
         val name by viewModel.habitName.collectAsStateWithLifecycle()
         val description by viewModel.habitDescription.collectAsStateWithLifecycle()
-
+        val measurementUnit by viewModel.measurementUnit.collectAsStateWithLifecycle()
         val isNameError = remember { derivedStateOf { name.isEmpty() } }
         val setColor = viewModel.selectedColor.collectAsStateWithLifecycle()
 
@@ -119,7 +119,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         navigationIcon = {
                             IconButton(onClick = { backStack.removeLastOrNull() }) {
                                 Icon(
-                                    Icons.AutoMirrored.Default.ArrowBack, contentDescription = "go back"
+                                    Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = "go back"
                                 )
                             }
                         },
@@ -141,9 +142,6 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                                 ) { Icon(Icons.Default.Check, contentDescription = "add Habit") }
                             }
-
-
-
 
 
                         },
@@ -215,7 +213,37 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                             )
                         },
                         onValueChange = {
-                            viewModel.setHabitDescription(it) },
+                            viewModel.setHabitDescription(it)
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        shape = RoundedCornerShape(20.dp),
+
+
+                        )
+                    Spacer(Modifier.height(20.dp))
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                        Text("Measurement Unit: Default = 'Unit'", fontSize = 20.sp)
+                    }
+                    Spacer(Modifier.height(20.dp))
+                    TextField(
+
+                        modifier = Modifier
+                            .fillMaxWidth(),
+
+                        value = measurementUnit ?: "",
+                        placeholder = {
+                            Text(
+                                "Unit",
+                                fontStyle = FontStyle.Italic,
+                                color = Color.Gray
+                            )
+                        },
+                        onValueChange = {
+                            viewModel.setMeasurementUnit(it)
+                        },
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent

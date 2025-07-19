@@ -53,7 +53,7 @@ import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HabitItemReorderable(
+fun HabitItemReorderableNew(
     backStack: SnapshotStateList<NavKey>,
     viewModel: MainPageViewModel,
     habit: HabitEntity,
@@ -110,7 +110,7 @@ fun HabitItemReorderable(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+             ,
             horizontalAlignment = Alignment.Start
         ) {
             Row(
@@ -182,7 +182,7 @@ fun HabitItemReorderable(
             AnimatedVisibility(visible = !isReorderableMode) {
                 Column(Modifier.fillMaxWidth()) {
                     Spacer(Modifier.height(20.dp))
-                    WeekCalendarData(
+                    WeekCalendarDataNew(
                         addHabit = { date ->
                             coroutineScope.launch(
                                 Dispatchers.IO

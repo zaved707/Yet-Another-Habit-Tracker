@@ -243,7 +243,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                     // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
 
 
-                                    HabitItemReorderable(
+                                    HabitItemReorderableNew(
                                         backStack = backStack,
                                         viewModel = viewModel,
                                         habit = habit,
