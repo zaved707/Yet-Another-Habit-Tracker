@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -122,6 +123,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                     .fillMaxWidth()
                             ) {
                                 FullDataGridCalender(
+                                    gridHeight = if(LocalConfiguration.current.screenHeightDp < 350){LocalConfiguration.current.screenHeightDp}else{350},
                                     addHabit = { date ->
                                         coroutineScope.launch(
                                             Dispatchers.IO
@@ -141,7 +143,6 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                         )
                                     },
                                     habitData = habitAllData,
-                                    gridHeight = 350,
                                     showDate = true,
                                     interactive = true,
                                     firstDayOfWeek = firstDayOfWeek
