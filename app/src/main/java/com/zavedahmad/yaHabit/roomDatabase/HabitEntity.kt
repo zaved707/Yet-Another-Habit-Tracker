@@ -14,6 +14,7 @@ data class HabitEntity(
     val color : Color,
     val streakType : String,
     val frequency : Int,
-    val cycle : Int
-
+    val cycle : Int,
+    val completionsRequiredPerDay : Float =1f,
+    val measurementUnit : String
 )

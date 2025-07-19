@@ -1,6 +1,5 @@
 package com.zavedahmad.yaHabit.ui.addHabitPage
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = AddHabitPageViewModel.Factory::class)
 class AddHabitPageViewModel @AssistedInject constructor(
@@ -74,10 +72,16 @@ class AddHabitPageViewModel @AssistedInject constructor(
     private val _habitStreakType = MutableStateFlow<String>("everyday")
     val habitStreakType = _habitStreakType.asStateFlow()
 
+    private val _measurementUnit = MutableStateFlow<String?>(null)
+    val measurementUnit = _measurementUnit.asStateFlow()
+
     init {
         collectThemeMode()
 
         getHabitDetails()
+    }
+    fun setMeasurementUnit(unit: String){
+        _measurementUnit.value = unit
     }
 
     fun setColor(color: Color) {
@@ -106,7 +110,8 @@ class AddHabitPageViewModel @AssistedInject constructor(
                 index = _existingHabitData.value?.index ?: 0,
                 streakType = _habitStreakType.value,
                 frequency = _habitFrequency.value ?: 2,
-                cycle = _habitCycle.value ?: 7
+                cycle = _habitCycle.value ?: 7,
+                measurementUnit = _measurementUnit.value ?: "Unit"
 
             )
             viewModelScope.launch(Dispatchers.IO) {
@@ -125,7 +130,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
                         description = _habitDescription.value,
                         streakType = _habitStreakType.value,
                         frequency = _habitFrequency.value ?: 2,
-                        cycle = _habitCycle.value ?: 7
+                        cycle = _habitCycle.value ?: 7, measurementUnit = _measurementUnit.value ?: "Unit"
                     )
                 )
             }
