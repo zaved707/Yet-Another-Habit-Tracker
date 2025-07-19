@@ -103,15 +103,20 @@ class RecipePickerActivity : ComponentActivity() {
             val isReady =
                 !(themeReal == null || realDynamicColors == null || isAmoledColor == null || firstDayOfWeek == null)
             splashScreen.setKeepOnScreenCondition { !isReady }
-            if (isReady)
 
-            /* Box(
-                 Modifier
-                     .fillMaxSize()
-                     .background(MaterialTheme.colorScheme.surface)
-             )*/
-//                    SplashScreen()
-            {
+            if (!isReady){
+                ComposeTemplateTheme("system") {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface)
+                    )
+                }
+
+            }
+
+
+            else{
 
                 ComposeTemplateTheme(
                     themeReal.value,

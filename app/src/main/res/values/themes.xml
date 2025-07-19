@@ -19,8 +19,11 @@
     <style name="Theme.yaHabit" parent="android:Theme.Material.Light.NoActionBar">
         <!-- Set status bar appearance for light background -->
         <item name="android:windowLightStatusBar">true</item>
-<!--        <item name="android:windowSplashScreenBackground">@color/black</item>-->
+        <!-- For API 31+ -->
+                <item name="android:windowSplashScreenBackground">@color/black</item>
         <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <!-- For API < 31 -->
+        <item name="android:windowBackground">@color/black</item>
 <!--        <item name="android:windowSplashScreenAnimationDuration">0</item>-->
     </style>
 </resources>

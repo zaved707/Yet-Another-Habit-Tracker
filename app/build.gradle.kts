@@ -41,8 +41,8 @@ android {
         applicationId = "com.zavedahmad.yaHabit"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "0.0.54"
+        versionCode = 7
+        versionName = "0.0.55"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

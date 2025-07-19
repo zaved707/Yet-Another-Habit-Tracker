@@ -1,7 +1,10 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,9 +21,11 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +34,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -178,22 +184,22 @@ fun HabitItemReorderable(
                     Spacer(Modifier.height(20.dp))
                     WeekCalendarData(
                         addHabit = { date ->
-                        coroutineScope.launch(
-                            Dispatchers.IO
-                        ) {
-                            viewModel.habitRepository.addWithPartialCheck(
-                                HabitCompletionEntity(
-                                    habitId = habit.id,
-                                    completionDate = date
+                            coroutineScope.launch(
+                                Dispatchers.IO
+                            ) {
+                                viewModel.habitRepository.addWithPartialCheck(
+                                    HabitCompletionEntity(
+                                        habitId = habit.id,
+                                        completionDate = date
+                                    )
                                 )
+                            }
+                        }, deleteHabit = { date ->
+                            viewModel.deleteHabitEntryWithPartialCheck(
+                                habitId = habit.id,
+                                date = date
                             )
-                        }
-                    }, deleteHabit = { date ->
-                        viewModel.deleteHabitEntryWithPartialCheck(
-                            habitId = habit.id,
-                            date = date
-                        )
-                    }, habitData = habitData.value,
+                        }, habitData = habitData.value,
                         firstDayOfWeek = firstDayOfWeek
                     )
 
@@ -251,12 +257,24 @@ fun HabitItemReorderable(
                                     onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
                                     Icon(Icons.Default.Edit, contentDescription = "")
                                 }
+//                                Box(
+//                                    Modifier.border(shape = MaterialShapes.Clover8Leaf.toShape(), width = 1.dp,color = MaterialTheme.colorScheme.error)
+//                                        .clip(MaterialShapes.Clover8Leaf.toShape())
+//                                        .background(
+//                                            MaterialTheme.colorScheme.onError
+//                                        ), contentAlignment = Alignment.Center
+//                                ) {
                                 IconButton(
                                     modifier = Modifier,
                                     onClick = { /*viewModel.deleteHabitById(habit.id)*/
                                         showDialog.value = true
                                     }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "")
+                                    Icon(
+                                        Icons.Default.Delete,
+                                        contentDescription = "",
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+//                                    }
                                 }
                             }
                         }

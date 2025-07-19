@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -160,7 +162,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                 Modifier
                                     .fillMaxWidth()
                                     .padding(20.dp)
-                            ) {
+                            ) {Icon(Icons.Default.Repeat,"")
+                                Spacer(Modifier.width(10.dp))
                                 if (habitDetails.streakType == "everyday") {
                                     Text("EveryDay")
                                 } else if (habitDetails.streakType == "week") {

@@ -90,8 +90,15 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
         listUpdatedChannel.trySend(Unit)
     }
 
-    if (!(themeReal == null || isAmoledColor == null || firstDayOfWeek == null)) {
-
+    if (themeReal == null || isAmoledColor == null || firstDayOfWeek == null) {
+        ComposeTemplateTheme("system") {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)
+            )
+        }
+    } else {
 
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

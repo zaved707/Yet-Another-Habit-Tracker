@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
@@ -170,7 +172,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
             }
         }
         Column(
-            modifier = Modifier
+            modifier = Modifier.verticalScroll(rememberScrollState())
                 .padding(innerPadding)
 
         ) {
@@ -218,7 +220,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
 
             SettingsHeading("DISPLAY")
             SettingsItem(
-                icon = Icons.Default.DarkMode,
+                icon = Icons.Default.CalendarToday,
                 title = "Select First Day Of Week",
                 description = firstDayOfWeek?.name,
                 task = { dialogueSelectWeekDayOpen.value = true },
@@ -334,11 +336,16 @@ fun SettingsItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsHeading(text: String) {
     Row {
         Spacer(Modifier.width(30.dp))
-        Text(text, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+        Text(
+            text,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelLargeEmphasized
+        )
     }
 
 }
