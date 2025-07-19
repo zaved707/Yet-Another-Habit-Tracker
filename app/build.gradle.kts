@@ -41,8 +41,8 @@ android {
         applicationId = "com.zavedahmad.yaHabit"
         minSdk = 26
         targetSdk = 35
-        versionCode = 5
-        versionName = "0.0.53"
+        versionCode = 6
+        versionName = "0.0.54"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -87,7 +87,7 @@ dependencies {
         implementation( "androidx.core:core-splashscreen:1.0.0")
 
     // glance for widgets
-    implementation("androidx.glance:glance-appwidget:1.1.1")
+//    implementation("androidx.glance:glance-appwidget:1.1.1")
     // For interop APIs with Material 3
     implementation("androidx.glance:glance-material3:1.1.1")
     // end
