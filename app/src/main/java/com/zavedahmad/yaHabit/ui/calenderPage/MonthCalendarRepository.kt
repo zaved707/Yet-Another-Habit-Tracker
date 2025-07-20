@@ -72,7 +72,8 @@ fun MonthCalendarRepository(
     }
     habitData.value?.let { habitData ->
         val dates = convertHabitCompletionEntityListToDatesList(habitData)
-        val partialAndAbsoluteCombinedList = processDateTriples(findHabitClusters(habitData, habit.cycle, habit.frequency))
+        val partialAndAbsoluteCombinedList =
+            processDateTriples(findHabitClusters(habitData, habit.cycle, habit.frequency))
         val dateToday = LocalDate.now()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

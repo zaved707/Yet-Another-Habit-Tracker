@@ -2,6 +2,7 @@ package com.zavedahmad.yaHabit.ui.addHabitPage
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zavedahmad.yaHabit.utils.roundTo
@@ -81,6 +83,7 @@ fun RepetitionPerDaySelector(viewModel: AddHabitPageViewModel) {
             }
         }
     }
+
     val finalRepetitionPerDay = remember {
         derivedStateOf {
             val valueDouble = repetitionPerDayToShow.value.toDoubleOrNull()
@@ -91,7 +94,9 @@ fun RepetitionPerDaySelector(viewModel: AddHabitPageViewModel) {
             }
         }
     }
-
+    LaunchedEffect(finalRepetitionPerDay.value) {
+        viewModel.setRepetitionPerDay(finalRepetitionPerDay.value)
+    }
     Row(Modifier.fillMaxWidth()) {
         options.forEachIndexed { index, item ->
             val isChecked = selectedOption.value == index
@@ -144,7 +149,8 @@ fun RepetitionPerDaySelector(viewModel: AddHabitPageViewModel) {
         onValueChange = {
             customValue.value = it
 
-        })
+        }, keyboardOptions =
+            KeyboardOptions(keyboardType = KeyboardType.Number))
 
 }
 
