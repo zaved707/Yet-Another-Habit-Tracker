@@ -97,8 +97,8 @@ fun WeekCalendarDataNew(
 
 
 
-                    DayItem3(
-                        day.date,
+                    DayItem3(repetitionsOnThisDay = if (dayState != "error" && datesMatching.size >0){datesMatching[0].repetitionsOnThisDay}else{1.0},
+                        date = day.date,
                         state = dayState,
                         addHabit = {
                             addHabit(day.date)

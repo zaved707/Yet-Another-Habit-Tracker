@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
@@ -29,6 +30,7 @@ import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
@@ -184,13 +187,15 @@ fun HabitItemReorderableNew(
                     Spacer(Modifier.height(20.dp))
                     WeekCalendarDataNew(
                         addHabit = { date ->
+
                             coroutineScope.launch(
                                 Dispatchers.IO
                             ) {
                                 viewModel.habitRepository.addWithPartialCheck(
                                     HabitCompletionEntity(
                                         habitId = habit.id,
-                                        completionDate = date
+                                        completionDate = date,
+                                        repetitionsOnThisDay = habit.repetitionPerDay
                                     )
                                 )
                             }
@@ -285,6 +290,20 @@ fun HabitItemReorderableNew(
     }
 }
 
+@Composable
+fun DialogueForHabit(isVisible :Boolean) {
+    if (isVisible) {
+        Dialog(onDismissRequest = {}) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+            ) {
+
+            }
+        }
+    }
+}
 //@Composable
 //private fun reorderableRow() {
 //    Row(modifier = with(reorderableListScope) {

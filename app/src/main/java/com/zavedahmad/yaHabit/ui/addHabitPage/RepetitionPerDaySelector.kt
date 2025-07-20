@@ -41,6 +41,7 @@ fun RepetitionPerDaySelector(viewModel: AddHabitPageViewModel) {
     }
     val isCustomValid = remember {
         derivedStateOf {
+            if (selectedOption.value == 1){
             val doubleValue = customValue.value.toDoubleOrNull()
             if (doubleValue != null) {
                 if (doubleValue > 0.0) {
@@ -52,6 +53,9 @@ fun RepetitionPerDaySelector(viewModel: AddHabitPageViewModel) {
 
             } else {
                 false
+            }
+            }else{
+               true
             }
         }
     }
