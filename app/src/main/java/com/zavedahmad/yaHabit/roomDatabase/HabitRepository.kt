@@ -47,9 +47,10 @@ class HabitRepository @Inject constructor(
     suspend fun editItem(habitEntity: HabitEntity) {
         db.runInTransaction {
             runBlocking {
-            habitDao.addHabit(habitEntity)
-            repairPartials(habitEntity)
-        }}
+                habitDao.addHabit(habitEntity)
+                repairPartials(habitEntity)
+            }
+        }
     }
 
     fun deleteHabit(id: Int) { // this deletes with index check
@@ -85,7 +86,12 @@ class HabitRepository @Inject constructor(
             entry.completionDate.plusDays((habitEntity.cycle - 1).toLong())
         )
         val partialEntries = entries?.filter { entry -> entry.partial == true }
-        val absoluteEntries = entries?.filter { entry -> entry.partial != true }
+        val absoluteEntries =
+            entries?.filter { entry -> entry.partial != true && entry.repetitionsOnThisDay > 0.0 }
+        val blankEntries =
+            entries?.filter { entry -> entry.partial == false && entry.repetitionsOnThisDay == 0.0 }
+        val currentEntryPresentInBlank =
+            blankEntries?.any { it.completionDate == entry.completionDate } ?: false
         val currentEntryPresentInAbsolute =
             absoluteEntries?.any { it.completionDate == entry.completionDate } ?: false
         val currentEntryPresentInPartial =
@@ -119,7 +125,8 @@ class HabitRepository @Inject constructor(
                         HabitCompletionEntity(
                             habitId = habitEntity.id,
                             completionDate = date,
-                            partial = true
+                            partial = true,
+                            repetitionsOnThisDay = habitEntity.repetitionPerDay
                         )
                     )
                 }
@@ -134,15 +141,12 @@ class HabitRepository @Inject constructor(
 
                 }
 
-                if (!currentEntryPresentInAbsolute) {
-                    println("adding date to database")
-                    addHabitCompletionEntry(
-                        HabitCompletionEntity(
-                            habitId = habitEntity.id,
-                            completionDate = entry.completionDate
-                        )
-                    )
-                }
+
+                println("adding date to database")
+                addHabitCompletionEntry(
+                    entry = entry
+                )
+
             }
 
         }

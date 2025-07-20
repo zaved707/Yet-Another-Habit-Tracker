@@ -1,51 +1,37 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.DragHandle
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
@@ -210,11 +196,49 @@ fun HabitItemReorderableNew(
                         },
                         habitData = habitData.value,
                         firstDayOfWeek = firstDayOfWeek,
-                        dialogueComposable = { visible, onDismiss,habitCompletionEntity ->
+                        dialogueComposable = { visible, onDismiss, habitCompletionEntity ->
                             DialogueForHabit(
                                 isVisible = visible,
                                 onDismissRequest = { onDismiss() },
-                                habitCompletionEntity = habitCompletionEntity
+                                habitCompletionEntity = habitCompletionEntity,
+                                updateHabitCompletionEntity = { habitCompletionEntity ->
+
+                                },
+                                habitEntity = habit,
+                                onFinalised = { isAnyValueChanged, userTypedRepetition, userTypedNote ->
+                                    val entityAlreadyExists = habitCompletionEntity != null
+                                    if (entityAlreadyExists) {
+                                        if (isAnyValueChanged ?: false) {
+
+                                            val newHabitCompletionEntity = HabitCompletionEntity(
+                                                habitId = habitCompletionEntity.habitId,
+                                                completionDate = habitCompletionEntity.completionDate,
+                                                partial = habitCompletionEntity.partial,
+                                                repetitionsOnThisDay = if (userTypedRepetition.toDoubleOrNull() != null) {
+                                                   userTypedRepetition.toDouble()
+                                                } else {
+                                                    habitCompletionEntity.repetitionsOnThisDay
+                                                },
+                                                note = userTypedNote,
+                                                id = habitCompletionEntity.id
+                                            )
+
+                                            coroutineScope.launch(
+                                                Dispatchers.IO
+                                            ) {
+                                                viewModel.habitRepository.addWithPartialCheck(
+                                                    newHabitCompletionEntity
+                                                )
+                                            }
+
+
+                                        }
+
+
+                                    }
+
+
+                                }
                             )
                         }
                     )
@@ -275,27 +299,6 @@ fun HabitItemReorderableNew(
                                 }
                             }
                         }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun DialogueForHabit(isVisible: Boolean, onDismissRequest: () -> Unit, habitCompletionEntity: HabitCompletionEntity?) {
-    if (isVisible) {
-        Dialog(onDismissRequest = { onDismissRequest() }) {
-        val repetitions = remember{ mutableStateOf(if(habitCompletionEntity != null){habitCompletionEntity.repetitionsOnThisDay.toString()}else{"0"})}
-            Card {
-               Column(
-                    modifier = Modifier.padding(20.dp)
-
-
-                ) {
-                    TextField(value = repetitions.value, onValueChange = {repetitions.value  = it})
-                    Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
-                        Button(onClick ={} ) { Text("Done")}
                     }
                 }
             }
