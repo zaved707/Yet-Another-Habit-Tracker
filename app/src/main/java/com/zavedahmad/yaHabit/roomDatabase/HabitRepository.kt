@@ -38,7 +38,8 @@ class HabitRepository @Inject constructor(
                 cycle = habitEntity.cycle,
                 frequency = habitEntity.frequency,
                 streakType = habitEntity.streakType,
-                measurementUnit = habitEntity.measurementUnit
+                measurementUnit = habitEntity.measurementUnit,
+                repetitionPerDay = habitEntity.repetitionPerDay
             )
         )
     }

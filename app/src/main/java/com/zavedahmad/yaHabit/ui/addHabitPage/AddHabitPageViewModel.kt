@@ -65,7 +65,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
     val existingHabitData = _existingHabitData.asStateFlow()
     private val _habitDescription = MutableStateFlow("")
     val habitDescription = _habitDescription.asStateFlow()
-    private val _habitFrequency = MutableStateFlow<Int?>(null)
+    private val _habitFrequency = MutableStateFlow<Double?>(null)
     val habitFrequency = _habitFrequency.asStateFlow()
     private val _habitCycle = MutableStateFlow<Int?>(null)
     val habitCycle = _habitCycle.asStateFlow()
@@ -74,11 +74,17 @@ class AddHabitPageViewModel @AssistedInject constructor(
 
     private val _measurementUnit = MutableStateFlow<String?>(null)
     val measurementUnit = _measurementUnit.asStateFlow()
+    private val _repetitionPerDay = MutableStateFlow<Double?>(null)
+    val repetitionPerDay = _repetitionPerDay.asStateFlow()
+
 
     init {
         collectThemeMode()
 
         getHabitDetails()
+    }
+    fun setRepetitionPerDay(repetition: Double){
+        _repetitionPerDay.value = repetition
     }
     fun setMeasurementUnit(unit: String){
         _measurementUnit.value = unit
@@ -109,9 +115,10 @@ class AddHabitPageViewModel @AssistedInject constructor(
                 description = _habitDescription.value,
                 index = _existingHabitData.value?.index ?: 0,
                 streakType = _habitStreakType.value,
-                frequency = _habitFrequency.value ?: 2,
+                frequency = _habitFrequency.value ?: 2.0,
                 cycle = _habitCycle.value ?: 7,
-                measurementUnit = _measurementUnit.value ?: "Unit"
+                measurementUnit = _measurementUnit.value ?: "Unit",
+                repetitionPerDay = _repetitionPerDay.value ?: 1.0
 
             )
             viewModelScope.launch(Dispatchers.IO) {
@@ -129,8 +136,9 @@ class AddHabitPageViewModel @AssistedInject constructor(
                         color = _selectedColor.value,
                         description = _habitDescription.value,
                         streakType = _habitStreakType.value,
-                        frequency = _habitFrequency.value ?: 2,
-                        cycle = _habitCycle.value ?: 7, measurementUnit = _measurementUnit.value ?: "Unit"
+                        frequency = _habitFrequency.value ?: 2.0,
+                        cycle = _habitCycle.value ?: 7, measurementUnit = _measurementUnit.value ?: "Unit",
+                        repetitionPerDay = _repetitionPerDay.value ?: 1.0
                     )
                 )
             }
@@ -145,7 +153,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
         }
     }
 
-    fun setHabitFrequency(frequency: Int) {
+    fun setHabitFrequency(frequency: Double) {
         _habitFrequency.value = frequency
     }
 
@@ -169,6 +177,8 @@ class AddHabitPageViewModel @AssistedInject constructor(
                     setHabitFrequency(existingHabitHolder.frequency)
                     setHabitCycle(existingHabitHolder.cycle)
                     setHabitStreakType(existingHabitHolder.streakType)
+                    setMeasurementUnit(existingHabitHolder.measurementUnit)
+                    setRepetitionPerDay(existingHabitHolder.repetitionPerDay)
                 }
             }
         }

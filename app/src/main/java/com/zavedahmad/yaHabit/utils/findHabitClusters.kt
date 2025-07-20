@@ -28,11 +28,9 @@ import java.time.LocalDate
 fun findHabitClusters(
     habitEntries: List<HabitCompletionEntity>,
     cycleLength: Int,
-    minOccurrences: Int
-): List<Triple<LocalDate, LocalDate, Int>> {
-    val results = mutableListOf<Triple<LocalDate, LocalDate, Int>>()
-
-
+    minOccurrences:Double
+): List<Triple<LocalDate, LocalDate, Double>> {
+    val results = mutableListOf<Triple<LocalDate, LocalDate, Double>>()
     val sortedHabitEntries = habitEntries.sortedBy{
         it.completionDate
     }
@@ -42,12 +40,12 @@ fun findHabitClusters(
         val startDate = sortedHabitEntries[i].completionDate
 
         val endDate = startDate.plusDays(cycleLength-1.toLong())
-        var count = 0
+        var count = 0.0
 
         var j = i
         while (j < sortedHabitEntries.size) {
             if (sortedHabitEntries[j].completionDate <= endDate) {
-                count += 1
+                count += sortedHabitEntries[j].repetitionsOnThisDay
                 j += 1
             } else {
                 break
@@ -61,7 +59,7 @@ fun findHabitClusters(
     return results
 }
 //it processes the data from findHabitsClusters function and changes then to a list of dates
-fun processDateTriples(tripleList: List<Triple<LocalDate, LocalDate, Int>> ): List<LocalDate>{
+fun processDateTriples(tripleList: List<Triple<LocalDate, LocalDate, Double>> ): List<LocalDate>{
 
     val results = mutableListOf<LocalDate>()
     for (triple in tripleList){
