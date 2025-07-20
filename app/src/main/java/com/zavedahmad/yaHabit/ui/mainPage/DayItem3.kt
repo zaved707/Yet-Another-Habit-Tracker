@@ -41,6 +41,7 @@ import java.time.LocalDate
 fun DayItem3(
     date: LocalDate,
     state: String,
+    repetitionsOnThisDay: Double ,
     addHabit: () -> Unit = {},
     deleteHabit: () -> Unit = {}
 ) {
@@ -57,7 +58,8 @@ fun DayItem3(
             textColor = MaterialTheme.colorScheme.onPrimary
             borderColor = MaterialTheme.colorScheme.primary
             icon = Icons.Default.Check
-            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
+//            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
+        iconComposable = {Text(repetitionsOnThisDay.toString(), color = textColor)}
         }
 
 
