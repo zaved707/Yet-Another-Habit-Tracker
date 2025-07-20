@@ -62,7 +62,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     val errorCommon = remember {
 
         derivedStateOf {
-            if (streakChecked.value == 0 && !isErrorDaily) {
+            if (streakChecked.value == 0 && isErrorDaily) {
                 true
             } else if (streakChecked.value == 1 && !isFrequencyValidWeek.value) {
                 true

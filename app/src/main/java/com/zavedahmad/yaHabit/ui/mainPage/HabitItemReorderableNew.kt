@@ -17,6 +17,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +28,7 @@ import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -112,8 +115,7 @@ fun HabitItemReorderableNew(
         )
         Column(
             Modifier
-                .fillMaxWidth()
-             ,
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.Start
         ) {
             Row(
@@ -199,35 +201,25 @@ fun HabitItemReorderableNew(
                                     )
                                 )
                             }
-                        }, deleteHabit = { date ->
+                        },
+                        deleteHabit = { date ->
                             viewModel.deleteHabitEntryWithPartialCheck(
                                 habitId = habit.id,
                                 date = date
                             )
-                        }, habitData = habitData.value,
-                        firstDayOfWeek = firstDayOfWeek
+                        },
+                        habitData = habitData.value,
+                        firstDayOfWeek = firstDayOfWeek,
+                        dialogueComposable = { visible, onDismiss,habitCompletionEntity ->
+                            DialogueForHabit(
+                                isVisible = visible,
+                                onDismissRequest = { onDismiss() },
+                                habitCompletionEntity = habitCompletionEntity
+                            )
+                        }
                     )
 
-                    /*WeekCalendar(habit, viewModel.habitRepository,
-                        addHabit = {date ->
-                            coroutineScope.launch(
-                                Dispatchers.IO
-                            ) {
-                                viewModel.habitRepository.addWithPartialCheck(
-                                    HabitCompletionEntity(
-                                        habitId = habit.id,
-                                        completionDate = date
-                                    )
-                                )
-                            }
-                    }, deleteHabit = { date ->
-                        viewModel.deleteHabitEntryWithPartialCheck(
-                            habitId = habit.id,
-                            date = date
-                        )
-                    })*/
 
-//            WeekCalendarOld(viewModel, habit)
                     Spacer(Modifier.height(20.dp))
 
                     HorizontalDivider()
@@ -291,19 +283,26 @@ fun HabitItemReorderableNew(
 }
 
 @Composable
-fun DialogueForHabit(isVisible :Boolean) {
+fun DialogueForHabit(isVisible: Boolean, onDismissRequest: () -> Unit, habitCompletionEntity: HabitCompletionEntity?) {
     if (isVisible) {
-        Dialog(onDismissRequest = {}) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-            ) {
+        Dialog(onDismissRequest = { onDismissRequest() }) {
+        val repetitions = remember{ mutableStateOf(if(habitCompletionEntity != null){habitCompletionEntity.repetitionsOnThisDay.toString()}else{"0"})}
+            Card {
+               Column(
+                    modifier = Modifier.padding(20.dp)
 
+
+                ) {
+                    TextField(value = repetitions.value, onValueChange = {repetitions.value  = it})
+                    Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+                        Button(onClick ={} ) { Text("Done")}
+                    }
+                }
             }
         }
     }
 }
+
 //@Composable
 //private fun reorderableRow() {
 //    Row(modifier = with(reorderableListScope) {

@@ -22,6 +22,7 @@ data class HabitCompletionEntity(
     val completionDate: LocalDate,
     val partial : Boolean = false,
     val repetitionsOnThisDay :Double = 1.0,
+    val note : String? = null,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 
 ): Parcelable
