@@ -3,13 +3,14 @@ package com.zavedahmad.yaHabit.roomDatabase
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 @Dao
 interface HabitCompletionDao {
 
-    @Insert
+    @Upsert
     suspend fun addHabitCompletionEntry(habitCompletionEntity: HabitCompletionEntity)
 
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id")
