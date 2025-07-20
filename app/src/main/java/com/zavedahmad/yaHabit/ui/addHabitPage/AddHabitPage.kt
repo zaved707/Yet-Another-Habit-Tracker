@@ -264,8 +264,9 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                             frequencySelectorError.value = it
                         })
 
-
-
+                    Spacer(Modifier.height(30.dp))
+                    Text("repetition per day")
+                    RepetitionPerDaySelector(viewModel)
                     Spacer(Modifier.height(30.dp))
                     Row(
                         horizontalArrangement = Arrangement.Start,

@@ -39,8 +39,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Boolean) -> Unit){
+fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boolean) -> Unit) {
     val streakChecked = rememberSaveable { mutableStateOf(0) }
+    val frequencyEveryDay = rememberSaveable { mutableStateOf("1") }
     val frequencyCustom = rememberSaveable { mutableStateOf("3") }
     val frequencyValidCustom = rememberSaveable { mutableStateOf(true) }
     val frequencyForStreakWeek = rememberSaveable { mutableStateOf("3") }
@@ -52,19 +53,21 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
     val isErrorCustom by remember { derivedStateOf { !(frequencyValidCustom.value && isCycleValidCustom.value) } }
     val options = listOf("Everyday", "Weekly", "Monthly", "Custom")
     val existingHabitData = viewModel.existingHabitData.collectAsStateWithLifecycle().value
+    val measurementUnit by viewModel.measurementUnit.collectAsStateWithLifecycle()
+    val upperLimit = 100000
     val errorCommon = remember {
 
         derivedStateOf {
 
-                if (streakChecked.value == 1 && !isFrequencyValidWeek.value) {
-                    true
-                } else if (streakChecked.value == 2 && !isFrequencyValidMonth.value) {
-                    true
-                } else if (streakChecked.value == 3 && isErrorCustom) {
-                    true
-                } else {
-                    false
-                }
+            if (streakChecked.value == 1 && !isFrequencyValidWeek.value) {
+                true
+            } else if (streakChecked.value == 2 && !isFrequencyValidMonth.value) {
+                true
+            } else if (streakChecked.value == 3 && isErrorCustom) {
+                true
+            } else {
+                false
+            }
 
         }
     }
@@ -72,25 +75,27 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
         onErrorValueChange(errorCommon.value)
 
     }
-    existingHabitData?.let{
-    LaunchedEffect(Unit) {
-    if (viewModel.navKey.habitId != null) {
+    existingHabitData?.let {
+        LaunchedEffect(Unit) {
+            if (viewModel.navKey.habitId != null) {
 
-        if(existingHabitData.streakType == "everyday"){
-            streakChecked.value = 0
+                if (existingHabitData.streakType == "everyday") {
+                    streakChecked.value = 0
 
-        }else if(existingHabitData.streakType == "week"){
-            frequencyForStreakWeek.value  = existingHabitData.frequency.toString()
-            streakChecked.value = 1
-        }else if(existingHabitData.streakType == "month"){
-            streakChecked.value = 2
-            frequencyForStreakMonth.value = existingHabitData.frequency.toString()
-        }else if(existingHabitData.streakType == "custom"){
-            streakChecked.value = 3
-            cycleLengthCustom.value = existingHabitData.cycle.toString()
-            frequencyCustom.value = existingHabitData.frequency.toString()
+                } else if (existingHabitData.streakType == "week") {
+                    frequencyForStreakWeek.value = existingHabitData.frequency.toString()
+                    streakChecked.value = 1
+                } else if (existingHabitData.streakType == "month") {
+                    streakChecked.value = 2
+                    frequencyForStreakMonth.value = existingHabitData.frequency.toString()
+                } else if (existingHabitData.streakType == "custom") {
+                    streakChecked.value = 3
+                    cycleLengthCustom.value = existingHabitData.cycle.toString()
+                    frequencyCustom.value = existingHabitData.frequency.toString()
+                }
+            }
         }
-    }}}
+    }
     // this keeps track of when user selects another kind of frequency it sets appropriate values for its fields
     LaunchedEffect(streakChecked.value) {
         if (streakChecked.value == 0) {
@@ -119,10 +124,15 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
 
     }
     // These are all the buttons
-    Row (Modifier.fillMaxWidth()){
+    Row(Modifier.fillMaxWidth()) {
         options.forEachIndexed { index, item ->
             val isChecked = streakChecked.value == index
-            ToggleButton(modifier =if(!isChecked) {Modifier.weight(1f)}else{Modifier},
+            ToggleButton(
+                modifier = if (!isChecked) {
+                    Modifier.weight(1f)
+                } else {
+                    Modifier
+                },
                 checked = isChecked, shapes = when (index) {
                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
                         pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
@@ -155,7 +165,11 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
         }
     }
     AnimatedVisibility(visible = streakChecked.value == 0) {
-        Column { Text("Everyday") }
+        Column {
+            TextField(value = frequencyEveryDay.value, onValueChange = {frequencyEveryDay.value = it})
+            Text(measurementUnit ?: "Unit")
+            Text("Everyday")
+        }
     }
 
 
@@ -165,14 +179,13 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                 Modifier.fillMaxWidth(0.5f),
                 visible = !isFrequencyValidWeek.value
             )
-            Text("Weekly")
+
 
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    modifier = Modifier.width(70.dp),
                     value = frequencyForStreakWeek.value,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
@@ -180,7 +193,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                     ),
                     onValueChange = {
                         if (it.toIntOrNull() != null) {
-                            if (it.toInt() < 7 && it.toInt() > 0) {
+                            if (it.toInt() < upperLimit && it.toInt() > 0) {
                                 frequencyForStreakWeek.value = it
                                 isFrequencyValidWeek.value = true
                                 viewModel.setHabitFrequency(it.toInt())
@@ -196,10 +209,11 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                             isFrequencyValidWeek.value = false
                         }
                     })
-                Spacer(Modifier.width(10.dp))
-                Text("times per Week")
 
             }
+                Spacer(Modifier.width(10.dp))
+                Text(measurementUnit?: "Unit")
+                Text("per Week")
         }
     }
     AnimatedVisibility(visible = streakChecked.value == 2) {
@@ -208,13 +222,12 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                 Modifier.fillMaxWidth(0.5f),
                 visible = !isFrequencyValidMonth.value
             )
-            Text("Monthly")
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    modifier = Modifier.width(70.dp),
+
                     value = frequencyForStreakMonth.value,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
@@ -222,7 +235,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                     ),
                     onValueChange = {
                         if (it.toIntOrNull() != null) {
-                            if (it.toInt() < 30 && it.toInt() > 0) {
+                            if (it.toInt() < upperLimit && it.toInt() > 0) {
                                 frequencyForStreakMonth.value = it
                                 isFrequencyValidMonth.value = true
                                 viewModel.setHabitFrequency(it.toInt())
@@ -236,10 +249,12 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                             isFrequencyValidMonth.value = false
                         }
                     })
-                Spacer(Modifier.width(10.dp))
-                Text("times per Month")
+
 
             }
+                Spacer(Modifier.width(10.dp))
+            Text(measurementUnit?: "Unit")
+                Text("per Month")
         }
     }
     AnimatedVisibility(visible = streakChecked.value == 3) {
@@ -252,12 +267,11 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                 visible = isErrorCustom
             )
             Text("Custom")
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                verticalArrangement = Arrangement.Center
             ) {
                 TextField(
-                    modifier = Modifier.width(70.dp),
+
                     value =
                         frequencyCustom.value,
 
@@ -268,10 +282,10 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                     ), onValueChange = {
                         val num = it.toIntOrNull()
                         if (num != null) {
-                            if (num < 999) {
-                                if (cycleLengthCustom.value.isNotEmpty() && num >= cycleLengthCustom.value.toInt()) {
+                            if (num < upperLimit) {
+                                if (cycleLengthCustom.value.isNotEmpty()) {
                                     frequencyCustom.value = it
-                                    frequencyValidCustom.value = false
+                                    frequencyValidCustom.value = true
                                     viewModel.setHabitFrequency(it.toInt())
                                     isCycleValidCustom.value = true
                                 } else {
@@ -291,10 +305,10 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                         KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
                 Spacer(Modifier.width(10.dp))
-                Text("times per")
+                Text("${measurementUnit ?: "Unit"} per")
                 Spacer(Modifier.width(10.dp))
                 TextField(
-                    modifier = Modifier.width(70.dp),
+                   modifier =  Modifier.width(70.dp),
                     value = cycleLengthCustom.value,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
@@ -304,7 +318,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                         val num = it.toIntOrNull()
                         if (num != null) {
                             if (num <= 999 && num > 0) {
-                                if (frequencyCustom.value.isNotEmpty() && num > frequencyCustom.value.toInt()) {
+                                if (frequencyCustom.value.isNotEmpty() ) {
                                     cycleLengthCustom.value = it
                                     isCycleValidCustom.value = true
                                     viewModel.setHabitCycle(it.toInt())
@@ -339,6 +353,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange : (Bo
                  }*/
                 Spacer(Modifier.height(20.dp))
             }
+
         }
     }
 }
