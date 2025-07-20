@@ -28,6 +28,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -43,14 +45,17 @@ fun DayItem3(
     state: String,
     repetitionsOnThisDay: Double ,
     addHabit: () -> Unit = {},
-    deleteHabit: () -> Unit = {}
+    deleteHabit: () -> Unit = {},
+    dialogueComposable : @Composable (Boolean, ()-> Unit)-> Unit
 ) {
+    val isDialogVisible = remember { mutableStateOf(false) }
     var bgColor = MaterialTheme.colorScheme.error
     var textColor = MaterialTheme.colorScheme.onError
     var borderColor = MaterialTheme.colorScheme.primary
     var buttonAction = {}
     var icon: ImageVector? = null
     var iconComposable: (@Composable () -> Unit) = { }
+    dialogueComposable(isDialogVisible.value, {isDialogVisible.value = false})
     when (state) {
         "absolute" -> {
             buttonAction = deleteHabit
@@ -121,7 +126,7 @@ fun DayItem3(
         ) {
         Box(
             Modifier.combinedClickable(
-                onClick = {},
+                onClick = {isDialogVisible.value =true},
                 onDoubleClick = {},
                 onLongClick = { buttonAction() }).background(bgColor)
         ) {
