@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
-
+// TODO returning false for is is note changed when n ote is changed
 @Composable
 fun DialogueForHabit(
     isVisible: Boolean,

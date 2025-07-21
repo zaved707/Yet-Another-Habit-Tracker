@@ -76,75 +76,75 @@ class HabitRepository @Inject constructor(
 
     suspend fun decreaseRepetitions(entryId: Int, newRepetitionValue: Double) {
         val entry = habitCompletionDao.getEntryById(entryId)
-        val habitEntity = habitDao.getHabitById(entry.habitId)
 
-        val modifiedCompletionEntity =
-            entry.copy(partial = false, repetitionsOnThisDay = newRepetitionValue)
+        entry?.let {
+            val habitEntity = habitDao.getHabitById(entry.habitId)
 
-        // get -cycle and + cycle all habit Entries
-        val dateToConsiderStart =
-            entry.completionDate.minusDays(((habitEntity.cycle * 2) - 2).toLong())
-        val dateToConsiderEnd =
-            entry.completionDate.plusDays(((habitEntity.cycle * 2) - 2).toLong())
-        val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
-            habitId = habitEntity.id,
-            startDate = dateToConsiderStart,
-            endDate = dateToConsiderEnd
-        )
-        val partialEntries = entries?.filter { entry -> entry.isPartial() }
-        val absoluteEntries =
-            entries?.filter { entry -> entry.isAbsolute() }
-        val noteEntries = entries?.filter { it.isOnlyNote() }
+            val modifiedCompletionEntity =
+                entry.copy(partial = false, repetitionsOnThisDay = newRepetitionValue)
 
-        // swap the new value
-        val entriesList = absoluteEntries?.toMutableList() ?: mutableListOf()
-        entriesList.removeIf { it.completionDate == entry.completionDate }
-        entriesList.add(modifiedCompletionEntity)
-
-        // get clusters
-        val clusters = findHabitClusters(
-            habitEntries = entriesList,
-            cycleLength = habitEntity.cycle,
-            minOccurrences = habitEntity.frequency
-        )
-
-        // get processed clusters
-        val processedClusters = processDateTriples(clusters)
-
-        val datesInLimitOfCycleOfDateBeingAdded = processedClusters.filter { date ->
-
-            date <= dateToConsiderEnd && date >= dateToConsiderStart
-        }
-        // seperate all the dates into alreadyPresent as Partial
-        val partialsToRemove =
-            partialEntries?.filter { partialEntry -> !(datesInLimitOfCycleOfDateBeingAdded.any { it == partialEntry.completionDate }) }
+            // get -cycle and + cycle all habit Entries
+            val dateToConsiderStart =
+                entry.completionDate.minusDays(((habitEntity.cycle * 2) - 2).toLong())
+            val dateToConsiderEnd =
+                entry.completionDate.plusDays(((habitEntity.cycle * 2) - 2).toLong())
+            val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
+                habitId = habitEntity.id,
+                startDate = dateToConsiderStart,
+                endDate = dateToConsiderEnd
+            )
+            val partialEntries = entries?.filter { entry -> entry.isPartial() }
+            val absoluteEntries =
+                entries?.filter { entry -> entry.isAbsolute() }
 
 
-        val currentWillBePartial =
-            if (newRepetitionValue == 0.0 && datesInLimitOfCycleOfDateBeingAdded.any { it == entry.completionDate }) {
-                true
-            } else {
-                false
+            // swap the new value
+            val entriesList = absoluteEntries?.toMutableList() ?: mutableListOf()
+            entriesList.removeIf { it.completionDate == entry.completionDate }
+            entriesList.add(modifiedCompletionEntity)
+
+            // get clusters
+            val clusters = findHabitClusters(
+                habitEntries = entriesList,
+                cycleLength = habitEntity.cycle,
+                minOccurrences = habitEntity.frequency
+            )
+
+            // get processed clusters
+            val processedClusters = processDateTriples(clusters)
+
+            val datesInLimitOfCycleOfDateBeingAdded = processedClusters.filter { date ->
+
+                date <= dateToConsiderEnd && date >= dateToConsiderStart
             }
-        // for all present as notes turn their partial to true and add them to db
-        partialsToRemove?.forEach {                                                     //TODO Instead of removing make a funtion which just sets the partial value of entity to false
-            addHabitCompletionEntry(it.copy(partial = false))
-        }
-        if (currentWillBePartial) {
-            addHabitCompletionEntry(modifiedCompletionEntity.copy(partial = true))
-        } else {
-            addHabitCompletionEntry(modifiedCompletionEntity)
-        }
+            // seperate all the dates into alreadyPresent as Partial
+            val partialsToRemove =
+                partialEntries?.filter { partialEntry -> !(datesInLimitOfCycleOfDateBeingAdded.any { it == partialEntry.completionDate }) }
 
 
+            val currentWillBePartial =
+                if (newRepetitionValue == 0.0 && datesInLimitOfCycleOfDateBeingAdded.any { it == entry.completionDate }) {
+                    true
+                } else {
+                    false
+                }
+            // for all present as notes turn their partial to true and add them to db
+            partialsToRemove?.forEach {                                                     //TODO Instead of removing make a funtion which just sets the partial value of entity to false
+                addHabitCompletionEntry(it.copy(partial = false))
+            }
+            if (currentWillBePartial) {
+                addHabitCompletionEntry(modifiedCompletionEntity.copy(partial = true))
+            } else {
+                addHabitCompletionEntry(modifiedCompletionEntity)
+            }
+
+        }
     }
 
-    suspend fun increaseRepetitions(entryId: Int, newRepetitionValue: Double, preExistingEntry : HabitCompletionEntity? = null) {
-       var entry : HabitCompletionEntity? = null
-        if (preExistingEntry != null){
-            entry = preExistingEntry
-        }else{
-        entry = habitCompletionDao.getEntryById(entryId)}
+    suspend fun increaseRepetitions(entryId: Int, newRepetitionValue: Double) {
+        //TODO error
+        val entry = habitCompletionDao.getEntryById(entryId)
+        entry?.let{
         val habitEntity = habitDao.getHabitById(entry.habitId)
 
         val modifiedCompletionEntity =
@@ -206,9 +206,21 @@ class HabitRepository @Inject constructor(
         }
         addHabitCompletionEntry(modifiedCompletionEntity)
 
-
+}
     }
+    // TODO add cleanup if item is empty
+    suspend fun applyNotes(date: LocalDate, habitId: Int, newNote : String?){
+        val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
+            habitId = habitId,
+            completionDate = date
+        )
+        if (entry != null){
+            addHabitCompletionEntry(entry.copy(note = newNote))
 
+        }else{
+            addHabitCompletionEntry(HabitCompletionEntity(habitId = habitId , completionDate = date, note = newNote))
+        }
+    }
     suspend fun applyRepetitionForADate(date: LocalDate, habitId: Int, newRepetitionValue: Double) {
 
         val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
@@ -251,10 +263,7 @@ class HabitRepository @Inject constructor(
             entries?.filter { entry -> entry.partial != true && entry.repetitionsOnThisDay > 0.0 }
         val blankEntries =
             entries?.filter { entry -> entry.partial == false && entry.repetitionsOnThisDay == 0.0 }
-        val currentEntryPresentInBlank =
-            blankEntries?.any { it.completionDate == entry.completionDate } ?: false
-        val currentEntryPresentInAbsolute =
-            absoluteEntries?.any { it.completionDate == entry.completionDate } ?: false
+
         val currentEntryPresentInPartial =
             partialEntries?.any { it.completionDate == entry.completionDate } ?: false
         /*    3. get clustersOfStreaks from those entries */

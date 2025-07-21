@@ -9,8 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
@@ -41,7 +42,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import java.time.DayOfWeek
-import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -97,7 +97,7 @@ fun HabitItemReorderableNew(
             text = "Do you want to delete this Habit?",
             confirmAction = { viewModel.deleteHabitById(habit.id) },
             onDismiss = { showDialog.value = false },
-            confirmationColor = MaterialTheme.colorScheme.error
+            confirmationColor =  ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.onError, containerColor = MaterialTheme.colorScheme.error)
         )
         Column(
             Modifier
@@ -213,6 +213,24 @@ fun HabitItemReorderableNew(
                                                 habitId = habit.id,
                                                 newRepetitionValue = userTypedRepetition.toDouble()
                                             )
+                                            if (isNotesChanged) {
+                                                viewModel.habitRepository.applyNotes(
+                                                    date = completionDate,
+                                                    habitId = habit.id,
+                                                    newNote = userTypedNote
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        if (isNotesChanged) {
+                                            coroutineScope.launch(Dispatchers.IO) {
+                                                viewModel.habitRepository.applyNotes(
+                                                    date = completionDate,
+                                                    habitId = habit.id,
+                                                    newNote = userTypedNote
+                                                )
+                                            }
+
                                         }
                                     }
                                 }
@@ -237,19 +255,7 @@ fun HabitItemReorderableNew(
                         ) {
                             Column { }
                             Row {
-                                val currentMonth = YearMonth.now()
-                                /* IconButton(
-                                     modifier = Modifier,
-                                     onClick = {
-                                         backStack.add(
-                                             Screen.CalenderPageRoute(
-                                                 month = currentMonth.toString(),
-                                                 habit.id
-                                             )
-                                         )
-                                     }) {
-                                     Icon(Icons.Default.CalendarMonth, contentDescription = "")
-                                 }*/
+
                                 IconButton(
                                     modifier = Modifier,
                                     onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
