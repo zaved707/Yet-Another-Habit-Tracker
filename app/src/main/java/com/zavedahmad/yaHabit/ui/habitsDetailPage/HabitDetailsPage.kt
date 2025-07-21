@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -286,7 +287,7 @@ private fun Menu(viewModel: HabitDetailsPageViewModel,backStack: SnapshotStateLi
             backStack.removeLastOrNull()
             viewModel.deleteHabitById(viewModel.navKey.habitId) },
         onDismiss = { showDialog.value = false },
-        confirmationColor = MaterialTheme.colorScheme.error
+        confirmationColor = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.onError, containerColor = MaterialTheme.colorScheme.error)
     )
 
     val menuVisible = rememberSaveable { mutableStateOf(false) }

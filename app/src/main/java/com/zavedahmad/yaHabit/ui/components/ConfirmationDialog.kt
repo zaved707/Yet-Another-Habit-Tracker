@@ -1,7 +1,6 @@
 package com.zavedahmad.yaHabit.ui.components
 
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +34,7 @@ fun ConfirmationDialog(
     cancelText: String = "Cancel?",
     confirmAction: () -> Unit,
     onDismiss: () -> Unit,
-    confirmationColor : Color = MaterialTheme.colorScheme.primary
+    confirmationColor: ButtonColors = ButtonDefaults.buttonColors()
 ) {
     if (visible) {
         Dialog(onDismissRequest = { onDismiss() }) {
@@ -53,12 +52,16 @@ fun ConfirmationDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        Button(modifier = Modifier.weight(1f),
+                        Button(
+                            modifier = Modifier.weight(1f),
                             onClick = { onDismiss() },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                         ) { Text(cancelText, color = MaterialTheme.colorScheme.onSurface) }
                         Spacer(Modifier.width(20.dp))
-                        Button(modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = confirmationColor), onClick = { confirmAction() }) { Text(confirmText) }
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            colors =confirmationColor,
+                            onClick = { confirmAction() }) { Text(confirmText) }
                     }
                 }
             }

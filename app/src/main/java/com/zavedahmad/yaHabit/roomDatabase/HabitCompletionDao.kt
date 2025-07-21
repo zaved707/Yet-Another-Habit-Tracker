@@ -25,7 +25,7 @@ interface HabitCompletionDao {
     fun getHabitCompletionsByDate(date : Long): Flow<List<HabitCompletionEntity>>
 
     @Query("SELECT * FROM habitCompletion WHERE id = :entryId")
-    suspend fun getEntryById(entryId : Int) : HabitCompletionEntity
+    suspend fun getEntryById(entryId : Int) : HabitCompletionEntity?
 
     @Query("SELECT * FROM habitCompletion WHERE habitId = :habitId AND completionDate >= :startDate AND completionDate <= :endDate ")
     suspend fun getHabitsInDateRangeOfaCertainHabitId(habitId : Int, startDate: LocalDate, endDate: LocalDate): List<HabitCompletionEntity>?
