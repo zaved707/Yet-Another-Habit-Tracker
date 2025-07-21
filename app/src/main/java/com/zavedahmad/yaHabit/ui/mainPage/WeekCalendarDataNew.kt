@@ -38,7 +38,7 @@ fun WeekCalendarDataNew(
     initialWeekString: String? = null,
     habitData: List<HabitCompletionEntity>?,
     firstDayOfWeek: DayOfWeek,
-    dialogueComposable: @Composable (Boolean, () -> Unit, HabitCompletionEntity?) -> Unit
+    dialogueComposable: @Composable (Boolean, () -> Unit, HabitCompletionEntity?, LocalDate) -> Unit
 ) {
     val todayDate = LocalDate.now()
     val daysOfWeek = daysOfWeek()
@@ -130,7 +130,7 @@ fun WeekCalendarDataNew(
                         deleteHabit(day.date)
                     },
                     dialogueComposable = { visible, onDismiss ->
-                        dialogueComposable(visible, onDismiss,habitCompletionEntity)
+                        dialogueComposable(visible, onDismiss,habitCompletionEntity, day.date)
                     })
 
             }, state = state)
