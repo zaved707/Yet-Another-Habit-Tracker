@@ -8,15 +8,15 @@
   <img src="https://raw.githubusercontent.com/zaved707/Yet-Another-Habit-Tracker/refs/heads/master/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp" alt="Logo">
 </p>
 
-[![Build](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml/badge.svg)](https://github.com/zaved707/Yet-Another-Habit-Tracker/actions/workflows/build-debug.yml)
-[<img src="https://shields.rbtlog.dev/simple/com.zavedahmad.yaHabit" alt="RB shield">](https://shields.rbtlog.dev/com.zavedahmad.yaHabit)
 
+<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/zaved707/yet-another-habit-tracker">
 <img src= "https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.zavedahmad.yaHabit"/>
 
 
 
 
 # YA Habit Tracker
+
 
 This is a mordern and simple habit tracker for android.
 
@@ -52,6 +52,11 @@ Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/re
 
 
 ## Technologies Used
+<div style="display: flex; flex-direction: row; gap: 10px;">
+<img src = "https://ziadoua.github.io/m3-Markdown-Badges/badges/AndroidStudio/androidstudio3.svg"/>
+<img src = "https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin2.svg">
+</div>
+
 - [jetpack Compose](https://developer.android.com/compose) for ui building and state management
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection
 - [Room](https://developer.android.com/jetpack/androidx/releases/room) for database
