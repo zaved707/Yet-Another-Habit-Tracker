@@ -96,7 +96,7 @@ fun DayItem3(
 
         }
 
-        "incompleteDisabled" -> {
+        "incompleteDisabled", "emptyDisabled" -> {
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
             textColor = MaterialTheme.colorScheme.onSurfaceVariant
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
@@ -105,7 +105,7 @@ fun DayItem3(
 
         }
 
-        "incomplete" -> {
+        "incomplete", "empty" -> {
             borderColor = MaterialTheme.colorScheme.primary
             buttonAction = addHabit
             bgColor = MaterialTheme.colorScheme.surfaceVariant
@@ -128,7 +128,8 @@ fun DayItem3(
             Modifier.combinedClickable(
                 onClick = {isDialogVisible.value =true},
                 onDoubleClick = {},
-                onLongClick = { buttonAction() }).background(bgColor)
+                onLongClick = { buttonAction()
+                println(state +"This is state")}).background(bgColor)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Column(

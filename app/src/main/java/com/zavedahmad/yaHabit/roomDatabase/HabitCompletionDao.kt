@@ -10,7 +10,7 @@ import java.time.LocalDate
 interface HabitCompletionDao {
 
     @Upsert
-    suspend fun addHabitCompletionEntry(habitCompletionEntity: HabitCompletionEntity)
+    suspend fun addHabitCompletionEntry(habitCompletionEntity: HabitCompletionEntity) : Long
     @Query("SELECT EXISTS(SELECT 1 FROM habitCompletion WHERE habitId = :habitId AND completionDate = :completionDate)")
     suspend fun checkIfEntryForCertainHabitForACertainDayExists(habitId: Int, completionDate : LocalDate) : Boolean
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id")
