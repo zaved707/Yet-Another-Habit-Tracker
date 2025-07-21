@@ -71,8 +71,11 @@ fun HabitCompletionEntity.state(): String {
         if (this.isPartial()){
             "partial"
         }else{
+            if (this.repetitionsOnThisDay == 0.0){
+                "empty"
+            }else{
             "absolute"
-        }
+        }}
 
     }
 }

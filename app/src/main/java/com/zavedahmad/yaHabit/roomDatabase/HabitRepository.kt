@@ -127,20 +127,24 @@ class HabitRepository @Inject constructor(
                 false
             }
         // for all present as notes turn their partial to true and add them to db
-       partialsToRemove?.forEach {                                                     //TODO Instead of removing make a funtion which just sets the partial value of entity to false
-           addHabitCompletionEntry(it.copy(partial = false))
-       }
+        partialsToRemove?.forEach {                                                     //TODO Instead of removing make a funtion which just sets the partial value of entity to false
+            addHabitCompletionEntry(it.copy(partial = false))
+        }
         if (currentWillBePartial) {
             addHabitCompletionEntry(modifiedCompletionEntity.copy(partial = true))
-        }else{
+        } else {
             addHabitCompletionEntry(modifiedCompletionEntity)
         }
 
 
     }
 
-    suspend fun increaseRepetitions(entryId: Int, newRepetitionValue: Double) {
-        val entry = habitCompletionDao.getEntryById(entryId)
+    suspend fun increaseRepetitions(entryId: Int, newRepetitionValue: Double, preExistingEntry : HabitCompletionEntity? = null) {
+       var entry : HabitCompletionEntity? = null
+        if (preExistingEntry != null){
+            entry = preExistingEntry
+        }else{
+        entry = habitCompletionDao.getEntryById(entryId)}
         val habitEntity = habitDao.getHabitById(entry.habitId)
 
         val modifiedCompletionEntity =
@@ -222,7 +226,12 @@ class HabitRepository @Inject constructor(
                 // "increase"
                 increaseRepetitions(entryId = entry.id, newRepetitionValue = newRepetitionValue)
             }
-        }
+        } else {if(newRepetitionValue > 0.0){
+            val newEntity = HabitCompletionEntity(completionDate = date, habitId =  habitId, repetitionsOnThisDay = newRepetitionValue )
+
+            val newEntityId = habitCompletionDao.addHabitCompletionEntry(newEntity)
+            increaseRepetitions(entryId = newEntityId.toInt(), newRepetitionValue = newRepetitionValue)
+        }}
 
     }
 

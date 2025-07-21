@@ -1,29 +1,18 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
-import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.roomDatabase.state
 import com.zavedahmad.yaHabit.ui.calenderPage.DayItem
 import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
 import java.time.DayOfWeek
@@ -89,20 +78,8 @@ fun WeekCalendarDataNew(
                     dayState = "error"
                 } else if (datesMatching.size == 1) {
                     habitCompletionEntity = datesMatching[0]
-                    dayState = if (datesMatching[0].partial) {
-                        if (day.date > dateToday) {
-                            "partialDisabled"
-
-                        } else {
-                            "partial"
-                        }
-                    } else {
-                        if (day.date > dateToday) {
-                            "absoluteDisabled"
-                        } else {
-                            "absolute"
-                        }
-                    }
+                    val suffix= if (day.date > dateToday){"Disabled"}else{""}
+                   dayState = habitCompletionEntity.state() + suffix
                 } else {
                     if (day.date > dateToday) {
                         dayState = "incompleteDisabled"
