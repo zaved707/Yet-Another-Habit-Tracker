@@ -27,7 +27,7 @@ fun DialogueForHabit(
     habitCompletionEntity: HabitCompletionEntity?,
     updateHabitCompletionEntity: (HabitCompletionEntity) -> Unit,
     habitEntity: HabitEntity,
-    onFinalised: (isAnyValueChanged: Boolean?, userTypedRepetition: String, userTypedNote: String?) -> Unit
+    onFinalised: (isRepetitionsChanged: Boolean,isNotesChanged : Boolean,  userTypedRepetition: String, userTypedNote: String?) -> Unit
 ) {
     if (isVisible) {
         Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -78,11 +78,9 @@ fun DialogueForHabit(
             val isAnyValueChanged =
                 remember {
                     derivedStateOf {
-                        if (entityAlreadyExists) {
+
                             isNoteValueChanged.value || isRepetitionsValueChanged.value
-                        } else {
-                            null
-                        }
+
                     }
                 }
 
@@ -110,7 +108,7 @@ fun DialogueForHabit(
                         Button(
 
                             onClick = {
-                                onFinalised(isAnyValueChanged.value, repetitions.value, note.value )
+                                onFinalised(isRepetitionsValueChanged.value,isNoteValueChanged.value ,repetitions.value, note.value )
 
                                 onDismissRequest()
 

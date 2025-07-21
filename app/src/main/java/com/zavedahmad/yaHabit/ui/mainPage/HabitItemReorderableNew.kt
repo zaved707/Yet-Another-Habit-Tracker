@@ -196,7 +196,7 @@ fun HabitItemReorderableNew(
                         },
                         habitData = habitData.value,
                         firstDayOfWeek = firstDayOfWeek,
-                        dialogueComposable = { visible, onDismiss, habitCompletionEntity ->
+                        dialogueComposable = { visible, onDismiss, habitCompletionEntity, completionDate ->
                             DialogueForHabit(
                                 isVisible = visible,
                                 onDismissRequest = { onDismiss() },
@@ -205,39 +205,16 @@ fun HabitItemReorderableNew(
 
                                 },
                                 habitEntity = habit,
-                                onFinalised = { isAnyValueChanged, userTypedRepetition, userTypedNote ->
-                                    val entityAlreadyExists = habitCompletionEntity != null
-                                    if (entityAlreadyExists) {
-                                        if (isAnyValueChanged ?: false) {
-
-                                            val newHabitCompletionEntity = HabitCompletionEntity(
-                                                habitId = habitCompletionEntity.habitId,
-                                                completionDate = habitCompletionEntity.completionDate,
-                                                partial = habitCompletionEntity.partial,
-                                                repetitionsOnThisDay = if (userTypedRepetition.toDoubleOrNull() != null) {
-                                                   userTypedRepetition.toDouble()
-                                                } else {
-                                                    habitCompletionEntity.repetitionsOnThisDay
-                                                },
-                                                note = userTypedNote,
-                                                id = habitCompletionEntity.id
+                                onFinalised = { isRepetitionsChanged, isNotesChanged, userTypedRepetition, userTypedNote ->
+                                    if (isRepetitionsChanged && userTypedRepetition.toDoubleOrNull() != null) {
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            viewModel.habitRepository.applyRepetitionForADate(
+                                                date = completionDate,
+                                                habitId = habit.id,
+                                                newRepetitionValue = userTypedRepetition.toDouble()
                                             )
-
-                                            coroutineScope.launch(
-                                                Dispatchers.IO
-                                            ) {
-                                                viewModel.habitRepository.addWithPartialCheck(
-                                                    newHabitCompletionEntity
-                                                )
-                                            }
-
-
                                         }
-
-
                                     }
-
-
                                 }
                             )
                         }
