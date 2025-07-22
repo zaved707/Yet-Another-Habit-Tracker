@@ -25,6 +25,7 @@ fun WeekCalendarDataNew(
     addHabit: (date: LocalDate) -> Unit,
     deleteHabit: (date: LocalDate) -> Unit,
     initialWeekString: String? = null,
+    skipHabit : (date : LocalDate) -> Unit,
     habitData: List<HabitCompletionEntity>?,
     firstDayOfWeek: DayOfWeek,
     dialogueComposable: @Composable (Boolean, () -> Unit, HabitCompletionEntity?, LocalDate) -> Unit
@@ -92,7 +93,7 @@ fun WeekCalendarDataNew(
 
 
 
-                DayItem3(
+                DayItem(
                     repetitionsOnThisDay = if (dayState != "error" && datesMatching.size > 0) {
                         datesMatching[0].repetitionsOnThisDay
                     } else {
@@ -100,6 +101,7 @@ fun WeekCalendarDataNew(
                     },
                     date = day.date,
                     state = dayState,
+                    skipHabit ={ skipHabit(day.date)},
                     addHabit = {
                         addHabit(day.date)
                     },

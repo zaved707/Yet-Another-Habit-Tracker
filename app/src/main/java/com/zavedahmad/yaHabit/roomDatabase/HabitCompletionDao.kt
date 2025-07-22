@@ -15,6 +15,8 @@ interface HabitCompletionDao {
     suspend fun checkIfEntryForCertainHabitForACertainDayExists(habitId: Int, completionDate : LocalDate) : Boolean
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id")
     fun getHabitCompletionsByIdFlow(id : Int): Flow<List<HabitCompletionEntity>?>
+
+
     @Query("SELECT * FROM habitCompletion WHERE habitId = :habitId AND completionDate = :completionDate")
     suspend fun getEntryOfCertainHabitIdAndDate(habitId: Int, completionDate: LocalDate) : HabitCompletionEntity?
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id")

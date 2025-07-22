@@ -131,7 +131,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     Row(Modifier.fillMaxWidth()) {
         options.forEachIndexed { index, item ->
             val isChecked = streakChecked.value == index
-            ToggleButton(
+            ToggleButton(                                                   //TODO this shrinks on large screens fix it
                 modifier = if (!isChecked) {
                     Modifier.weight(1f)
                 } else {

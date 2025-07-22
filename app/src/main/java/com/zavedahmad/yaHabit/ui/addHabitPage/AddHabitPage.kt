@@ -167,6 +167,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                     }
                     HorizontalDivider()
                     Spacer(Modifier.height(20.dp))
+
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
                         value = name,
@@ -223,11 +224,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
 
                         )
-                    Spacer(Modifier.height(20.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                        Text("Measurement Unit: Default = 'Unit'", fontSize = 20.sp)
-                    }
-                    Spacer(Modifier.height(20.dp))
+                   Heading("Measurement Unit: Default = 'Unit'")
                     TextField(
 
                         modifier = Modifier
@@ -252,31 +249,16 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
 
                         )
-                    Spacer(Modifier.height(20.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                        Text("Frequency", fontSize = 20.sp)
-                    }
-                    HorizontalDivider()
-                    Spacer(Modifier.height(20.dp))
+                    Heading("Frequency")
                     FrequencySelector(
                         viewModel,
                         onErrorValueChange = { it ->
                             frequencySelectorError.value = it
                         })
 
-                    Spacer(Modifier.height(30.dp))
-                    Text("repetition per day")
+                   Heading("Repetition Per Day")
                     RepetitionPerDaySelector(viewModel)
-                    Spacer(Modifier.height(30.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Color", fontSize = 20.sp)
-                    }
-
-                    HorizontalDivider()
-                    Spacer(Modifier.height(20.dp))
+                   Heading("Color")
                     ColorSelector(viewModel)
                     Spacer(Modifier.height(30.dp))
                 }
@@ -286,3 +268,13 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
     }
 }
 
+@Composable
+private fun Heading(heading: String) {
+    Spacer(Modifier.height(20.dp))
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+        Text(heading, fontSize = 20.sp)
+    }
+    HorizontalDivider()
+    Spacer(Modifier.height(20.dp))
+
+}
