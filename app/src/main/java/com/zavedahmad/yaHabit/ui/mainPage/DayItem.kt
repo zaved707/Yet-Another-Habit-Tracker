@@ -104,7 +104,7 @@ fun DayItem(
 
         "incompleteDisabled", "emptyDisabled" -> {
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
-            textColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.3f)
+            textColor = MaterialTheme.colorScheme.onSurfaceVariant
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
             iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
 
@@ -120,8 +120,8 @@ fun DayItem(
         "incomplete", "empty" -> {
             borderColor = MaterialTheme.colorScheme.primary
             buttonAction = listOf(addHabit,{isDialogVisible.value = true})
-            bgColor = MaterialTheme.colorScheme.onSurfaceVariant
-            textColor = MaterialTheme.colorScheme.onSurfaceVariant
+            bgColor = MaterialTheme.colorScheme.surfaceVariant
+            textColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
             iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
 
         }
