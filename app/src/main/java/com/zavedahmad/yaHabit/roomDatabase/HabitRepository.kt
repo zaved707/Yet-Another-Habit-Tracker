@@ -96,7 +96,7 @@ class HabitRepository @Inject constructor(
                 startDate = dateToConsiderStart,
                 endDate = dateToConsiderEnd
             )
-            val partialEntries = entries?.filter { entry -> entry.isPartial() }
+            val partialEntries = entries?.filter { entry -> entry.onlyPartial() }
             val absoluteEntries =
                 entries?.filter { entry -> entry.isAbsolute() }
 
@@ -146,28 +146,7 @@ class HabitRepository @Inject constructor(
         }
     }
 
-    suspend fun setSkip(date: LocalDate, habitId: Int, skipValue: Boolean){
-
-
-        val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
-            habitId = habitId,
-            completionDate = date
-        )
-        if (entry != null) {
-
-
-                addHabitCompletionEntry(entry.copy(skip = skipValue, repetitionsOnThisDay = 0.0))
-
-        } else {
-            addHabitCompletionEntry(
-                HabitCompletionEntity(
-                    habitId = habitId,
-                    completionDate = date,
-                    skip = skipValue
-                )
-            )
-        }
-    }
+    // TODO Don't clean skip entreis
     suspend fun cleanUp(habitId: Int, startDate: LocalDate, endDate: LocalDate) {
         val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
             habitId = habitId,
@@ -181,7 +160,7 @@ class HabitRepository @Inject constructor(
         }
 
     }
-
+//TODO it adds partial new entry even if there is a entry exist for that day
     suspend fun increaseRepetitions(entryId: Int, newRepetitionValue: Double) {
 
         val entry = habitCompletionDao.getEntryById(entryId)
@@ -205,6 +184,7 @@ class HabitRepository @Inject constructor(
             val absoluteEntries =
                 entries?.filter { entry -> entry.isAbsolute() }
             val noteEntries = entries?.filter { it.isOnlyNote() }
+            val skipEntries = entries?.filter{it.isSkip()}
 
             // swap the new value
             val entriesList = absoluteEntries?.toMutableList() ?: mutableListOf()
@@ -233,10 +213,13 @@ class HabitRepository @Inject constructor(
             val datesNotPresentInDataBase = datesInLimitOfCycleOfDateBeingAdded.filter { date ->
                 (!entriesList.any { it.completionDate == date }) && !(partialEntries?.any { it.completionDate == date }
                     ?: true) && !(noteEntries?.any { it.completionDate == date }
+                    ?: true) && !(skipEntries?.any { it.completionDate == date }
                     ?: true)
             }
+            val presentAsSkip = skipEntries?.filter{skipEntry -> datesInLimitOfCycleOfDateBeingAdded.any { it == skipEntry.completionDate }}
             // for all present as notes turn their partial to true and add them to db
             presentAsNote?.forEach { addHabitCompletionEntry(it.copy(partial = true)) }
+            presentAsSkip?.forEach { addHabitCompletionEntry(it.copy(partial = true)) }
             // add all non present in db as partials
             datesNotPresentInDataBase.forEach { date ->
                 addHabitCompletionEntry(
@@ -253,62 +236,122 @@ class HabitRepository @Inject constructor(
         }
     }
 
+
+    suspend fun applyRepetitionForADate(date: LocalDate, habitId: Int, newRepetitionValue: Double) {
+        db.withTransaction {
+            val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
+                habitId = habitId,
+                completionDate = date
+            )
+
+            if (entry != null) {
+
+                var type: String? = null
+                if (newRepetitionValue == entry.repetitionsOnThisDay) {
+                    // "equal"
+                } else if (newRepetitionValue < entry.repetitionsOnThisDay) {
+                    //"decrease"
+                    decreaseRepetitions(entryId = entry.id, newRepetitionValue = newRepetitionValue)
+                } else {
+                    // "increase"
+                    increaseRepetitions(entryId = entry.id, newRepetitionValue = newRepetitionValue)
+                }
+            } else {
+                if (newRepetitionValue > 0.0) {
+                    val newEntity = HabitCompletionEntity(
+                        completionDate = date,
+                        habitId = habitId,
+                        repetitionsOnThisDay = newRepetitionValue
+                    )
+
+                    val newEntityId = habitCompletionDao.addHabitCompletionEntry(newEntity)
+                    increaseRepetitions(
+                        entryId = newEntityId.toInt(),
+                        newRepetitionValue = newRepetitionValue
+                    )
+                }
+            }
+        }
+
+    }
+
     // TODO add cleanup if item is empty to note entry addition
     suspend fun applyNotes(date: LocalDate, habitId: Int, newNote: String?) {
 
 
-                val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
-                    habitId = habitId,
-                    completionDate = date
-                )
-                if (entry != null) {
-                    addHabitCompletionEntry(entry.copy(note = newNote))
-
-                } else {
-                    addHabitCompletionEntry(
-                        HabitCompletionEntity(
-                            habitId = habitId,
-                            completionDate = date,
-                            note = newNote
-                        )
-                    )
-                }
-
-
-    }
-
-    suspend fun applyRepetitionForADate(date: LocalDate, habitId: Int, newRepetitionValue: Double) {
-        db.withTransaction {
         val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
             habitId = habitId,
             completionDate = date
         )
         if (entry != null) {
-            var type: String? = null
-            if (newRepetitionValue == entry.repetitionsOnThisDay) {
-                // "equal"
-            } else if (newRepetitionValue < entry.repetitionsOnThisDay) {
-                //"decrease"
-                decreaseRepetitions(entryId = entry.id, newRepetitionValue = newRepetitionValue)
+            addHabitCompletionEntry(entry.copy(note = newNote))
+
+        } else {
+            addHabitCompletionEntry(
+                HabitCompletionEntity(
+                    habitId = habitId,
+                    completionDate = date,
+                    note = newNote
+                )
+            )
+        }
+
+
+    }
+
+    //TODO apply skip properly when repetitions are present
+    //TODO remove the residual entry after skip is set to false
+    suspend fun setSkip(date: LocalDate, habitId: Int, skipValue: Boolean) {
+
+
+        val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
+            habitId = habitId,
+            completionDate = date
+        )
+        if (skipValue) {
+            //decrease to zero
+            // set skip to true
+            if (entry != null) {
+                if (entry.repetitionsOnThisDay != 0.0) {
+                    applyRepetitionForADate(
+                        date = date,
+                        habitId = habitId,
+                        newRepetitionValue = 0.0
+                    )
+                    setSkip(
+                        date = date,
+                        habitId = habitId,
+                        skipValue = skipValue
+                    )
+                } else {
+                    addHabitCompletionEntry(entry.copy(skip = true))
+                }
             } else {
-                // "increase"
-                increaseRepetitions(entryId = entry.id, newRepetitionValue = newRepetitionValue)
+                addHabitCompletionEntry(
+                    HabitCompletionEntity(
+                        habitId = habitId,
+                        completionDate = date,
+                        skip = skipValue
+                    )
+                )
             }
         } else {
-            if (newRepetitionValue > 0.0) {
-                val newEntity = HabitCompletionEntity(
-                    completionDate = date,
-                    habitId = habitId,
-                    repetitionsOnThisDay = newRepetitionValue
-                )
-
-                val newEntityId = habitCompletionDao.addHabitCompletionEntry(newEntity)
-                increaseRepetitions(
-                    entryId = newEntityId.toInt(),
-                    newRepetitionValue = newRepetitionValue
+            if (entry != null) {
+                if (entry.copy(skip = false).isDeletable()){
+                    habitCompletionDao.deleteHabitCompletionEntryById(entry.id)
+                }else{
+                addHabitCompletionEntry(entry.copy(skip = false))}
+            } else {
+                addHabitCompletionEntry(
+                    HabitCompletionEntity(
+                        habitId = habitId,
+                        completionDate = date,
+                        skip = skipValue
+                    )
                 )
             }
-        }}
+
+        }
 
     }
 

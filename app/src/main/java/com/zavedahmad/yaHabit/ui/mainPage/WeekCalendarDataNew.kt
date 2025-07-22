@@ -28,6 +28,7 @@ fun WeekCalendarDataNew(
     skipHabit : (date : LocalDate) -> Unit,
     habitData: List<HabitCompletionEntity>?,
     firstDayOfWeek: DayOfWeek,
+    unSkipHabit:(date: LocalDate)-> Unit ,
     dialogueComposable: @Composable (Boolean, () -> Unit, HabitCompletionEntity?, LocalDate) -> Unit
 ) {
     val todayDate = LocalDate.now()
@@ -98,7 +99,7 @@ fun WeekCalendarDataNew(
                         datesMatching[0].repetitionsOnThisDay
                     } else {
                         1.0
-                    },
+                    }, unSkipHabit = {unSkipHabit(day.date)},
                     date = day.date,
                     state = dayState,
                     skipHabit ={ skipHabit(day.date)},
