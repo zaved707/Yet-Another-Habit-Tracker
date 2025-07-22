@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DoubleArrow
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,13 +27,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 
+// TODO Fix this please according to new way
 @Composable
-fun DayItem3(
+fun DayItem(
     date: LocalDate,
     state: String,
     repetitionsOnThisDay: Double,
     addHabit: () -> Unit = {},
     deleteHabit: () -> Unit = {},
+    skipHabit:  () -> Unit,
     dialogueComposable: @Composable (Boolean, () -> Unit) -> Unit
 ) {
     val isDialogVisible = remember { mutableStateOf(false) }
@@ -45,7 +48,7 @@ fun DayItem3(
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
     when (state) {
         "absolute" -> {
-            buttonAction = deleteHabit
+            buttonAction = skipHabit
             bgColor = MaterialTheme.colorScheme.primary
             textColor = MaterialTheme.colorScheme.onPrimary
             borderColor = MaterialTheme.colorScheme.primary
@@ -83,22 +86,42 @@ fun DayItem3(
 
         }
 
-        "incompleteDisabled", "emptyDisabled","noteDisabled" -> {
+        "incompleteDisabled", "emptyDisabled" -> {
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
             textColor = MaterialTheme.colorScheme.onSurfaceVariant
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
             iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
 
-
+        }
+        "noteDisabled" -> {
+            bgColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.3f)
+            textColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(0.7f)
+            borderColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.1f)
+            iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
         }
 
-        "incomplete", "empty" ,"note"-> {
+        "incomplete", "empty"  -> {
             borderColor = MaterialTheme.colorScheme.primary
             buttonAction = addHabit
             bgColor = MaterialTheme.colorScheme.surfaceVariant
             textColor = MaterialTheme.colorScheme.onSurface
             iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
 
+        }
+
+        "note" -> {
+            borderColor = MaterialTheme.colorScheme.primary
+            buttonAction = addHabit
+            bgColor = MaterialTheme.colorScheme.secondaryContainer
+            textColor = MaterialTheme.colorScheme.onSecondaryContainer
+            iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
+        }
+        "skip" -> {
+            borderColor = MaterialTheme.colorScheme.primary
+            buttonAction = {addHabit }
+            bgColor = MaterialTheme.colorScheme.secondaryContainer
+            textColor = MaterialTheme.colorScheme.onSecondaryContainer
+            iconComposable = { Icon(Icons.Default.DoubleArrow, "", tint = textColor) }
         }
 
     }
@@ -114,11 +137,11 @@ fun DayItem3(
         Box(
             Modifier
                 .combinedClickable(
-                    onClick = { isDialogVisible.value = true },
-                    onDoubleClick = {},
-                    onLongClick = {
+                    onLongClick = { isDialogVisible.value = true },
+                    onDoubleClick = { },
+                    onClick = {
                         buttonAction()
-                        println(state + "This is state")
+                        println("$state This is state")
                     })
                 .background(bgColor)
         ) {

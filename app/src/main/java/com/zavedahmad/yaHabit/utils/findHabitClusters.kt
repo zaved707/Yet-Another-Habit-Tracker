@@ -43,6 +43,7 @@ fun findHabitClusters(
         var count = 0.0
 
         var j = i
+
         while (j < sortedHabitEntries.size) {
             if (sortedHabitEntries[j].completionDate <= endDate) {
                 count += sortedHabitEntries[j].repetitionsOnThisDay

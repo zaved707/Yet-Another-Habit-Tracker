@@ -97,7 +97,10 @@ fun HabitItemReorderableNew(
             text = "Do you want to delete this Habit?",
             confirmAction = { viewModel.deleteHabitById(habit.id) },
             onDismiss = { showDialog.value = false },
-            confirmationColor =  ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.onError, containerColor = MaterialTheme.colorScheme.error)
+            confirmationColor = ButtonDefaults.buttonColors(
+                contentColor = MaterialTheme.colorScheme.onError,
+                containerColor = MaterialTheme.colorScheme.error
+            )
         )
         Column(
             Modifier
@@ -179,23 +182,35 @@ fun HabitItemReorderableNew(
                             coroutineScope.launch(
                                 Dispatchers.IO
                             ) {
-                                viewModel.habitRepository.addWithPartialCheck(
-                                    HabitCompletionEntity(
-                                        habitId = habit.id,
-                                        completionDate = date,
-                                        repetitionsOnThisDay = habit.repetitionPerDay
-                                    )
+                                viewModel.habitRepository.applyRepetitionForADate(
+                                    date = date,
+                                    habitId = habit.id,
+                                    newRepetitionValue = habit.repetitionPerDay
                                 )
                             }
                         },
                         deleteHabit = { date ->
-                            viewModel.deleteHabitEntryWithPartialCheck(
-                                habitId = habit.id,
-                                date = date
-                            )
+                            coroutineScope.launch(
+                                Dispatchers.IO
+                            ) {
+                                viewModel.habitRepository.applyRepetitionForADate(
+                                    date = date,
+                                    habitId = habit.id,
+                                    newRepetitionValue = 0.0
+                                )
+                            }
                         },
                         habitData = habitData.value,
                         firstDayOfWeek = firstDayOfWeek,
+                        skipHabit = { date ->
+                            coroutineScope.launch(Dispatchers.IO) {
+                                viewModel.habitRepository.setSkip(
+                                    date = date,
+                                    habitId = habit.id,
+                                    skipValue = true
+                                )
+                            }
+                        },
                         dialogueComposable = { visible, onDismiss, habitCompletionEntity, completionDate ->
                             DialogueForHabit(
                                 isVisible = visible,
