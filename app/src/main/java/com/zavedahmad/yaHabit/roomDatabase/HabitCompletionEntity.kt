@@ -32,13 +32,15 @@ data class HabitCompletionEntity(
 fun HabitCompletionEntity.isPartial(): Boolean {
     return this.partial
 }
-
+fun HabitCompletionEntity.onlyPartial():Boolean{
+    return this.partial
+}
 fun HabitCompletionEntity.isAbsolute(): Boolean {
     return (this.repetitionsOnThisDay > 0.0)
 }
 
 fun HabitCompletionEntity.isDeletable(): Boolean {
-    return (this.note == null && !this.isPartial() && !this.isAbsolute())
+    return (this.note == null && !this.isPartial() && !this.isAbsolute() && !this.isSkip())
 }
 
 fun HabitCompletionEntity.isOnlyNote(): Boolean {

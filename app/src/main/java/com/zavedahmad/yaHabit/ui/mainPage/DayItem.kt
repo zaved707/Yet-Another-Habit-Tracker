@@ -36,6 +36,7 @@ fun DayItem(
     addHabit: () -> Unit = {},
     deleteHabit: () -> Unit = {},
     skipHabit:  () -> Unit,
+    unSkipHabit: () -> Unit,
     dialogueComposable: @Composable (Boolean, () -> Unit) -> Unit
 ) {
     val isDialogVisible = remember { mutableStateOf(false) }
@@ -118,7 +119,7 @@ fun DayItem(
         }
         "skip" -> {
             borderColor = MaterialTheme.colorScheme.primary
-            buttonAction = {addHabit }
+            buttonAction = unSkipHabit
             bgColor = MaterialTheme.colorScheme.secondaryContainer
             textColor = MaterialTheme.colorScheme.onSecondaryContainer
             iconComposable = { Icon(Icons.Default.DoubleArrow, "", tint = textColor) }
