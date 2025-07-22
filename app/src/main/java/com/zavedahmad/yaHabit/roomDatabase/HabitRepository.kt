@@ -300,7 +300,11 @@ class HabitRepository @Inject constructor(
     }
 
     //TODO apply skip properly when repetitions are present
-    //TODO remove the residual entry after skip is set to false
+    /**
+     * @param date this is the date you for which skip status is set
+     * @param habitId the habitId for which the skip value is set
+     * @param skipValue the value of skip to set
+     */
     suspend fun setSkip(date: LocalDate, habitId: Int, skipValue: Boolean) {
 
 
