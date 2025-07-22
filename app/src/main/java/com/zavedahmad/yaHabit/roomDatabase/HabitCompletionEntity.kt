@@ -69,6 +69,7 @@ fun HabitCompletionEntity.state(): String {
                 if (this.repetitionsOnThisDay == 0.0) {
                     "empty"  //deletable
                 } else {
+
                     "absolute"
                 }
             }
