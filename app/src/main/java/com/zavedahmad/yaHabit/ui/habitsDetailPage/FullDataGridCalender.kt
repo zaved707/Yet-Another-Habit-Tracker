@@ -23,6 +23,7 @@ import com.kizitonwose.calendar.compose.heatmapcalendar.HeatMapWeekHeaderPositio
 import com.kizitonwose.calendar.compose.heatmapcalendar.rememberHeatMapCalendarState
 import com.kizitonwose.calendar.core.yearMonth
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.roomDatabase.hasNote
 import com.zavedahmad.yaHabit.roomDatabase.state
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -125,12 +126,14 @@ else{
                 .fillMaxWidth(),
             state = calendarState,
             dayContent = { day, heatMapWeek ->
+                var hasNote = false
                 var dayState = ""
                 val datesMatching = habitData.filter { it.completionDate == day.date }
                 var habitCompletionEntity:  HabitCompletionEntity? = null
                 if (datesMatching.size > 1) {
                     dayState = "error"
                 } else if (datesMatching.size == 1) {
+                    hasNote = datesMatching[0].hasNote()
                     habitCompletionEntity = datesMatching[0]
                     val suffix= if (day.date > dateToday){"Disabled"}else{""}
                     dayState = habitCompletionEntity.state() + suffix
@@ -151,8 +154,8 @@ else{
 
                         ) {
                         Box(Modifier.padding((gridHeight / 80).dp)) {
-                            GridDayItem(
-                                dayState,
+                            GridDayItem(hasNote = hasNote,
+                                state = dayState,
                                 addHabit = { addHabit(day.date) },
                                 deleteHabit = { deleteHabit(day.date) },
                                 date = day.date,
