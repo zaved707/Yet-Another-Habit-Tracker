@@ -49,7 +49,8 @@ fun DayItem(
     skipHabit: () -> Unit,
     unSkipHabit: () -> Unit,
     hasNote: Boolean = false,
-    dialogueComposable: @Composable (Boolean, () -> Unit) -> Unit
+    dialogueComposable: @Composable (Boolean, () -> Unit) -> Unit,
+    interactive: Boolean = false
 ) {
     val isDialogVisible = remember { mutableStateOf(false) }
     var bgColor = MaterialTheme.colorScheme.error
@@ -176,15 +177,17 @@ fun DayItem(
                     color = MaterialTheme.colorScheme.tertiary
                 ) {}}
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .combinedClickable(
-                            onLongClick = buttonAction[1],
-                            onDoubleClick = { },
-                            onClick = {
-                                buttonAction[0]()
-                                println("$state This is state")
-                            }),
+                    modifier =
+                        if (interactive) {
+                            Modifier.fillMaxSize().combinedClickable(
+                                onLongClick = buttonAction[1],
+                                onDoubleClick = { },
+                                onClick = {
+                                    buttonAction[0]()
+                                    println("$state This is state")
+                                }
+                            )
+                        } else Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {

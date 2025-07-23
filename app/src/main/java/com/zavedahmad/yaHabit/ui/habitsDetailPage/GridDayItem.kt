@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 import kotlin.collections.List
 
-// TODO implement note also
+// Done implement note also
 @Composable
 fun GridDayItem(
     state: String = "error",

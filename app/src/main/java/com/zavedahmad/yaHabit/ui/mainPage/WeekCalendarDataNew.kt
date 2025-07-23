@@ -74,6 +74,7 @@ fun WeekCalendarDataNew(
 
             //DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
             WeekCalendar(dayContent = { day ->
+                var suffix = ""
                 var hasNote = false
                 var dayState = ""
                 val datesMatching = habitData.filter { it.completionDate == day.date }
@@ -83,11 +84,12 @@ fun WeekCalendarDataNew(
                 } else if (datesMatching.size == 1) {
                     hasNote = datesMatching[0].hasNote()
                     habitCompletionEntity = datesMatching[0]
-                    val suffix= if (day.date > dateToday){"Disabled"}else{""}
+                     suffix= if (day.date > dateToday){"Disabled"}else{""}
                    dayState = habitCompletionEntity.state() + suffix
                 } else {
                     if (day.date > dateToday) {
                         dayState = "incompleteDisabled"
+                        suffix = "Disabled"
                     } else {
                         dayState = "incomplete"
                     }
@@ -111,7 +113,7 @@ fun WeekCalendarDataNew(
                     },
                     deleteHabit = {
                         deleteHabit(day.date)
-                    },
+                    }, interactive = suffix != "Disabled",
                     dialogueComposable = { visible, onDismiss ->
                         dialogueComposable(visible, onDismiss,habitCompletionEntity, day.date)
                     })
