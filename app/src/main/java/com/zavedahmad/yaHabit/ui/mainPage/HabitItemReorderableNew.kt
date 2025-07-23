@@ -211,11 +211,15 @@ fun HabitItemReorderableNew(
                                 )
                             }
                         },
-                        unSkipHabit = {date -> coroutineScope.launch { viewModel.habitRepository.setSkip(
-                            date = date,
-                            habitId = habit.id,
-                            skipValue = false
-                        ) }},
+                        unSkipHabit = { date ->
+                            coroutineScope.launch {
+                                viewModel.habitRepository.setSkip(
+                                    date = date,
+                                    habitId = habit.id,
+                                    skipValue = false
+                                )
+                            }
+                        },
                         dialogueComposable = { visible, onDismiss, habitCompletionEntity, completionDate ->
                             DialogueForHabit(
                                 isVisible = visible,

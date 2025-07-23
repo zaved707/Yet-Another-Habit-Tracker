@@ -92,7 +92,7 @@ fun DialogueForHabit(
                 ) {
                     TextField(
                         value = note.value ?: "",
-                        onValueChange = { note.value = it },
+                        onValueChange = { note.value = if(it == ""){null}else{it} },
                         placeholder = {
                             Text(
                                 "Note",

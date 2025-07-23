@@ -12,6 +12,7 @@ import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.roomDatabase.hasNote
 import com.zavedahmad.yaHabit.roomDatabase.state
 import com.zavedahmad.yaHabit.ui.calenderPage.DayItem
 import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
@@ -73,12 +74,14 @@ fun WeekCalendarDataNew(
 
             //DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
             WeekCalendar(dayContent = { day ->
+                var hasNote = false
                 var dayState = ""
                 val datesMatching = habitData.filter { it.completionDate == day.date }
                 var habitCompletionEntity:  HabitCompletionEntity? = null
                 if (datesMatching.size > 1) {
                     dayState = "error"
                 } else if (datesMatching.size == 1) {
+                    hasNote = datesMatching[0].hasNote()
                     habitCompletionEntity = datesMatching[0]
                     val suffix= if (day.date > dateToday){"Disabled"}else{""}
                    dayState = habitCompletionEntity.state() + suffix
@@ -94,7 +97,7 @@ fun WeekCalendarDataNew(
 
 
 
-                DayItem(
+                DayItem(hasNote = hasNote ,
                     repetitionsOnThisDay = if (dayState != "error" && datesMatching.size > 0) {
                         datesMatching[0].repetitionsOnThisDay
                     } else {

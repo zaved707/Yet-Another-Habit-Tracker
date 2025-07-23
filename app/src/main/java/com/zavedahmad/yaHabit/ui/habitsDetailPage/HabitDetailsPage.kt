@@ -55,8 +55,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
+import com.zavedahmad.yaHabit.ui.mainPage.DialogueForHabit
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.Dispatchers
@@ -65,9 +65,9 @@ import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotStateList<NavKey>) {
+fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotStateList<NavKey>) {
     val habitsPastYear = viewModel.habitsPastYear.collectAsStateWithLifecycle().value
-    val habitDetails = viewModel.habitDetails.collectAsStateWithLifecycle().value
+    val habit = viewModel.habitDetails.collectAsStateWithLifecycle().value
     val month = YearMonth.now()
     val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
     val twelveMonths = (0..12).map { month.minusMonths(it.toLong()) }
@@ -91,23 +91,28 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
             )
         }
     } else {
-        if (habitDetails == null) {
+        if (habit == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 LoadingIndicator()
             }
         } else {
-            CustomTheme(theme = themeReal.value, primaryColor = habitDetails.color,isAmoled = isAmoledColor?.value == "true" ) {
+            CustomTheme(
+                theme = themeReal.value,
+                primaryColor = habit.color,
+                isAmoled = isAmoledColor?.value == "true"
+            ) {
                 Scaffold(Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
                     MediumFlexibleTopAppBar(
                         navigationIcon = {
                             IconButton(onClick = { backStack.removeLastOrNull() }) {
                                 Icon(
-                                    Icons.AutoMirrored.Default.ArrowBack, contentDescription = "go back"
+                                    Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = "go back"
                                 )
                             }
                         },
-                        title = { Text(habitDetails.name, fontWeight = FontWeight.Bold) },
-                        actions = {Menu(viewModel,backStack)},
+                        title = { Text(habit.name, fontWeight = FontWeight.Bold) },
+                        actions = { Menu(viewModel, backStack) },
                         scrollBehavior = scrollBehavior
                     )
                 }) { innerPadding ->
@@ -126,29 +131,95 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                     .fillMaxWidth()
                             ) {
                                 FullDataGridCalender(
-                                    gridHeight = if(LocalConfiguration.current.screenHeightDp < 350){LocalConfiguration.current.screenHeightDp}else{350},
+                                    gridHeight = if (LocalConfiguration.current.screenHeightDp < 350) {
+                                        LocalConfiguration.current.screenHeightDp
+                                    } else {
+                                        350
+                                    },
                                     addHabit = { date ->
+
                                         coroutineScope.launch(
                                             Dispatchers.IO
                                         ) {
-                                            viewModel.habitRepository.addWithPartialCheck(
-                                                HabitCompletionEntity(
-                                                    habitId = viewModel.navKey.habitId,
-                                                    completionDate = date
-                                                )
+                                            viewModel.habitRepository.applyRepetitionForADate(
+                                                date = date,
+                                                habitId = habit.id,
+                                                newRepetitionValue = habit.repetitionPerDay
                                             )
                                         }
                                     },
                                     deleteHabit = { date ->
-                                        viewModel.deleteHabitEntryWithPartialCheck(
-                                            habitId = habitDetails.id,
-                                            date = date
-                                        )
+                                        coroutineScope.launch(
+                                            Dispatchers.IO
+                                        ) {
+                                            viewModel.habitRepository.applyRepetitionForADate(
+                                                date = date,
+                                                habitId = habit.id,
+                                                newRepetitionValue = 0.0
+                                            )
+                                        }
                                     },
                                     habitData = habitAllData,
                                     showDate = true,
                                     interactive = true,
-                                    firstDayOfWeek = firstDayOfWeek
+                                    firstDayOfWeek = firstDayOfWeek,
+                                    dialogueComposable = { visible, onDismiss, habitCompletionEntity, completionDate ->
+                                        DialogueForHabit(
+                                            isVisible = visible,
+                                            onDismissRequest = { onDismiss() },
+                                            habitCompletionEntity = habitCompletionEntity,
+                                            updateHabitCompletionEntity = { habitCompletionEntity ->
+
+                                            },
+                                            habitEntity = habit,
+                                            onFinalised = { isRepetitionsChanged, isNotesChanged, userTypedRepetition, userTypedNote ->
+                                                if (isRepetitionsChanged && userTypedRepetition.toDoubleOrNull() != null) {
+                                                    coroutineScope.launch(Dispatchers.IO) {
+                                                        viewModel.habitRepository.applyRepetitionForADate(
+                                                            date = completionDate,
+                                                            habitId = habit.id,
+                                                            newRepetitionValue = userTypedRepetition.toDouble()
+                                                        )
+                                                        if (isNotesChanged) {
+                                                            viewModel.habitRepository.applyNotes(
+                                                                date = completionDate,
+                                                                habitId = habit.id,
+                                                                newNote = userTypedNote
+                                                            )
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (isNotesChanged) {
+                                                        coroutineScope.launch(Dispatchers.IO) {
+                                                            viewModel.habitRepository.applyNotes(
+                                                                date = completionDate,
+                                                                habitId = habit.id,
+                                                                newNote = userTypedNote
+                                                            )
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    },skipHabit = { date ->
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            viewModel.habitRepository.setSkip(
+                                                date = date,
+                                                habitId = habit.id,
+                                                skipValue = true
+                                            )
+                                        }
+                                    }, unSkipHabit = { date ->
+                                        coroutineScope.launch {
+                                            viewModel.habitRepository.setSkip(
+                                                date = date,
+                                                habitId = habit.id,
+                                                skipValue = false
+                                            )
+                                        }
+                                    },
+
                                 )
                             }
                         }
@@ -163,15 +234,18 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                 Modifier
                                     .fillMaxWidth()
                                     .padding(20.dp)
-                            ) {Icon(Icons.Default.Repeat,"")
+                            ) {
+                                Icon(Icons.Default.Repeat, "")
                                 Spacer(Modifier.width(10.dp))
-                                if (habitDetails.streakType == "everyday") {
+                                if (habit.streakType == "everyday") {
                                     Text("EveryDay")
-                                } else if (habitDetails.streakType == "week") {
-                                    Text("${habitDetails.frequency} times per Week")
-                                } else if (habitDetails.streakType == "month") {
-                                    Text("${habitDetails.frequency} times per Month")
-                                }else{Text("${habitDetails.frequency} times per ${habitDetails.cycle} Days")}
+                                } else if (habit.streakType == "week") {
+                                    Text("${habit.frequency} times per Week")
+                                } else if (habit.streakType == "month") {
+                                    Text("${habit.frequency} times per Month")
+                                } else {
+                                    Text("${habit.frequency} times per ${habit.cycle} Days")
+                                }
                             }
                         }
                         Column(
@@ -180,8 +254,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
 
 
                         ) {
-                            if (habitDetails.description != "") {
-                                Text(habitDetails.description)
+                            if (habit.description != "") {
+                                Text(habit.description)
                             }
 
                             Spacer(Modifier.height(10.dp))
@@ -194,31 +268,43 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
                                 FullDataGridCalender(
                                     habitData = habitAllData,
                                     addHabit = { date ->
+
                                         coroutineScope.launch(
                                             Dispatchers.IO
                                         ) {
-                                            viewModel.habitRepository.addWithPartialCheck(
-                                                HabitCompletionEntity(
-                                                    habitId = viewModel.navKey.habitId,
-                                                    completionDate = date
-                                                )
+                                            viewModel.habitRepository.applyRepetitionForADate(
+                                                date = date,
+                                                habitId = habit.id,
+                                                newRepetitionValue = habit.repetitionPerDay
                                             )
                                         }
                                     },
                                     deleteHabit = { date ->
-                                        viewModel.deleteHabitEntryWithPartialCheck(
-                                            habitId = habitDetails.id,
-                                            date = date
-                                        )
+                                        coroutineScope.launch(
+                                            Dispatchers.IO
+                                        ) {
+                                            viewModel.habitRepository.applyRepetitionForADate(
+                                                date = date,
+                                                habitId = habit.id,
+                                                newRepetitionValue = 0.0
+                                            )
+                                        }
                                     },
-                                    firstDayOfWeek = firstDayOfWeek
+                                    firstDayOfWeek = firstDayOfWeek,
+
+
+
+                                    interactive = false,
+                                    skipHabit = { } ,
+                                    unSkipHabit = {},
+                                    dialogueComposable = {visible, onDismiss, habitCompletionEntity, completionDate -> },
                                 )
                             }
 
                             Spacer(Modifier.height(20.dp))
                             HorizontalDivider()
                             Spacer(Modifier.height(20.dp))
-                            ColumnChartWidget(habitAllData)
+                            FrequencyChart(habitAllData)
                             Spacer(Modifier.height(20.dp))
                             HorizontalDivider()
                             Spacer(Modifier.height(20.dp))
@@ -278,16 +364,21 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel,backStack: SnapshotSta
 }
 
 @Composable
-private fun Menu(viewModel: HabitDetailsPageViewModel,backStack: SnapshotStateList<NavKey>) {
+private fun Menu(viewModel: HabitDetailsPageViewModel, backStack: SnapshotStateList<NavKey>) {
     val showDialog = rememberSaveable { mutableStateOf(false) }
     ConfirmationDialog(
         visible = showDialog.value,
         text = "Do you want to delete this Habit?",
-        confirmAction = {showDialog.value = false
+        confirmAction = {
+            showDialog.value = false
             backStack.removeLastOrNull()
-            viewModel.deleteHabitById(viewModel.navKey.habitId) },
+            viewModel.deleteHabitById(viewModel.navKey.habitId)
+        },
         onDismiss = { showDialog.value = false },
-        confirmationColor = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.onError, containerColor = MaterialTheme.colorScheme.error)
+        confirmationColor = ButtonDefaults.buttonColors(
+            contentColor = MaterialTheme.colorScheme.onError,
+            containerColor = MaterialTheme.colorScheme.error
+        )
     )
 
     val menuVisible = rememberSaveable { mutableStateOf(false) }
@@ -306,14 +397,18 @@ private fun Menu(viewModel: HabitDetailsPageViewModel,backStack: SnapshotStateLi
                 Text("Edit Habit")
 
             }
-        }, onClick = { menuVisible.value = false
-            backStack.add(Screen.AddHabitPageRoute(viewModel.navKey.habitId))})
+        }, onClick = {
+            menuVisible.value = false
+            backStack.add(Screen.AddHabitPageRoute(viewModel.navKey.habitId))
+        })
         DropdownMenuItem(text = {
             Row {
                 Text("Delete Habit")
 
             }
-        }, onClick = { menuVisible.value = false
-        showDialog.value  = true})
+        }, onClick = {
+            menuVisible.value = false
+            showDialog.value = true
+        })
     }
 }

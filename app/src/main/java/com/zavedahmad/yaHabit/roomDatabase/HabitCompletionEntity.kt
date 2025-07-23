@@ -58,7 +58,7 @@ fun HabitCompletionEntity.isSkip(): Boolean {
 
 fun HabitCompletionEntity.state(): String {
     return if (this.isOnlyNote()) {
-        "note"
+        "empty"
     } else {
         if (this.isSkip()) {
             "skip"
