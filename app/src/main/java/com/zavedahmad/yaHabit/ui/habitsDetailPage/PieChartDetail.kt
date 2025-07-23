@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.models.Pie
-
+//TODO it is showing absolute and skip as one
 @Composable
 fun PieChartDetail(habitAllData : List<HabitCompletionEntity>?) {
     val numberOfPartials by remember(habitAllData) {  derivedStateOf{( habitAllData?.filter { it.partial == true }?.size ?: 0)}}
