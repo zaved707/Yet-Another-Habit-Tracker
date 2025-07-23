@@ -137,7 +137,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.windowsizeclass)
     implementation(libs.androidx.adaptive.layout)
-    implementation(libs.androidx.material3.navigation3)
+//    implementation(libs.androidx.material3.navigation3)
 
 
     implementation(libs.kotlinx.serialization.core)
