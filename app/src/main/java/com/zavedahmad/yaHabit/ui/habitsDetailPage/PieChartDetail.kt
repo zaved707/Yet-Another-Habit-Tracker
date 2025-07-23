@@ -19,20 +19,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.roomDatabase.isAbsolute
+import com.zavedahmad.yaHabit.roomDatabase.isPartial
+import com.zavedahmad.yaHabit.roomDatabase.isSkip
 import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.models.Pie
-//TODO it is showing absolute and skip as one
+
 @Composable
 fun PieChartDetail(habitAllData : List<HabitCompletionEntity>?) {
-    val numberOfPartials by remember(habitAllData) {  derivedStateOf{( habitAllData?.filter { it.partial == true }?.size ?: 0)}}
-    val numberOfAbsolute by remember(habitAllData) { derivedStateOf {  ( habitAllData?.filter { it.partial == false }?.size ?: 0)}}
+    val numberOfPartials by remember(habitAllData) {  derivedStateOf{( habitAllData?.filter { it.isPartial() && !it.isSkip() }?.size ?: 0)}}
+    val numberOfAbsolute by remember(habitAllData) { derivedStateOf {  ( habitAllData?.filter { it.isAbsolute() }?.size ?: 0)}}
+    val numberOfSkips by remember(habitAllData ){derivedStateOf { habitAllData?.filter { it.isSkip() }?.size ?: 0 }}
     val color1 = MaterialTheme.colorScheme.primary.copy(0.5f)
     val color2 = MaterialTheme.colorScheme.primary
+    val color3  = MaterialTheme.colorScheme.secondary
     val data = remember(habitAllData) {
         mutableStateOf(
             listOf(
                 Pie(label = "Partial", data = numberOfPartials.toDouble(), color = color1 , selectedColor = Color.Green),
                 Pie(label = "Absolute", data = numberOfAbsolute.toDouble(), color =color2, selectedColor = Color.Blue),
+                Pie(label = "Skipped", data = numberOfSkips.toDouble(), color =color3, selectedColor = Color.Blue),
 
             )
         )
@@ -42,6 +48,7 @@ fun PieChartDetail(habitAllData : List<HabitCompletionEntity>?) {
            Text("Absolute: $numberOfAbsolute" , color = color2)
 
             Text("Partial: $numberOfPartials", color = color1)
+            Text("Skipped: $numberOfSkips", color = color3)
 
 
         }

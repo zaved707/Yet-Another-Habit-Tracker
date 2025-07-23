@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import com.zavedahmad.yaHabit.R
 import java.time.LocalDate
 
-// TODO make disabled buttons untouchable
-// TODO Fix this please according to new way
+
+
 @Composable
 fun DayItem(
     date: LocalDate,
