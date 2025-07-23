@@ -1,45 +1,29 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
-import android.health.connect.datatypes.HeightRecord
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.compose.HeatMapCalendar
 import com.kizitonwose.calendar.compose.heatmapcalendar.HeatMapWeekHeaderPosition
 import com.kizitonwose.calendar.compose.heatmapcalendar.rememberHeatMapCalendarState
-import com.kizitonwose.calendar.core.DayPosition
-import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.core.yearMonth
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.ui.calenderPage.MonthHeader
+import com.zavedahmad.yaHabit.roomDatabase.state
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -53,7 +37,10 @@ fun FullDataGridCalender(
     habitData: List<HabitCompletionEntity>? = null, gridHeight: Int = 190,
     showDate: Boolean = false,
     interactive: Boolean = false,
-    firstDayOfWeek: DayOfWeek
+    firstDayOfWeek: DayOfWeek,
+    skipHabit: (date: LocalDate) -> Unit,
+    unSkipHabit: (date: LocalDate) -> Unit,
+    dialogueComposable: @Composable (Boolean, () -> Unit, HabitCompletionEntity?, LocalDate) -> Unit
 ) {
     val currentMonth = remember { YearMonth.now() }
 //    val habitDataSorted = habitData.sortedBy { it.completionDate }
@@ -63,7 +50,7 @@ fun FullDataGridCalender(
     // Adjust as needed
 
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
-   // Available from the library
+    // Available from the library
     val dateToday = LocalDate.now()
     // CHANGE this to change grid height
 
@@ -83,8 +70,8 @@ fun FullDataGridCalender(
             calendarState.endMonth = YearMonth.now()
         }
     }
-
-
+if (habitData == null){}
+else{
     Column {
         //Text("first visible Month ${calendarState.firstVisibleMonth.yearMonth} \n last visibleMonth: ${calendarState.lastVisibleMonth.yearMonth} \n startMonth ${calendarState.startMonth} \n endMonth ${calendarState.endMonth}")
         HeatMapCalendar(
@@ -139,31 +126,21 @@ fun FullDataGridCalender(
             state = calendarState,
             dayContent = { day, heatMapWeek ->
                 var dayState = ""
-                if (habitData != null) {
-                    val datesMatching = habitData.filter { it.completionDate == day.date }
-                    if (datesMatching.size > 1) {
-                        dayState = "error"
-                    } else if (datesMatching.size == 1) {
-                        dayState = if (datesMatching[0].partial) {
-                            if (day.date > dateToday) {
-                                "partialDisabled"
-                            } else {
-                                "partial"
-                            }
-                        } else {
-                            if (day.date > dateToday) {
-                                "absoluteDisabled"
-                            } else {
-                                "absolute"
-                            }
-                        }
+                val datesMatching = habitData.filter { it.completionDate == day.date }
+                var habitCompletionEntity:  HabitCompletionEntity? = null
+                if (datesMatching.size > 1) {
+                    dayState = "error"
+                } else if (datesMatching.size == 1) {
+                    habitCompletionEntity = datesMatching[0]
+                    val suffix= if (day.date > dateToday){"Disabled"}else{""}
+                    dayState = habitCompletionEntity.state() + suffix
+                } else {
+                    if (day.date > dateToday) {
+                        dayState = "incompleteDisabled"
                     } else {
-                        if (day.date > dateToday) {
-                            dayState = "incompleteDisabled"
-                        } else {
-                            dayState = "incomplete"
-                        }
+                        dayState = "incomplete"
                     }
+
                 }
                 if ((dayState != "incompleteDisabled" && dayState != "absoluteDisabled" && dayState != "partialDisabled") || heatMapWeek.days.any { it.date == LocalDate.now() }) {
                     Box(
@@ -180,7 +157,17 @@ fun FullDataGridCalender(
                                 deleteHabit = { deleteHabit(day.date) },
                                 date = day.date,
                                 showDate = showDate,
-                                interactive = interactive
+                                interactive = interactive,
+                                dialogueComposable = { visible, onDismiss ->
+                                    dialogueComposable(
+                                        visible,
+                                        onDismiss,
+                                        habitCompletionEntity,
+                                        day.date
+                                    )
+                                },
+                                skipHabit = { skipHabit(day.date) },
+                                unSkipHabit = { unSkipHabit(day.date) }
                             )
                         }
                     }
@@ -189,5 +176,5 @@ fun FullDataGridCalender(
             })
 
 
-    }
+    }}
 }

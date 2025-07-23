@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.zavedahmad.yaHabit.R
 import java.time.LocalDate
 
+// TODO make disabled buttons untouchable
 // TODO Fix this please according to new way
 @Composable
 fun DayItem(
@@ -45,19 +48,20 @@ fun DayItem(
     deleteHabit: () -> Unit = {},
     skipHabit: () -> Unit,
     unSkipHabit: () -> Unit,
+    hasNote: Boolean = false,
     dialogueComposable: @Composable (Boolean, () -> Unit) -> Unit
 ) {
     val isDialogVisible = remember { mutableStateOf(false) }
     var bgColor = MaterialTheme.colorScheme.error
     var textColor = MaterialTheme.colorScheme.onError
     var borderColor = MaterialTheme.colorScheme.primary
-    var buttonAction : List<()-> Unit> = listOf({}, {})
+    var buttonAction: List<() -> Unit> = listOf({}, {})
     var icon: ImageVector? = null
     var iconComposable: (@Composable () -> Unit) = { }
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
     when (state) {
         "absolute" -> {
-            buttonAction =  listOf(skipHabit,{isDialogVisible.value = true})
+            buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
             bgColor = MaterialTheme.colorScheme.primary
             textColor = MaterialTheme.colorScheme.primary
             borderColor = MaterialTheme.colorScheme.primary
@@ -69,7 +73,7 @@ fun DayItem(
 
 
         "partial" -> {
-            buttonAction = listOf(addHabit,{isDialogVisible.value = true})
+            buttonAction = listOf(addHabit, { isDialogVisible.value = true })
             bgColor = MaterialTheme.colorScheme.primary.copy(0.5f)
             textColor = MaterialTheme.colorScheme.primary
             borderColor = MaterialTheme.colorScheme.primaryContainer.copy(0.5f)
@@ -104,7 +108,7 @@ fun DayItem(
 
         "incompleteDisabled", "emptyDisabled" -> {
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
-            textColor = MaterialTheme.colorScheme.onSurfaceVariant
+            textColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.3f)
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
             iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
 
@@ -119,26 +123,26 @@ fun DayItem(
 
         "incomplete", "empty" -> {
             borderColor = MaterialTheme.colorScheme.primary
-            buttonAction = listOf(addHabit,{isDialogVisible.value = true})
-            bgColor = MaterialTheme.colorScheme.surfaceVariant
-            textColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
+            buttonAction = listOf(addHabit, { isDialogVisible.value = true })
+            bgColor = MaterialTheme.colorScheme.onSurfaceVariant
+            textColor = MaterialTheme.colorScheme.onSurfaceVariant
             iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
 
         }
 
         "note" -> {
             borderColor = MaterialTheme.colorScheme.primary
-            buttonAction =  listOf(addHabit,{isDialogVisible.value = true})
+            buttonAction = listOf(addHabit, { isDialogVisible.value = true })
             bgColor = MaterialTheme.colorScheme.secondaryContainer
-            textColor = MaterialTheme.colorScheme.onSecondaryContainer
+            textColor = MaterialTheme.colorScheme.onTertiaryContainer
             iconComposable = { Icon(Icons.Default.Close, "", tint = textColor) }
         }
 
         "skip" -> {
             borderColor = MaterialTheme.colorScheme.primary
-            buttonAction =  listOf(unSkipHabit,{isDialogVisible.value = true})
+            buttonAction = listOf(unSkipHabit, { isDialogVisible.value = true })
             bgColor = MaterialTheme.colorScheme.secondaryContainer
-            textColor = MaterialTheme.colorScheme.onSecondaryContainer
+            textColor = MaterialTheme.colorScheme.secondary.copy(0.9f)
             iconComposable = { Icon(Icons.Default.DoubleArrow, "", tint = textColor) }
         }
 
@@ -147,7 +151,6 @@ fun DayItem(
         modifier =
             Modifier
                 .fillMaxWidth()
-
 
 
     ) {
@@ -160,36 +163,56 @@ fun DayItem(
             shape = RoundedCornerShape(10.dp),
 
 
-        ) {
-            Column(modifier = Modifier.fillMaxSize()  .combinedClickable(
-                onLongClick = buttonAction[1],
-                onDoubleClick = { },
-                onClick = {
-                    buttonAction[0]()
-                    println("$state This is state")
-                }), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            ) {
+            Box(contentAlignment = Alignment.BottomEnd) {
+                if (hasNote){
+                Surface(
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .padding(5.dp),
+                    tonalElevation = 5.dp,
+                    shadowElevation = 100.dp,
+                    color = MaterialTheme.colorScheme.tertiary
+                ) {}}
                 Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .combinedClickable(
+                            onLongClick = buttonAction[1],
+                            onDoubleClick = { },
+                            onClick = {
+                                buttonAction[0]()
+                                println("$state This is state")
+                            }),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    /* Text(
-                         date.dayOfWeek.name.slice(0..2),
-                         style = MaterialTheme.typography.labelSmall
-                     )*/
-                    Text(
-                        date.dayOfMonth.toString(),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = textColor
-                    )
-                }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        /* Text(
+                             date.dayOfWeek.name.slice(0..2),
+                             style = MaterialTheme.typography.labelSmall
+                         )*/
+                        Text(
+                            date.dayOfMonth.toString(),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = textColor
+                        )
+                    }
 
-                Column(
-                    Modifier.padding(5.dp).height(25.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
+                    Column(
+                        Modifier
+                            .padding(5.dp)
+                            .height(25.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
 
-                    iconComposable()
+                        iconComposable()
+                    }
                 }
             }
         }

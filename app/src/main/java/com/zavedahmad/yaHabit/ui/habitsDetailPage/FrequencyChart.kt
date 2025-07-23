@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.core.yearMonth
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.roomDatabase.isOnlyNote
 import ir.ehsannarmani.compose_charts.ColumnChart
 import ir.ehsannarmani.compose_charts.models.AnimationMode
 import ir.ehsannarmani.compose_charts.models.Bars
@@ -38,7 +39,7 @@ import java.time.Year
 import java.time.YearMonth
 
 @Composable
-fun ColumnChartWidget(habitAllData: List<HabitCompletionEntity>?) {
+fun FrequencyChart(habitAllData: List<HabitCompletionEntity>?) {
     val yearToShow = remember { mutableStateOf(Year.now()) }
     val currentYearData by remember(habitAllData) {
         derivedStateOf {
@@ -66,7 +67,7 @@ fun ColumnChartWidget(habitAllData: List<HabitCompletionEntity>?) {
                     Bars(
                         label = month.month.name.slice(0..2), values = listOf(
                             Bars.Data(
-                                value = currentYearData?.filter { it.completionDate.yearMonth == month }?.size?.toDouble()
+                                value = currentYearData?.filter { it.completionDate.yearMonth == month && !it.isOnlyNote() }?.size?.toDouble()
                                     ?: 0.0, color = SolidColor(barColor)
                             )
                         )

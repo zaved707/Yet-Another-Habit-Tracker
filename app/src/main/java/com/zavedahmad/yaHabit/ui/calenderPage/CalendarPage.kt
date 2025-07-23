@@ -136,7 +136,10 @@ fun CalenderPage(viewModel: CalendarPageViewModel) {
                             gridHeight = 350,
                             showDate = true,
                             interactive = true,
-                            firstDayOfWeek = DayOfWeek.SUNDAY
+                            firstDayOfWeek = DayOfWeek.SUNDAY,
+                            skipHabit = {},
+                            unSkipHabit = {},
+                            dialogueComposable = {visible, onDismiss, habitCompletionEntity, completionDate ->  }
                         )
                     }
                     Row(Modifier.fillMaxWidth()) {

@@ -5,15 +5,23 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
-
+import kotlin.collections.List
+// TODO implement note also
 @Composable
 fun GridDayItem(
     state: String = "error",
@@ -21,65 +29,80 @@ fun GridDayItem(
     date: LocalDate,
     deleteHabit: () -> Unit = {},
     showDate: Boolean = false,
-    interactive: Boolean = false
+    interactive: Boolean = false,
+    skipHabit: () -> Unit,
+    unSkipHabit: () -> Unit,
+    dialogueComposable: @Composable (Boolean, () -> Unit) -> Unit
 ) {
-    var buttonAction = {}
-    val (bgColor, textColor) = when (state) {
-        "absolute" -> {
-            buttonAction = deleteHabit
-            Pair(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary)
-        }
+    val isDialogVisible = remember { mutableStateOf(false) }
+    var buttonAction :  List<()-> Unit> = listOf({}, {})
+    var textColor = MaterialTheme.colorScheme.onError
+    dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
+    var bgColor = MaterialTheme.colorScheme.error
+     when (state) {
+         "absolute" -> {
+             bgColor = MaterialTheme.colorScheme.primary
+             textColor = MaterialTheme.colorScheme.onPrimary
+             buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
 
-        "absoluteDisabled" -> {
-            buttonAction = addHabit
-            Pair(
-                MaterialTheme.colorScheme.inverseSurface.copy(0.8f),
-                MaterialTheme.colorScheme.inverseOnSurface
-            )
-        }
+         }
 
-
-        "partial" -> {
-            buttonAction = addHabit
-            Pair(
-                MaterialTheme.colorScheme.primary.copy(0.5f),
-                MaterialTheme.colorScheme.onBackground.copy(0.6f)
-            )
-        }
-
-        "partialDisabled" -> {
-
-            Pair(
-                MaterialTheme.colorScheme.inverseSurface.copy(0.3f),
-                MaterialTheme.colorScheme.inverseOnSurface
-            )
-        }
+         "absoluteDisabled" -> {
 
 
-        "incompleteDisabled" -> {
+             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.8f)
+             textColor = MaterialTheme.colorScheme.onSurface
 
-            Pair(
-                MaterialTheme.colorScheme.inverseSurface.copy(0.05f),
-                MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+         }
 
-        "incomplete" -> {
-            buttonAction = addHabit
-            Pair(
-                MaterialTheme.colorScheme.surfaceVariant,
-                MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
 
-        else -> {
-            buttonAction = addHabit
-            Pair(MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.onError)
-        }
+         "partial" -> {
+             buttonAction = listOf(addHabit, { isDialogVisible.value = true })
+
+             bgColor = MaterialTheme.colorScheme.primary.copy(0.5f)
+             textColor = if (bgColor.luminance()> 0.5f) Color.Black else Color.White
+
+
+         }
+
+         "partialDisabled" -> {
+
+
+             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
+             textColor = MaterialTheme.colorScheme.onSurface
+
+         }
+
+
+         "incompleteDisabled" -> {
+
+             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
+             textColor = if (bgColor.luminance() < 0.5f) Color.Black else Color.White
+
+         }
+
+         "incomplete", "empty" -> {
+             textColor= MaterialTheme.colorScheme.onSurfaceVariant
+             buttonAction = listOf(addHabit,{isDialogVisible.value = true})
+             bgColor = MaterialTheme.colorScheme.surfaceVariant
+
+
+         }
+         "skip" -> {
+             buttonAction =  listOf(unSkipHabit,{isDialogVisible.value = true})
+             bgColor = MaterialTheme.colorScheme.secondaryContainer
+             textColor = MaterialTheme.colorScheme.secondary
+
+         }
+
+
     }
 
     val modifier = if (interactive) {
-        Modifier.combinedClickable(onClick = {}, onLongClick = { buttonAction() })
+        Modifier.combinedClickable( onClick = {
+            buttonAction[0]()
+            println("$state This is state")
+        },   onLongClick = buttonAction[1])
     } else Modifier
 
     Box(
