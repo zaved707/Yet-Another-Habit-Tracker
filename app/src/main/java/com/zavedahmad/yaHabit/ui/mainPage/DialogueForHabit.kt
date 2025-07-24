@@ -20,6 +20,8 @@ import androidx.compose.ui.window.Dialog
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.isSkip
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 @Composable
 fun DialogueForHabit(
@@ -28,7 +30,7 @@ fun DialogueForHabit(
     habitCompletionEntity: HabitCompletionEntity?,
     updateHabitCompletionEntity: (HabitCompletionEntity) -> Unit,
     habitEntity: HabitEntity,
-    onFinalised: (isRepetitionsChanged: Boolean,isNotesChanged : Boolean,  userTypedRepetition: String, userTypedNote: String?) -> Unit
+    onFinalised: (isRepetitionsChanged: Boolean, isNotesChanged: Boolean, userTypedRepetition: String, userTypedNote: String?) -> Unit
 ) {
     if (isVisible) {
         Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -36,13 +38,21 @@ fun DialogueForHabit(
             val repetitions = remember {
                 mutableStateOf(
                     if (entityAlreadyExists) {
-                        habitCompletionEntity.repetitionsOnThisDay.toString()
+                        if (habitCompletionEntity.repetitionsOnThisDay % 1.0 == 0.0) {
+                            habitCompletionEntity.repetitionsOnThisDay.toLong().toString()
+                        } else {
+                            habitCompletionEntity.repetitionsOnThisDay.toString()
+                        }
                     } else {
-                        "0"
+                        ""
                     }
                 )
             }
-            val isSkip = if (entityAlreadyExists){habitCompletionEntity.isSkip()}else{false}
+            val isSkip = if (entityAlreadyExists) {
+                habitCompletionEntity.isSkip()
+            } else {
+                false
+            }
             val isRepetitionsValueValid =
                 remember { derivedStateOf { repetitions.value.toDoubleOrNull() != null } }
             val isRepetitionsValueChanged = remember {
@@ -81,7 +91,7 @@ fun DialogueForHabit(
                 remember {
                     derivedStateOf {
 
-                            isNoteValueChanged.value || isRepetitionsValueChanged.value
+                        isNoteValueChanged.value || isRepetitionsValueChanged.value
 
                     }
                 }
@@ -94,7 +104,13 @@ fun DialogueForHabit(
                 ) {
                     TextField(
                         value = note.value ?: "",
-                        onValueChange = { note.value = if(it == ""){null}else{it} },
+                        onValueChange = {
+                            note.value = if (it == "") {
+                                null
+                            } else {
+                                it
+                            }
+                        },
                         placeholder = {
                             Text(
                                 "Note",
@@ -104,22 +120,41 @@ fun DialogueForHabit(
                     if (!isSkip) {
                         TextField(
                             value = repetitions.value,
-                            onValueChange = { repetitions.value = it })
+                            onValueChange = {
+                                if (it != "") {
+                                    it.toDoubleOrNull()?.let { it1 ->
+                                        if (it1 <= 1000000.0) {
+                                            repetitions.value =
+                                                it
+                                        }
+                                    }
+                                } else {
+                                    repetitions.value = ""
+                                }
+
+                            },
+                            placeholder = {Text("Repetitions")}
+                        )
                     }
-                    Row(
-                        Modifier.Companion.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Button(
+                }
+                Row(
+                    Modifier.Companion.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
 
-                            onClick = {
-                                onFinalised(isRepetitionsValueChanged.value,isNoteValueChanged.value ,repetitions.value, note.value )
+                        onClick = {
+                            onFinalised(
+                                isRepetitionsValueChanged.value,
+                                isNoteValueChanged.value,
+                                repetitions.value,
+                                note.value
+                            )
 
-                                onDismissRequest()
+                            onDismissRequest()
 
 
-                            }) { Text("Apply") }
-                    }
+                        }) { Text("Apply") }
                 }
             }
         }

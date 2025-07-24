@@ -7,4 +7,6 @@ fun Double.roundTo(decimals: Int): Double {
     val factor = 10.0.pow(decimals)
     return (this * factor).roundToLong() / factor
 }
-
+fun Double.removeDecimals():Double{
+    return this/1
+}
