@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.roomDatabase.isSkip
 
 @Composable
 fun DialogueForHabit(
@@ -41,6 +42,7 @@ fun DialogueForHabit(
                     }
                 )
             }
+            val isSkip = if (entityAlreadyExists){habitCompletionEntity.isSkip()}else{false}
             val isRepetitionsValueValid =
                 remember { derivedStateOf { repetitions.value.toDoubleOrNull() != null } }
             val isRepetitionsValueChanged = remember {
@@ -99,8 +101,11 @@ fun DialogueForHabit(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         })
-
-                    TextField(value = repetitions.value, onValueChange = { repetitions.value = it })
+                    if (!isSkip) {
+                        TextField(
+                            value = repetitions.value,
+                            onValueChange = { repetitions.value = it })
+                    }
                     Row(
                         Modifier.Companion.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End

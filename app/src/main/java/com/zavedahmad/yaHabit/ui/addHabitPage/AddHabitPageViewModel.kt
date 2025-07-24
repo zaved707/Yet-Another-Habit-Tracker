@@ -86,7 +86,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
     fun setRepetitionPerDay(repetition: Double){
         _repetitionPerDay.value = repetition
     }
-    fun setMeasurementUnit(unit: String){
+    fun setMeasurementUnit(unit: String?){
         _measurementUnit.value = unit
     }
 

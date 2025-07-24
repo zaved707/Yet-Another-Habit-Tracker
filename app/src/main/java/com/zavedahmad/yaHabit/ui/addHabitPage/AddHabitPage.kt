@@ -203,8 +203,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                     TextField(
 
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
+                            .fillMaxWidth(),
+
                         value = description,
                         placeholder = {
                             Text(
@@ -221,10 +221,17 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                             unfocusedIndicatorColor = Color.Transparent
                         ),
                         shape = RoundedCornerShape(20.dp),
+                        maxLines = 8
 
+                    )
+                    Heading("Frequency")
+                    FrequencySelector(
+                        viewModel,
+                        onErrorValueChange = { it ->
+                            frequencySelectorError.value = it
+                        })
 
-                        )
-                   Heading("Measurement Unit: Default = 'Unit'")
+                    Heading("Measurement Unit: Default = 'Unit'")
                     TextField(
 
                         modifier = Modifier
@@ -234,31 +241,29 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         placeholder = {
                             Text(
                                 "Unit",
-                                fontStyle = FontStyle.Italic,
-                                color = Color.Gray
+
+
                             )
                         },
                         onValueChange = {
-                            viewModel.setMeasurementUnit(it)
+                            if (it == ""){
+                                viewModel.setMeasurementUnit(null)
+                            }else{
+                                if (it.length <= 12){
+                            viewModel.setMeasurementUnit(it)}}
                         },
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
                         shape = RoundedCornerShape(20.dp),
+                        maxLines = 1
 
 
                         )
-                    Heading("Frequency")
-                    FrequencySelector(
-                        viewModel,
-                        onErrorValueChange = { it ->
-                            frequencySelectorError.value = it
-                        })
-
-                   Heading("Repetition Per Day")
+                    Heading("Repetition Per Day")
                     RepetitionPerDaySelector(viewModel)
-                   Heading("Color")
+                    Heading("Color")
                     ColorSelector(viewModel)
                     Spacer(Modifier.height(30.dp))
                 }

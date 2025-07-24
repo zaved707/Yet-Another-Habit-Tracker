@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
@@ -110,7 +111,7 @@ fun HabitItemReorderableNew(
             Row(
                 modifier =
 
-                    Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+                    Modifier.fillMaxWidth().padding(15.dp), horizontalArrangement = Arrangement.SpaceBetween
             )
             {
                 Column(Modifier.fillMaxWidth(0.7f)) {
@@ -175,7 +176,7 @@ fun HabitItemReorderableNew(
             }
             AnimatedVisibility(visible = !isReorderableMode) {
                 Column(Modifier.fillMaxWidth()) {
-                    Spacer(Modifier.height(20.dp))
+
                     WeekCalendarDataNew(
                         addHabit = { date ->
 
