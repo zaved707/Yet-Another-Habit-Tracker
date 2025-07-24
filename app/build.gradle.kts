@@ -42,9 +42,10 @@ android {
     defaultConfig {
         applicationId = "com.zavedahmad.yaHabit"
         minSdk = 26
+        //noinspection EditedTargetSdkVersion
         targetSdk = 36
-        versionCode = 7
-        versionName = "0.0.55"
+        versionCode = 8
+        versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
