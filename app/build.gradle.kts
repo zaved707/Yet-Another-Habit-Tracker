@@ -22,10 +22,12 @@ plugins {
 
     alias(libs.plugins.hilt)
     id("kotlin-parcelize")
+    id("androidx.room")
     alias(libs.plugins.ksp)
 }
 
 android {
+
     namespace = "com.zavedahmad.yaHabit"
     compileSdk = 36
 
@@ -45,6 +47,7 @@ android {
         versionName = "0.0.55"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
     splits {
         abi {
@@ -80,6 +83,9 @@ android {
     buildFeatures {
         compose = true
     }
+}
+room{
+    schemaDirectory("/media/zaved/889C610C9C60F65A1/asp/yetAnotherHabitTracker/app/src/main/java/com/zavedahmad/yaHabit/roomDatabase/schema")
 }
 
 dependencies {

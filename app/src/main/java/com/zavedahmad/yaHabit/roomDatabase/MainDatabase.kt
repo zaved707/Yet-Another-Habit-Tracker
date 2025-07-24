@@ -10,7 +10,7 @@ import com.zavedahmad.yaHabit.roomDatabase.typeConverters.ColorConvertor
 import com.zavedahmad.yaHabit.roomDatabase.typeConverters.LocalDateConverter
 
 
-@Database(entities = [ PreferenceEntity::class, HabitEntity::class, HabitCompletionEntity::class], version = 1, exportSchema = false)
+@Database(entities = [ PreferenceEntity::class, HabitEntity::class, HabitCompletionEntity::class], version = 1, exportSchema = true)
 @TypeConverters(LocalDateConverter::class, ColorConvertor::class)
 abstract class MainDatabase : RoomDatabase(){
     abstract fun preferencesDao(): PreferencesDao
