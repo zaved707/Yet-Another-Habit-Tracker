@@ -183,7 +183,7 @@ fun DayItem(
                         if (interactive) {
                             Modifier.fillMaxSize().combinedClickable(
                                 onLongClick = buttonAction[1],
-                                onDoubleClick = { },
+
                                 onClick = {
                                     buttonAction[0]()
                                     println("$state This is state")

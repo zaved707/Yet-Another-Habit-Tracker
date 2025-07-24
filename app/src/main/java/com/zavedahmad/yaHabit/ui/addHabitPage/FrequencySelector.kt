@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonGroupDefaults
@@ -131,11 +132,16 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     Row(Modifier.fillMaxWidth()) {
         options.forEachIndexed { index, item ->
             val isChecked = streakChecked.value == index
+            Row( modifier = if (!isChecked) {
+                Modifier.weight(1f)
+            } else {
+                Modifier.weight(1.2f).wrapContentWidth()
+            }){
             ToggleButton(                                                   //TODO this shrinks on large screens fix it
                 modifier = if (!isChecked) {
-                    Modifier.weight(1f)
+                    Modifier.fillMaxWidth().weight(1f)
                 } else {
-                    Modifier
+                    Modifier.fillMaxWidth().weight(1.2f)
                 },
                 checked = isChecked, shapes = when (index) {
                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
@@ -163,10 +169,10 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                 Row {  /*AnimatedVisibility(visible = streakChecked.value == index) {
                                 Icon(Icons.Default.Check, contentDescription = "selected", modifier = Modifier.size(15.dp))
                             }*/
-                    Text(item, overflow = TextOverflow.Ellipsis, maxLines = 1)
+                    Text(item, overflow = TextOverflow.MiddleEllipsis, maxLines = 1)
                 }
             }
-        }
+        }}
     }
     AnimatedVisibility(visible = streakChecked.value == 0) {
 
