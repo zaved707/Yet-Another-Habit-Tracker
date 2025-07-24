@@ -76,7 +76,7 @@ class HabitRepository @Inject constructor(
         return habitDao.getHabitById(id)
     }
 
-    //Todo no deleting instead being turned to partial
+
     suspend fun decreaseRepetitions(entryId: Int, newRepetitionValue: Double) {
         val entry = habitCompletionDao.getEntryById(entryId)
 
@@ -133,7 +133,7 @@ class HabitRepository @Inject constructor(
                     false
                 }
             // for all present as notes turn their partial to true and add them to db
-            partialsToRemove?.forEach {                                                     //TODO Instead of removing make a funtion which just sets the partial value of entity to false
+            partialsToRemove?.forEach {
                 addHabitCompletionEntry(it.copy(partial = false))
             }
             if (currentWillBePartial) {
@@ -146,7 +146,7 @@ class HabitRepository @Inject constructor(
         }
     }
 
-    // TODO Don't clean skip entreis
+
     suspend fun cleanUp(habitId: Int, startDate: LocalDate, endDate: LocalDate) {
         val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
             habitId = habitId,
@@ -160,7 +160,7 @@ class HabitRepository @Inject constructor(
         }
 
     }
-//TODO it adds partial new entry even if there is a entry exist for that day
+
     suspend fun increaseRepetitions(entryId: Int, newRepetitionValue: Double) {
 
         val entry = habitCompletionDao.getEntryById(entryId)
@@ -299,7 +299,7 @@ class HabitRepository @Inject constructor(
 
     }
 
-    //TODO apply skip properly when repetitions are present
+
     /**
      * @param date this is the date you for which skip status is set
      * @param habitId the habitId for which the skip value is set

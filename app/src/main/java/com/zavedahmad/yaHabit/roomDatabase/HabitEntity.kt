@@ -17,8 +17,8 @@ data class HabitEntity(
     val frequency :Double,
     val cycle : Int,
     @ColumnInfo(defaultValue = "1.0")
-    val repetitionPerDay : Double ,   //Todo add migration
+    val repetitionPerDay : Double ,
     @ColumnInfo(defaultValue = "Unit")
-    val measurementUnit : String ,   //Todo add migration
+    val measurementUnit : String ,
 
 )

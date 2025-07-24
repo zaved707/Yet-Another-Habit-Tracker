@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "e0dead48ae4cc9fba2d15f175e49a6f0",
+    "identityHash": "d65b96421ba7081d969dadfe6f220a61",
     "entities": [
       {
         "tableName": "PreferencesTable",
@@ -156,6 +156,17 @@
             "id"
           ]
         },
+        "indices": [
+          {
+            "name": "index_habitCompletion_habitId",
+            "unique": false,
+            "columnNames": [
+              "habitId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_habitCompletion_habitId` ON `${TABLE_NAME}` (`habitId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "HabitTable",
@@ -173,7 +184,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e0dead48ae4cc9fba2d15f175e49a6f0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd65b96421ba7081d969dadfe6f220a61')"
     ]
   }
 }
