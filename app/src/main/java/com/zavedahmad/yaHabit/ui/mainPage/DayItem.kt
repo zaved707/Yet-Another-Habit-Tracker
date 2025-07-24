@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -59,6 +60,7 @@ fun DayItem(
     var buttonAction: List<() -> Unit> = listOf({}, {})
     var icon: ImageVector? = null
     var iconComposable: (@Composable () -> Unit) = { }
+    var dateColor : Color = MaterialTheme.colorScheme.primary
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
     when (state) {
         "absolute" -> {
@@ -202,8 +204,10 @@ fun DayItem(
                         Text(
                             date.dayOfMonth.toString(),
                             style = MaterialTheme.typography.labelLarge,
-                            color = textColor
+                            color = if (interactive){ dateColor}else{
+                                textColor}
                         )
+                        HorizontalDivider(modifier = Modifier.height(5.dp), thickness = 0.5.dp)
                     }
 
                     Column(

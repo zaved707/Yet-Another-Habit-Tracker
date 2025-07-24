@@ -72,7 +72,7 @@ fun WeekCalendarDataNew(
         val dateToday = LocalDate.now()
         Column {
 
-            //DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
+            DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
             WeekCalendar(dayContent = { day ->
                 var suffix = ""
                 var hasNote = false
