@@ -35,9 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.glance.text.TextAlign
 import com.zavedahmad.yaHabit.R
+import com.zavedahmad.yaHabit.utils.formatNumberToReadable
 import java.time.LocalDate
-
 
 
 @Composable
@@ -60,18 +62,54 @@ fun DayItem(
     var buttonAction: List<() -> Unit> = listOf({}, {})
     var icon: ImageVector? = null
     var iconComposable: (@Composable () -> Unit) = { }
-    var dateColor : Color = MaterialTheme.colorScheme.primary
+    var dateColor: Color = MaterialTheme.colorScheme.primary
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
     when (state) {
-        "absolute" -> {
+        "absoluteMore", "absoluteLess" -> {
             buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
             bgColor = MaterialTheme.colorScheme.primary
             textColor = MaterialTheme.colorScheme.primary
             borderColor = MaterialTheme.colorScheme.primary
             icon = Icons.Default.Check
 //            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
-            iconComposable =
-                { Text(repetitionsOnThisDay.toString(), color = textColor, maxLines = 1) }
+            iconComposable = {
+                Text(
+                    text = formatNumberToReadable(number = repetitionsOnThisDay),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = textColor,
+                    maxLines = 1,
+                    fontSize = 15
+                        .sp,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+        "absoluteLessDisabled", "absoluteMoreDisabled" -> {
+            bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.5f)
+            textColor = MaterialTheme.colorScheme.onSurface.copy(0.5f)
+
+
+//            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
+            iconComposable = {
+                Text(
+                    text = formatNumberToReadable(number = repetitionsOnThisDay),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = textColor,
+                    maxLines = 1,
+                    fontSize = 15
+                        .sp,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+        "absolute" -> {
+            buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
+            bgColor = MaterialTheme.colorScheme.primary
+            textColor = MaterialTheme.colorScheme.primary
+            borderColor = MaterialTheme.colorScheme.primary
+            icon = Icons.Default.Check
+            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
+
         }
 
 
@@ -168,27 +206,30 @@ fun DayItem(
 
             ) {
             Box(contentAlignment = Alignment.BottomEnd) {
-                if (hasNote){
-                Surface(
-                    shape = CircleShape,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .padding(5.dp),
-                    tonalElevation = 5.dp,
-                    shadowElevation = 100.dp,
-                    color = MaterialTheme.colorScheme.tertiary
-                ) {}}
+                if (hasNote) {
+                    Surface(
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .padding(5.dp),
+                        tonalElevation = 5.dp,
+                        shadowElevation = 100.dp,
+                        color = MaterialTheme.colorScheme.tertiary
+                    ) {}
+                }
                 Column(
                     modifier =
                         if (interactive) {
-                            Modifier.fillMaxSize().combinedClickable(
-                                onLongClick = buttonAction[1],
+                            Modifier
+                                .fillMaxSize()
+                                .combinedClickable(
+                                    onLongClick = buttonAction[1],
 
-                                onClick = {
-                                    buttonAction[0]()
-                                    println("$state This is state")
-                                }
-                            )
+                                    onClick = {
+                                        buttonAction[0]()
+                                        println("$state This is state")
+                                    }
+                                )
                         } else Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -204,8 +245,11 @@ fun DayItem(
                         Text(
                             date.dayOfMonth.toString(),
                             style = MaterialTheme.typography.labelLarge,
-                            color = if (interactive){ dateColor}else{
-                                textColor}
+                            color = if (interactive) {
+                                dateColor
+                            } else {
+                                textColor
+                            }
                         )
                         HorizontalDivider(modifier = Modifier.height(5.dp), thickness = 0.5.dp)
                     }

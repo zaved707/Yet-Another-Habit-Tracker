@@ -10,6 +10,7 @@ import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.hasNote
 import com.zavedahmad.yaHabit.roomDatabase.state
 import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageDayItem
@@ -24,6 +25,7 @@ fun WeekCalendarDataNew(
     addHabit: (date: LocalDate) -> Unit,
     deleteHabit: (date: LocalDate) -> Unit,
     initialWeekString: String? = null,
+    habitEntity: HabitEntity,
     skipHabit: (date: LocalDate) -> Unit,
     habitData: List<HabitCompletionEntity>?,
     firstDayOfWeek: DayOfWeek,
@@ -82,7 +84,16 @@ fun WeekCalendarDataNew(
                     } else {
                         ""
                     }
-                    dayState = habitCompletionEntity.state() + suffix
+                    dayState = habitCompletionEntity.state()
+                    if (dayState == "absolute"){
+                        if(datesMatching[0].repetitionsOnThisDay < habitEntity.repetitionPerDay){
+                            dayState = "absoluteLess"
+                        }else if (datesMatching[0].repetitionsOnThisDay > habitEntity.repetitionPerDay){
+                            dayState = "absoluteMore"
+                        }
+                    }
+                    dayState += suffix
+
                 } else {
                     if (day.date > dateToday) {
                         dayState = "incompleteDisabled"

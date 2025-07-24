@@ -220,7 +220,7 @@ fun HabitItemReorderableNew(
                                     skipValue = false
                                 )
                             }
-                        },
+                        }, habitEntity = habit,
                         dialogueComposable = { visible, onDismiss, habitCompletionEntity, completionDate ->
                             DialogueForHabit(
                                 isVisible = visible,
