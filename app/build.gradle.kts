@@ -85,7 +85,7 @@ android {
     }
 }
 room{
-    schemaDirectory("/media/zaved/889C610C9C60F65A1/asp/yetAnotherHabitTracker/app/src/main/java/com/zavedahmad/yaHabit/roomDatabase/schema")
+    schemaDirectory("${projectDir}/src/main/java/com/zavedahmad/yaHabit/roomDatabase/schemas")
 }
 
 dependencies {

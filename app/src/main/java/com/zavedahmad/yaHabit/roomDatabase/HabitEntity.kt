@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.roomDatabase
 
 import androidx.compose.ui.graphics.Color
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -15,7 +16,9 @@ data class HabitEntity(
     val streakType : String,
     val frequency :Double,
     val cycle : Int,
-    val repetitionPerDay : Double,
-    val measurementUnit : String,
+    @ColumnInfo(defaultValue = "1.0")
+    val repetitionPerDay : Double ,   //Todo add migration
+    @ColumnInfo(defaultValue = "Unit")
+    val measurementUnit : String ,   //Todo add migration
 
 )

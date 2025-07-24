@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.roomDatabase
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -22,8 +23,11 @@ data class HabitCompletionEntity(
     val habitId: Int,
     val completionDate: LocalDate,
     val partial: Boolean = false,
+    @ColumnInfo(defaultValue = "1.0")
     val repetitionsOnThisDay: Double = 0.0,
+
     val note: String? = null,
+    @ColumnInfo(defaultValue = "false")
     val skip: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 
