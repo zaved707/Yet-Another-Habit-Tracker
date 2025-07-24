@@ -126,6 +126,7 @@ else{
                 .fillMaxWidth(),
             state = calendarState,
             dayContent = { day, heatMapWeek ->
+                var suffix = ""
                 var hasNote = false
                 var dayState = ""
                 val datesMatching = habitData.filter { it.completionDate == day.date }
@@ -135,11 +136,12 @@ else{
                 } else if (datesMatching.size == 1) {
                     hasNote = datesMatching[0].hasNote()
                     habitCompletionEntity = datesMatching[0]
-                    val suffix= if (day.date > dateToday){"Disabled"}else{""}
+                    suffix= if (day.date > dateToday){"Disabled"}else{""}
                     dayState = habitCompletionEntity.state() + suffix
                 } else {
                     if (day.date > dateToday) {
                         dayState = "incompleteDisabled"
+                        suffix = "Disabled"
                     } else {
                         dayState = "incomplete"
                     }
@@ -160,7 +162,7 @@ else{
                                 deleteHabit = { deleteHabit(day.date) },
                                 date = day.date,
                                 showDate = showDate,
-                                interactive = interactive,
+                                interactive =  suffix != "Disabled" && interactive,
                                 dialogueComposable = { visible, onDismiss ->
                                     dialogueComposable(
                                         visible,

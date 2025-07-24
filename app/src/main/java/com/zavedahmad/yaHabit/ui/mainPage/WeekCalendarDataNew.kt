@@ -6,15 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.hasNote
 import com.zavedahmad.yaHabit.roomDatabase.state
-import com.zavedahmad.yaHabit.ui.calenderPage.DayItem
+import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageDayItem
 import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -26,10 +24,10 @@ fun WeekCalendarDataNew(
     addHabit: (date: LocalDate) -> Unit,
     deleteHabit: (date: LocalDate) -> Unit,
     initialWeekString: String? = null,
-    skipHabit : (date : LocalDate) -> Unit,
+    skipHabit: (date: LocalDate) -> Unit,
     habitData: List<HabitCompletionEntity>?,
     firstDayOfWeek: DayOfWeek,
-    unSkipHabit:(date: LocalDate)-> Unit ,
+    unSkipHabit: (date: LocalDate) -> Unit,
     dialogueComposable: @Composable (Boolean, () -> Unit, HabitCompletionEntity?, LocalDate) -> Unit
 ) {
     val todayDate = LocalDate.now()
@@ -60,32 +58,31 @@ fun WeekCalendarDataNew(
 
     }
 
-    if (habitData == null) {
-        Column(Modifier.alpha(0.5f)) {
-            DaysOfWeekTitle(daysOfWeek)
-            WeekCalendar(dayContent = { DayItem(date = it.date, state = "") }, state = state) { }
-        }
 
-    } else {
+    val dateToday = LocalDate.now()
+    Column {
 
+        DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
+        WeekCalendar(dayContent = { day ->
 
-        val dateToday = LocalDate.now()
-        Column {
-
-            DaysOfWeekTitle(daysOfWeek(firstDayOfWeek = firstDayOfWeek))
-            WeekCalendar(dayContent = { day ->
-                var suffix = ""
-                var hasNote = false
-                var dayState = ""
+            var suffix = ""
+            var hasNote = false
+            var dayState = ""
+            if (habitData != null) {
                 val datesMatching = habitData.filter { it.completionDate == day.date }
-                var habitCompletionEntity:  HabitCompletionEntity? = null
+
+                var habitCompletionEntity: HabitCompletionEntity? = null
                 if (datesMatching.size > 1) {
                     dayState = "error"
                 } else if (datesMatching.size == 1) {
                     hasNote = datesMatching[0].hasNote()
                     habitCompletionEntity = datesMatching[0]
-                     suffix= if (day.date > dateToday){"Disabled"}else{""}
-                   dayState = habitCompletionEntity.state() + suffix
+                    suffix = if (day.date > dateToday) {
+                        "Disabled"
+                    } else {
+                        ""
+                    }
+                    dayState = habitCompletionEntity.state() + suffix
                 } else {
                     if (day.date > dateToday) {
                         dayState = "incompleteDisabled"
@@ -99,15 +96,16 @@ fun WeekCalendarDataNew(
 
 
 
-                DayItem(hasNote = hasNote ,
+                DayItem(
+                    hasNote = hasNote,
                     repetitionsOnThisDay = if (dayState != "error" && datesMatching.size > 0) {
                         datesMatching[0].repetitionsOnThisDay
                     } else {
                         1.0
-                    }, unSkipHabit = {unSkipHabit(day.date)},
+                    }, unSkipHabit = { unSkipHabit(day.date) },
                     date = day.date,
                     state = dayState,
-                    skipHabit ={ skipHabit(day.date)},
+                    skipHabit = { skipHabit(day.date) },
                     addHabit = {
                         addHabit(day.date)
                     },
@@ -115,12 +113,18 @@ fun WeekCalendarDataNew(
                         deleteHabit(day.date)
                     }, interactive = suffix != "Disabled",
                     dialogueComposable = { visible, onDismiss ->
-                        dialogueComposable(visible, onDismiss,habitCompletionEntity, day.date)
+                        dialogueComposable(visible, onDismiss, habitCompletionEntity, day.date)
                     })
 
-            }, state = state)
-
-        }
+            } else {DayItem(
+                date = day.date,
+                state = "incomplete",
+                repetitionsOnThisDay = 0.0,
+                skipHabit = {},
+                unSkipHabit = {},
+                dialogueComposable = {a,b -> }
+            )}
+        }, state = state)
     }
 }
 

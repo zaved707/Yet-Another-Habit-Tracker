@@ -112,7 +112,7 @@ fun MonthCalendarRepository(
                     }
 
 
-                    DayItem(day.date, dayState, addHabit = {
+                    CalendarPageDayItem(day.date, dayState, addHabit = {
                         addHabit(day.date)
                     }, deleteHabit = {
                         deleteHabit(day.date)

@@ -89,7 +89,7 @@ fun MonthCalendarData(
                         }
                     }
 
-                    DayItem(
+                    CalendarPageDayItem(
                         date = day.date,
                         dayState,
                         addHabit = { addHabit(day.date) },

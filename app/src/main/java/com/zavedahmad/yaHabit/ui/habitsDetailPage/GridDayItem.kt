@@ -79,8 +79,8 @@ fun GridDayItem(
         "partialDisabled" -> {
 
 
-            bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
-            textColor = MaterialTheme.colorScheme.onSurface
+            bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.1f)
+            textColor = MaterialTheme.colorScheme.inverseOnSurface
             noteIndicatorColor = MaterialTheme.colorScheme.surfaceVariant
 
         }
@@ -89,7 +89,7 @@ fun GridDayItem(
         "incompleteDisabled" -> {
 
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
-            textColor = if (bgColor.luminance() < 0.5f) Color.Black else Color.White
+            textColor = MaterialTheme.colorScheme.inverseOnSurface
             noteIndicatorColor = MaterialTheme.colorScheme.tertiaryContainer
 
         }

@@ -15,7 +15,7 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
-import com.zavedahmad.yaHabit.ui.calenderPage.DayItem
+import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageDayItem
 import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
 import com.zavedahmad.yaHabit.utils.convertHabitCompletionEntityListToDatesList
 import com.zavedahmad.yaHabit.utils.findHabitClusters
@@ -65,7 +65,7 @@ fun WeekCalendar(
     if (habitData.value == null){
         Column (Modifier.alpha(0.5f)){
             DaysOfWeekTitle(daysOfWeek)
-            WeekCalendar(dayContent = {DayItem(date = it.date, state = "")}, state = state) { }
+            WeekCalendar(dayContent = {CalendarPageDayItem(date = it.date, state = "")}, state = state) { }
         }
 
     }else{
@@ -106,7 +106,7 @@ fun WeekCalendar(
 
 
 
-            DayItem(
+            CalendarPageDayItem(
                 day.date,
                 state = dayState,
                 addHabit = {

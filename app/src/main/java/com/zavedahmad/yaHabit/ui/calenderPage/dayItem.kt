@@ -23,7 +23,7 @@ import com.materialkolor.ktx.lighten
 import java.time.LocalDate
 
 @Composable
-fun DayItem(
+fun CalendarPageDayItem(
     date: LocalDate,
     state: String,
     addHabit: () -> Unit = {},
