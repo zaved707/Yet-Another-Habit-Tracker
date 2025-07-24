@@ -138,7 +138,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                     Modifier.weight(1f)
                 } else {
                     Modifier
-                        .weight(1.2f)
+                       .weight(1.4f)
                         .wrapContentWidth()
                 }
             ) {
@@ -217,7 +217,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                             Text(
                                 measurementUnit ?: "Unit"
                             )
-                        })   //TODO when user clears the unit it also shows empty unit which is not intended
+                        })
 
                     Text("Everyday")
                 }

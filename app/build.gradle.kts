@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId = "com.zavedahmad.yaHabit"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 7
         versionName = "0.0.55"
 

@@ -3,8 +3,12 @@ package com.zavedahmad.yaHabit.ui.mainPage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +19,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
@@ -132,11 +137,12 @@ fun DialogueForHabit(
                                     repetitions.value = ""
                                 }
 
-                            },
+                            }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), maxLines = 1,
                             placeholder = {Text("Repetitions")}
                         )
                     }
-                }
+                    Spacer(modifier = Modifier.height(20.dp))
+
                 Row(
                     Modifier.Companion.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -157,6 +163,6 @@ fun DialogueForHabit(
                         }) { Text("Apply") }
                 }
             }
-        }
+        }}
     }
 }

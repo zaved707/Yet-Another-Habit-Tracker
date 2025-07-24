@@ -64,6 +64,8 @@ fun DayItem(
     var iconComposable: (@Composable () -> Unit) = { }
     var dateColor: Color = MaterialTheme.colorScheme.primary
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
+    val fontSizeForRepetition = listOf(13,15)
+    val formattedNumber =formatNumberToReadable(number = repetitionsOnThisDay)
     when (state) {
         "absoluteMore", "absoluteLess" -> {
             buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
@@ -74,12 +76,12 @@ fun DayItem(
 //            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
             iconComposable = {
                 Text(
-                    text = formatNumberToReadable(number = repetitionsOnThisDay),
+                    text = formattedNumber,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     color = textColor,
                     maxLines = 1,
-                    fontSize = 15
-                        .sp,
+                    fontSize = if (formattedNumber.length > 3){fontSizeForRepetition[0]
+                        .sp}else{fontSizeForRepetition[1].sp},
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -92,12 +94,12 @@ fun DayItem(
 //            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
             iconComposable = {
                 Text(
-                    text = formatNumberToReadable(number = repetitionsOnThisDay),
+                    text = formattedNumber,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     color = textColor,
                     maxLines = 1,
-                    fontSize = 15
-                        .sp,
+                    fontSize = if (formattedNumber.length > 3){fontSizeForRepetition[0]
+                        .sp}else{fontSizeForRepetition[1].sp},
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -227,7 +229,7 @@ fun DayItem(
 
                                     onClick = {
                                         buttonAction[0]()
-                                        println("$state This is state")
+                                       // println("$state This is state")
                                     }
                                 )
                         } else Modifier.fillMaxSize(),
