@@ -1,9 +1,12 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +39,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +59,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -67,6 +75,8 @@ import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.errorPages.SplashScreen
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
+import com.zavedahmad.yaHabit.ui.theme.colors
+import ir.ehsannarmani.compose_charts.models.Bars
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
@@ -99,14 +109,24 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             )
         }
     } else {
+        val colorForBorder = MaterialTheme.colorScheme.outlineVariant
 
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+
 
             topBar = {
                 MediumFlexibleTopAppBar(
+                    modifier = Modifier.drawWithContent() {
+                        drawContent()
+                       drawLine(color = colorForBorder,
+                           start = Offset(0f, size.height),
+                           end = Offset(size.width, size.height),
+                           strokeWidth = 1.dp.toPx())
+                    },
                     title = {
-                        Text(
+                        Text( // Add border around this
                             "Habits",
                             fontWeight = FontWeight.Bold
                         )
@@ -156,6 +176,10 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 
                     },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                    ),
 
                     scrollBehavior = scrollBehavior
                 )
@@ -183,7 +207,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 //        viewModel.moveHabits(from.index,to.index)
                     //println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
 
-                    viewModel.move(from.index, to.index)
+                    viewModel.move(from.index -1 , to.index -1 )
                     listUpdatedChannel.receive()
                 }
             // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
@@ -218,51 +242,55 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                         }
                     }
                 } else {
+                    Box {
+                        //HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize(),
 
-                        state = lazyListState,
-                        contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
-                        verticalArrangement = Arrangement.spacedBy(20.dp)
-                    ) {
+                            state = lazyListState,
+                            contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
+                            verticalArrangement = Arrangement.spacedBy(20.dp)
+                        ) {
+                            item { }
 
-                        items(habits.value, key = { it.id }) { habit ->
-                            ReorderableItem(
-                                reorderableLazyListState,
-                                key = habit.id
-                            ) { isDragging ->
-                                CustomTheme(
-                                    theme = themeReal.value,
-                                    primaryColor = habit.color,
-                                    isAmoled = isAmoledColor?.value == "true"
-                                ) {
-
-
-                                    // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
+                            items(habits.value, key = { it.id }) { habit ->
+                                ReorderableItem(
+                                    reorderableLazyListState,
+                                    key = habit.id
+                                ) { isDragging ->
+                                    CustomTheme(
+                                        theme = themeReal.value,
+                                        primaryColor = habit.color,
+                                        isAmoled = isAmoledColor?.value == "true"
+                                    ) {
 
 
-                                    HabitItemReorderableNew(
-                                        backStack = backStack,
-                                        viewModel = viewModel,
-                                        habit = habit,
-                                        reorderableListScope = this,
+                                        // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
 
-                                        isDragging = isDragging,
-                                        isReorderableMode = isReorderableMode.value,
-                                        firstDayOfWeek = firstDayOfWeek
-                                    )
+
+                                        HabitItemReorderableNew(
+                                            backStack = backStack,
+                                            viewModel = viewModel,
+                                            habit = habit,
+                                            reorderableListScope = this,
+
+                                            isDragging = isDragging,
+                                            isReorderableMode = isReorderableMode.value,
+                                            firstDayOfWeek = firstDayOfWeek
+                                        )
 
 //                                Spacer(Modifier.height(40.dp))
 
 
+                                    }
                                 }
                             }
+                            item { Spacer(Modifier.height(20.dp)) }
+
+
                         }
-                        item { Spacer(Modifier.height(20.dp)) }
-
-
                     }
                 }
             }
