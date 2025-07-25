@@ -58,7 +58,7 @@ fun CustomTheme(
                 isDark = darkTheme,
                 isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
-                style = PaletteStyle.Vibrant,
+                style = PaletteStyle.Expressive,
                 contrastLevel = 0.5 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
             )
         }else{
