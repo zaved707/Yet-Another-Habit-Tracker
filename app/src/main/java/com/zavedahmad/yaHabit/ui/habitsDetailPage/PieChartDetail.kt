@@ -1,13 +1,17 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -52,9 +56,11 @@ fun PieChartDetail(habitAllData : List<HabitCompletionEntity>?) {
 
 
         }
+        Surface (Modifier.border(width = 1.dp, color = MaterialTheme.colorScheme.onSurface, shape = CircleShape)){
+            Box(Modifier.padding(8.dp)){
     PieChart(
         modifier = Modifier.size(200.dp),
         data = data.value,
         style = Pie.Style.Stroke( 30.dp)
-    )}
+    )}}}
 }
