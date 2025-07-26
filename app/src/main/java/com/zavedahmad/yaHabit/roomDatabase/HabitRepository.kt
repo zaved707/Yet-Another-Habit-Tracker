@@ -307,7 +307,7 @@ class HabitRepository @Inject constructor(
      */
     suspend fun setSkip(date: LocalDate, habitId: Int, skipValue: Boolean) {
 
-
+        db.withTransaction {
         val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
             habitId = habitId,
             completionDate = date
@@ -355,7 +355,7 @@ class HabitRepository @Inject constructor(
                 )
             }
 
-        }
+        }}
 
     }
 
