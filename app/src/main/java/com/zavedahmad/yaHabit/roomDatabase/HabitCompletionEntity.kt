@@ -62,10 +62,7 @@ fun HabitCompletionEntity.isSkip(): Boolean {
 
 
 fun HabitCompletionEntity.state(): String {
-    return if (this.isOnlyNote()) {
-        "empty"
-    } else {
-        if (this.isSkip()) {
+    return if (this.isSkip()) {
             "skip"
         } else {
             if (this.isPartial()) {
@@ -78,6 +75,6 @@ fun HabitCompletionEntity.state(): String {
                     "absolute"
                 }
             }
-        }
+
     }
 }
