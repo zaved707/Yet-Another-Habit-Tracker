@@ -13,15 +13,15 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary =  Color(0xFFFFD037), // Pastel Yellow
-    secondary = Color(0xFF5879FF), // Pastel Pink
-    tertiary = Color(0xFFFA8072)   // Pastel Red
+    secondary = Color(0xFFC21818), // Pastel Pink
+    tertiary = Color(0xFF7BFA72)   // Pastel Red
 
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary =  Color(0xFFFF7C4D), // Pastel Yellow
-    secondary = Color(0xFF5879FF), // Pastel Pink
-    tertiary = Color(0xFFFA8072)   // Pastel Red
+    primary =  Color(0xFFD32F2F), // Pastel Yellow
+    secondary = Color(0xFFFBC02D), // Pastel Pink
+    tertiary = Color(0xFF4DFF2D)   // Pastel Red
 
 
     /* Other default colors to override
