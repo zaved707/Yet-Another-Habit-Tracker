@@ -55,16 +55,17 @@ fun CustomTheme(
                 primary = primaryColor ?: MaterialTheme.colorScheme.primary,
                 secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
                 tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
+                neutral = Color(0xFFFEEEEE),
                 isDark = darkTheme,
                 isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
-                style = PaletteStyle.Expressive,
+                style = PaletteStyle.TonalSpot,
                 contrastLevel = 0.5 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
             )
         }else{
             rememberDynamicColorScheme(
                 primary = primaryColor ?: Purple80,
-                secondary = secondaryColor ?: Color(0xFFE0FFF9),
+                secondary = secondaryColor ?: Color(0xFFFFAFAF),
                 tertiary = tertiaryColor ?: Pink80,
                 isDark = darkTheme,
                 isAmoled = isAmoled,
