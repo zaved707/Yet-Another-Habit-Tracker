@@ -26,6 +26,7 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FormatListBulleted
@@ -42,13 +43,16 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,9 +63,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
@@ -71,6 +77,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.ui.components.ColorPalette
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
 import com.zavedahmad.yaHabit.ui.errorPages.SplashScreen
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
@@ -120,10 +127,12 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                 MediumFlexibleTopAppBar(
                     modifier = Modifier.drawWithContent() {
                         drawContent()
-                       drawLine(color = colorForBorder,
-                           start = Offset(0f, size.height),
-                           end = Offset(size.width, size.height),
-                           strokeWidth = 1.dp.toPx())
+                        drawLine(
+                            color = colorForBorder,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = 1.dp.toPx()
+                        )
                     },
                     title = {
                         Text( // Add border around this
@@ -155,7 +164,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                         if (!isReorderableMode.value
                         ) {
                             Row {
-                                Button(
+                                OutlinedButton(
                                     onClick = {
 
 
@@ -163,12 +172,25 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
                                     },
                                     modifier = Modifier,
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.5f)),
+                                    contentPadding = PaddingValues(vertical = 2.dp, horizontal = 20.dp)
                                 ) {
-                                    Icon(
-                                        Icons.Default.AddCircle,
-                                        contentDescription = "turn off reorderable mode"
-                                    )
+                                    Box(
+                                        Modifier
+                                            .clip(MaterialShapes.Cookie12Sided.toShape())
+                                            .border(
+                                                border = BorderStroke(
+                                                    width = 2.dp,
+                                                    brush = SolidColor(MaterialTheme.colorScheme.primary.copy(0.5f))
+                                                ), shape = MaterialShapes.Cookie12Sided.toShape()
+                                            ).background(MaterialTheme.colorScheme.primary.copy(0.7f))
+                                    ) {Box(Modifier.padding(5.dp)){
+                                        Icon(
+                                            Icons.Default.Add,
+                                            contentDescription = "add new Item",
+                                            tint = MaterialTheme.colorScheme.onPrimary
+                                        )}
+                                    }
                                 }
                                 Menu(viewModel, backStack)
                             }
@@ -207,10 +229,11 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 //        viewModel.moveHabits(from.index,to.index)
                     //println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
 
-                    viewModel.move(from.index -1 , to.index -1 )
+                    viewModel.move(from.index - 1, to.index - 1)
                     listUpdatedChannel.receive()
                 }
             // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
+
 
             Column(
                 modifier = Modifier
@@ -220,6 +243,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                 val pagerState = rememberPagerState(pageCount = {
                     1
                 })
+                
 
                 if (habits.value.isEmpty()) {
                     VerticalPager(state = pagerState) {
