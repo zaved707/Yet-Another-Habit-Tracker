@@ -15,7 +15,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.Dialog
@@ -38,21 +41,28 @@ fun ConfirmationDialog(
 ) {
     if (visible) {
         Dialog(onDismissRequest = { onDismiss() }) {
-            Box(
+            OutlinedCard(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
+
                     .background(MaterialTheme.colorScheme.surface)
             ) {
                 Column(Modifier.padding(30.dp)) {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        Text(text)
+                    OutlinedCard (colors = CardDefaults.outlinedCardColors()){
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text)
+                        }
                     }
                     Spacer(Modifier.height(30.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        Button(
+                        OutlinedButton(
                             modifier = Modifier.weight(1f),
                             onClick = { onDismiss() },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
@@ -60,7 +70,7 @@ fun ConfirmationDialog(
                         Spacer(Modifier.width(20.dp))
                         Button(
                             modifier = Modifier.weight(1f),
-                            colors =confirmationColor,
+                            colors = confirmationColor,
                             onClick = { confirmAction() }) { Text(confirmText) }
                     }
                 }
