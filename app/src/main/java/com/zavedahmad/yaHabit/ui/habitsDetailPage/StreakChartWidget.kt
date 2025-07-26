@@ -1,15 +1,21 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
@@ -55,7 +61,7 @@ private fun ShowStreaksBars(streaks: List<Triple<LocalDate, LocalDate, Int>>) {
     val textStyle = TextStyle(color = MaterialTheme.colorScheme.primary.copy(0.8f))
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         streaks.forEach { it ->
-            Row (verticalAlignment = Alignment.CenterVertically){
+            Row(verticalAlignment = Alignment.CenterVertically) {
 
                 Text(it.first.format(dateFormatter), style = textStyle)
                 Text(" - ")
@@ -68,8 +74,21 @@ private fun ShowStreaksBars(streaks: List<Triple<LocalDate, LocalDate, Int>>) {
                 Modifier
                     .fillMaxWidth((it.third.toFloat() / streaks[0].third.toFloat()))
                     .height(20.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-            ) { }
+                    .clip(RoundedCornerShape(10.dp))
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(5.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                ) {}
+            }
         }
     }
 }

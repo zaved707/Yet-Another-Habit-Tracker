@@ -256,7 +256,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                 Icons.AutoMirrored.Filled.FormatListBulleted,
                                 modifier = Modifier.size(200.dp),
                                 contentDescription = "placeholderr",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 "You Have not Yet added any Habits \n click the '+' button  to add one",
