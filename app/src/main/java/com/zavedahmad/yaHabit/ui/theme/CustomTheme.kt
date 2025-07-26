@@ -64,12 +64,12 @@ fun CustomTheme(
         }else{
             rememberDynamicColorScheme(
                 primary = primaryColor ?: Purple80,
-                secondary = secondaryColor ?: PurpleGrey80,
+                secondary = secondaryColor ?: Color(0xFFE0FFF9),
                 tertiary = tertiaryColor ?: Pink80,
                 isDark = darkTheme,
                 isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
-                style = PaletteStyle.Vibrant,
+
                 contrastLevel = 0.0 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
             )
         }
