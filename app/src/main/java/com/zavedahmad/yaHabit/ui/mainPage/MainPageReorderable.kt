@@ -1,9 +1,6 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,9 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,28 +22,17 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.FormatListBulleted
-import androidx.compose.material.icons.filled.KeyOff
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -56,19 +40,15 @@ import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,20 +56,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.ui.components.ColorPalette
-import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
-import com.zavedahmad.yaHabit.ui.errorPages.SplashScreen
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
-import com.zavedahmad.yaHabit.ui.theme.colors
-import ir.ehsannarmani.compose_charts.models.Bars
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import java.time.LocalDate
-// TODO when user changes note and the day is skip then skip is removed 
+
+// TODO when user changes note and the day is skip then skip is removed
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
@@ -172,8 +145,15 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
                                     },
                                     modifier = Modifier,
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.5f)),
-                                    contentPadding = PaddingValues(vertical = 2.dp, horizontal = 20.dp)
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                            0.5f
+                                        )
+                                    ),
+                                    contentPadding = PaddingValues(
+                                        vertical = 2.dp,
+                                        horizontal = 20.dp
+                                    )
                                 ) {
                                     Box(
                                         Modifier
@@ -181,15 +161,22 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                             .border(
                                                 border = BorderStroke(
                                                     width = 2.dp,
-                                                    brush = SolidColor(MaterialTheme.colorScheme.primary.copy(0.5f))
+                                                    brush = SolidColor(
+                                                        MaterialTheme.colorScheme.primary.copy(
+                                                            0.5f
+                                                        )
+                                                    )
                                                 ), shape = MaterialShapes.Cookie12Sided.toShape()
-                                            ).background(MaterialTheme.colorScheme.primary.copy(0.7f))
-                                    ) {Box(Modifier.padding(5.dp)){
-                                        Icon(
-                                            Icons.Default.Add,
-                                            contentDescription = "add new Item",
-                                            tint = MaterialTheme.colorScheme.onPrimary
-                                        )}
+                                            )
+                                            .background(MaterialTheme.colorScheme.primary.copy(0.7f))
+                                    ) {
+                                        Box(Modifier.padding(5.dp)) {
+                                            Icon(
+                                                Icons.Default.Add,
+                                                contentDescription = "add new Item",
+                                                tint = MaterialTheme.colorScheme.onPrimary
+                                            )
+                                        }
                                     }
                                 }
                                 Menu(viewModel, backStack)
@@ -243,7 +230,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                 val pagerState = rememberPagerState(pageCount = {
                     1
                 })
-                
+
 
                 if (habits.value.isEmpty()) {
                     VerticalPager(state = pagerState) {
@@ -322,32 +309,3 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
     }
 }
 
-@Composable
-private fun Menu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
-    val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
-    val menuVisible = rememberSaveable { mutableStateOf(false) }
-    IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
-        Icon(
-            imageVector = Icons.Outlined.MoreVert,
-            contentDescription = "More"
-        )
-    }
-    DropdownMenu(
-        expanded = menuVisible.value, // Set to true to show the menu
-        onDismissRequest = { menuVisible.value = false }
-    ) {
-        DropdownMenuItem(text = { Row { Text("Settings") } }, onClick = {
-            menuVisible.value = false
-            backStack.add(Screen.SettingsPageRoute)
-        })
-        DropdownMenuItem(text = {
-            Row {
-                Text("Reorder Mode")
-
-            }
-        }, onClick = {
-            viewModel.changeReorderableMode(!isReorderableMode.value)
-            menuVisible.value = false
-        })
-    }
-}

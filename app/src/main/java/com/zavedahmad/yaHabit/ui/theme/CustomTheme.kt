@@ -8,8 +8,12 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicColorScheme
@@ -18,6 +22,14 @@ private val DarkColorScheme = darkColorScheme(
 
 )
 
+data class OutlineSizes(
+    val small: Dp = 0.5.dp,
+    val medium: Dp = 1.dp,
+    val large: Dp = 2.dp
+)
+
+// Define CompositionLocal for outline sizes
+val LocalOutlineSizes = staticCompositionLocalOf { OutlineSizes() }
 
 @Composable
 fun CustomTheme(
@@ -76,7 +88,7 @@ fun CustomTheme(
         }
 
     }
-
+    CompositionLocalProvider(LocalOutlineSizes provides OutlineSizes() ) {
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -84,4 +96,4 @@ fun CustomTheme(
 
         content = content
     )
-}
+}}
