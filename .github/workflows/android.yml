@@ -1,7 +1,7 @@
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - making-github-actions-work # Replace 'your-branch-name' with the actual name of your branch
   workflow_dispatch:
 jobs:
   build-and-sign:
