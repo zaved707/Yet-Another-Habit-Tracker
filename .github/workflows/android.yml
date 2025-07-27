@@ -38,7 +38,7 @@ jobs:
       - name: Sign app APK
         # ID used to access action output
         id: sign_app
-        uses: noriban/sign-android-release@v1
+        uses: MatiasG19/android-sign@v2
         with:
           releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
