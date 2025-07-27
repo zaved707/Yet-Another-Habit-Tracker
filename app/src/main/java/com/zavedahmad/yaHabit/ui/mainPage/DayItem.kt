@@ -64,8 +64,8 @@ fun DayItem(
     var iconComposable: (@Composable () -> Unit) = { }
     var dateColor: Color = MaterialTheme.colorScheme.primary
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
-    val fontSizeForRepetition = listOf(13,15)
-    val formattedNumber =formatNumberToReadable(number = repetitionsOnThisDay)
+    val fontSizeForRepetition = listOf(13, 15)
+    val formattedNumber = formatNumberToReadable(number = repetitionsOnThisDay)
     when (state) {
         "absoluteMore", "absoluteLess" -> {
             buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
@@ -80,12 +80,17 @@ fun DayItem(
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     color = textColor,
                     maxLines = 1,
-                    fontSize = if (formattedNumber.length > 3){fontSizeForRepetition[0]
-                        .sp}else{fontSizeForRepetition[1].sp},
+                    fontSize = if (formattedNumber.length > 3) {
+                        fontSizeForRepetition[0]
+                            .sp
+                    } else {
+                        fontSizeForRepetition[1].sp
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
         }
+
         "absoluteLessDisabled", "absoluteMoreDisabled" -> {
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.5f)
             textColor = MaterialTheme.colorScheme.onSurface.copy(0.5f)
@@ -98,12 +103,17 @@ fun DayItem(
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     color = textColor,
                     maxLines = 1,
-                    fontSize = if (formattedNumber.length > 3){fontSizeForRepetition[0]
-                        .sp}else{fontSizeForRepetition[1].sp},
+                    fontSize = if (formattedNumber.length > 3) {
+                        fontSizeForRepetition[0]
+                            .sp
+                    } else {
+                        fontSizeForRepetition[1].sp
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
         }
+
         "absolute" -> {
             buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
             bgColor = MaterialTheme.colorScheme.primary
@@ -136,7 +146,7 @@ fun DayItem(
             textColor = MaterialTheme.colorScheme.onSurface.copy(0.5f)
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.1f)
             iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
-
+//            buttonAction = listOf(addHabit, { isDialogVisible.value = true })
 
         }
 
@@ -144,8 +154,13 @@ fun DayItem(
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
             textColor = MaterialTheme.colorScheme.inverseSurface.copy(0.4f)
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
-            iconComposable = { Icon(Icons.Default.Check, "", tint = textColor) }
-
+            iconComposable = {
+                Image(
+                    painter = painterResource(R.drawable.hollowtick),
+                    contentDescription = "hollow tick",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary.copy(0.8f))
+                )
+            }
 
         }
 
@@ -221,18 +236,17 @@ fun DayItem(
                 }
                 Column(
                     modifier =
-                        if (interactive) {
-                            Modifier
-                                .fillMaxSize()
-                                .combinedClickable(
-                                    onLongClick = buttonAction[1],
 
-                                    onClick = {
-                                        buttonAction[0]()
-                                       // println("$state This is state")
-                                    }
-                                )
-                        } else Modifier.fillMaxSize(),
+                        Modifier
+                            .fillMaxSize()
+                            .combinedClickable(
+                                onLongClick = buttonAction[1],
+
+                                onClick = {
+                                    buttonAction[0]()
+                                    // println("$state This is state")
+                                }
+                            ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
