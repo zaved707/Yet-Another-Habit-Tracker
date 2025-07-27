@@ -34,21 +34,25 @@ jobs:
         run: ./gradlew assembleRelease
 
       # Sign the APK using r0adkll/sign-android-release
+      # uses: r0adkll/sign-android-release@v1
       - name: Sign app APK
+        # ID used to access action output
         id: sign_app
-        uses: ilharp/sign-android-release@v2
+        uses: r0adkll/sign-android-release@v1
         with:
-          releaseDir: app/build/outputs/apk/release
-          signingKey: ${{ secrets.ANDROID_SIGNING_KEY }}
-          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          buildToolsVersion: 36.0.0
+        env:
+          # override default build-tools version (33.0.0) -- optional
+          BUILD_TOOLS_VERSION: "36.0.0"
 
       # Upload the signed APK
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: signed-apk
-          path: ${{ steps.sign_app.outputs.signedFile }}
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
           retention-days: 7
