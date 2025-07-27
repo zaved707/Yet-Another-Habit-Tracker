@@ -51,43 +51,12 @@ android {
 
     }
 
-
-    signingConfigs {
-        create("release") {
-            val tmpFilePath = "${System.getProperty("user.home")}/work/_temp/keystore/"
-            val sourceDir = File(tmpFilePath)
-            if (!sourceDir.exists() || !sourceDir.isDirectory) {
-                throw GradleException("Source keystore directory $tmpFilePath does not exist or is not a directory")
-            }
-
-            val allFilesFromDir = sourceDir.listFiles()
-            if (allFilesFromDir == null || allFilesFromDir.isEmpty()) {
-                throw GradleException("No keystore file found in $tmpFilePath")
-            }
-
-            val keystoreFile = allFilesFromDir.first()
-            val targetKeystoreDir = File("keystore")
-            if (!targetKeystoreDir.exists()) {
-                targetKeystoreDir.mkdirs() // Create keystore/ directory if it doesn't exist
-            }
-
-            val targetKeystoreFile = File(targetKeystoreDir, "keystore.jks")
-            if (!keystoreFile.renameTo(targetKeystoreFile)) {
-                throw GradleException("Failed to move keystore from ${keystoreFile.absolutePath} to ${targetKeystoreFile.absolutePath}")
-            }
-
-            storeFile = targetKeystoreFile
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: throw GradleException("SIGNING_STORE_PASSWORD not set")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: throw GradleException("SIGNING_KEY_ALIAS not set")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: throw GradleException("SIGNING_KEY_PASSWORD not set")
-        }
-    }
     buildTypes {
         release {
 
             isMinifyEnabled =true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
