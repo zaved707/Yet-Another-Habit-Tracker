@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.glance.text.TextAlign
 import com.zavedahmad.yaHabit.R
@@ -55,6 +57,7 @@ fun DayItem(
     dialogueComposable: @Composable (Boolean, () -> Unit) -> Unit,
     interactive: Boolean = false
 ) {
+    val context = LocalContext.current
     val isDialogVisible = remember { mutableStateOf(false) }
     var bgColor = MaterialTheme.colorScheme.error
     var textColor = MaterialTheme.colorScheme.onError
@@ -66,6 +69,7 @@ fun DayItem(
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
     val fontSizeForRepetition = listOf(13, 15)
     val formattedNumber = formatNumberToReadable(number = repetitionsOnThisDay)
+    val makeToast = { Toast.makeText(context, "Cannot modify future data", Toast.LENGTH_SHORT).show() }
     when (state) {
         "absoluteMore", "absoluteLess" -> {
             buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
@@ -141,7 +145,7 @@ fun DayItem(
         }
 
         "absoluteDisabled" -> {
-
+            buttonAction = listOf(makeToast,makeToast)
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.5f)
             textColor = MaterialTheme.colorScheme.onSurface.copy(0.5f)
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.1f)
@@ -151,6 +155,7 @@ fun DayItem(
         }
 
         "partialDisabled" -> {
+            buttonAction = listOf(makeToast, makeToast)
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
             textColor = MaterialTheme.colorScheme.inverseSurface.copy(0.4f)
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.3f)
@@ -165,6 +170,7 @@ fun DayItem(
         }
 
         "incompleteDisabled", "emptyDisabled" -> {
+            buttonAction = listOf(makeToast, makeToast)
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
             textColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.3f)
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.05f)
@@ -173,6 +179,7 @@ fun DayItem(
         }
 
         "noteDisabled" -> {
+            buttonAction = listOf(makeToast, makeToast)
             bgColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.3f)
             textColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(0.7f)
             borderColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.1f)
