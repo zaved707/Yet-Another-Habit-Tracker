@@ -1,0 +1,54 @@
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+jobs:
+  build-and-sign:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up JDK 17
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Cache Gradle dependencies (optional, for faster builds)
+
+
+      # Grant execute permission for gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # Clean the project to ensure a fresh build
+      - name: Clean Project
+        run: ./gradlew clean
+
+      # Build the unsigned release APK
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      # Sign the APK using r0adkll/sign-android-release
+      - name: Sign app APK
+        id: sign_app
+        uses: ilharp/sign-android-release@v2
+        with:
+          releaseDir: app/build/outputs/apk/release
+          signingKey: ${{ secrets.ANDROID_SIGNING_KEY }}
+          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          buildToolsVersion: 36.0.0
+
+      # Upload the signed APK
+      - name: Upload Signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-apk
+          path: ${{ steps.sign_app.outputs.signedFile }}
+          retention-days: 7
