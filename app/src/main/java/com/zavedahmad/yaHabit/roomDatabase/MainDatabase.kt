@@ -13,8 +13,8 @@ import com.zavedahmad.yaHabit.roomDatabase.typeConverters.ColorConvertor
 import com.zavedahmad.yaHabit.roomDatabase.typeConverters.LocalDateConverter
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("CREATE TABLE `Fruit` (`id` INTEGER, `name` TEXT, " +
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE `Fruit` (`id` INTEGER, `name` TEXT, " +
                 "PRIMARY KEY(`id`))")
     }
 }
