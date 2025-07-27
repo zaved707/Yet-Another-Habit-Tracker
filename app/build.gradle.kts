@@ -55,18 +55,25 @@ android {
     signingConfigs {
         create("release") {
             val tmpFilePath = "${System.getProperty("user.home")}/work/_temp/keystore/"
-            val allFilesFromDir = File(tmpFilePath).listFiles()
+            val sourceDir = File(tmpFilePath)
+            if (!sourceDir.exists() || !sourceDir.isDirectory) {
+                throw GradleException("Source keystore directory $tmpFilePath does not exist or is not a directory")
+            }
 
+            val allFilesFromDir = sourceDir.listFiles()
             if (allFilesFromDir == null || allFilesFromDir.isEmpty()) {
                 throw GradleException("No keystore file found in $tmpFilePath")
             }
 
             val keystoreFile = allFilesFromDir.first()
-            val targetKeystoreFile = File("keystore/keystore.jks")
-            keystoreFile.renameTo(targetKeystoreFile)
+            val targetKeystoreDir = File("keystore")
+            if (!targetKeystoreDir.exists()) {
+                targetKeystoreDir.mkdirs() // Create keystore/ directory if it doesn't exist
+            }
 
-            if (!targetKeystoreFile.exists()) {
-                throw GradleException("Failed to move keystore to ${targetKeystoreFile.absolutePath}")
+            val targetKeystoreFile = File(targetKeystoreDir, "keystore.jks")
+            if (!keystoreFile.renameTo(targetKeystoreFile)) {
+                throw GradleException("Failed to move keystore from ${keystoreFile.absolutePath} to ${targetKeystoreFile.absolutePath}")
             }
 
             storeFile = targetKeystoreFile
