@@ -56,27 +56,34 @@ android {
 
             isMinifyEnabled =true
             isShrinkResources = true
-
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
-    signingConfigs{
+    signingConfigs {
         create("release") {
             val tmpFilePath = "${System.getProperty("user.home")}/work/_temp/keystore/"
             val allFilesFromDir = File(tmpFilePath).listFiles()
 
-            if (allFilesFromDir != null && allFilesFromDir.isNotEmpty()) {
-                val keystoreFile = allFilesFromDir.first()
-                keystoreFile.renameTo(File("keystore/your_keystore.jks"))
+            if (allFilesFromDir == null || allFilesFromDir.isEmpty()) {
+                throw GradleException("No keystore file found in $tmpFilePath")
             }
 
-            storeFile = file("keystore/your_keystore.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            val keystoreFile = allFilesFromDir.first()
+            val targetKeystoreFile = File("keystore/keystore.jks")
+            keystoreFile.renameTo(targetKeystoreFile)
+
+            if (!targetKeystoreFile.exists()) {
+                throw GradleException("Failed to move keystore to ${targetKeystoreFile.absolutePath}")
+            }
+
+            storeFile = targetKeystoreFile
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: throw GradleException("SIGNING_STORE_PASSWORD not set")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: throw GradleException("SIGNING_KEY_ALIAS not set")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: throw GradleException("SIGNING_KEY_PASSWORD not set")
         }
     }
     composeOptions {

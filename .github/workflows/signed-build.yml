@@ -8,13 +8,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Decode Keystore
-        env:
-          ENCODED_STRING: ${{ secrets.KEYSTORE }}
-        run: |
-          TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
-          mkdir "${TMP_KEYSTORE_FILE_PATH}"
-          echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,6 +23,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEYSTORE }}
+        run: |
+          TMP_KEYSTORE_FILE_PATH="/home/runner/work/_temp/keystore"
+          mkdir -p "${TMP_KEYSTORE_FILE_PATH}"
+          echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}/keystore.jks"
+          ls -l "${TMP_KEYSTORE_FILE_PATH}" # Debug: Verify keystore file exists
       # Clean the project to ensure a fresh build
       - name: Clean Project
         run: ./gradlew clean
@@ -37,14 +38,14 @@ jobs:
       - name: build prod
         run: ./gradlew assembleRelease
         env:
-            SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-            SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-            SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-            SIGNING_KEY_FILE: ${{ runner.temp }}/keystore/your_keystore_file.jks
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_FILE: ${{ runner.temp }}/keystore/your_keystore_file.jks
 
       # Upload the signed APK
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-            name: Build Artifacts
-            path: app/build/outputs/
+          name: Build Artifacts
+          path: app/build/outputs/
