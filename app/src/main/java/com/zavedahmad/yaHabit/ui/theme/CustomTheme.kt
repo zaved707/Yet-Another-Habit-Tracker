@@ -55,11 +55,11 @@ fun CustomTheme(
                 primary = primaryColor ?: MaterialTheme.colorScheme.primary,
                 secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
                 tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
-                neutral = Color(0xFFFEEEEE),
+                neutral = MaterialTheme.colorScheme.surface,
                 isDark = darkTheme,
                 isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
-                style = PaletteStyle.TonalSpot,
+
                 contrastLevel = 0.5 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
             )
         }else{
