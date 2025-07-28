@@ -63,9 +63,12 @@ Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/re
 - [Reorderable](https://github.com/Calvin-LL/Reorderable) for Reorderable habits
 - navigation 3 for navigation
 ## Roadmap
-- Custom Starting  day of week
-- HomeScreen Widgets
-- Measurable Habit
+- [x] Custom Starting  day of week
+- [x] Measurable Habits
+- [ ] data backup and restore
+- [ ] swipe all habits at once in main page
+- [ ] HomeScreen Widgets
+
  
  
 
