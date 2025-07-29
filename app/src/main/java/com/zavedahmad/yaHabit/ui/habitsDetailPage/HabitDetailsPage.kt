@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,6 +60,7 @@ import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import com.zavedahmad.yaHabit.ui.mainPage.DialogueForHabit
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
+import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.YearMonth
@@ -382,6 +384,12 @@ private fun Menu(viewModel: HabitDetailsPageViewModel, backStack: SnapshotStateL
         )
     }
     DropdownMenu(
+        modifier = Modifier.Companion.border(
+            width = LocalOutlineSizes.current.small,
+            shape = RoundedCornerShape(10.dp),
+            color = MaterialTheme.colorScheme.outline
+        ),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
         expanded = menuVisible.value, // Set to true to show the menu
         onDismissRequest = { menuVisible.value = false }
     ) {
