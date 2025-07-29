@@ -66,13 +66,17 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
                 .collect { _habitAllData.value = it }
         }
     }
+
     fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {
         viewModelScope.launch {
             preferencesRepository.setFirstDayOfWeek(dayOfWeek)
         }
     }
-    fun collectFirstDayOfWeek(){
-        viewModelScope.launch { preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it } }
+
+    fun collectFirstDayOfWeek() {
+        viewModelScope.launch {
+            preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it }
+        }
 
     }
 
@@ -87,14 +91,13 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     }
 
 
-
     fun deleteHabitById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
     }
 
     fun getHabitDetails() {
         viewModelScope.launch(Dispatchers.IO) {
-            _habitDetails.value = habitDao.getHabitById(navKey.habitId)
+            habitDao.getHabitByIdFlow(navKey.habitId).collect { _habitDetails.value = it }
         }
     }
 
