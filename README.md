@@ -43,10 +43,10 @@ Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/re
 ## Screenshots
 
 <div style="display: flex; flex-direction: row; gap: 10px;">
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/a.jpg?raw=true" alt="App Screenshot 1" width="200"/>
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/b.jpg?raw=true" alt="App Screenshot 2" width="200"/>
-  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/c.jpg?raw=true" alt="App Screenshot 3" width="200"/>
-<img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/d.jpg?raw=true" alt="App Screenshot 3" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/ResizedImage_2025-07-29_14-06-52_0.jpg?raw=true" alt="App Screenshot 1" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/ResizedImage_2025-07-29_14-06-52_2.jpg?raw=true" alt="App Screenshot 2" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/ResizedImage_2025-07-29_14-06-52_3.jpg?raw=true" alt="App Screenshot 3" width="200"/>
+<img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/ResizedImage_2025-07-29_14-06-52_10.jpg?raw=true" alt="App Screenshot 3" width="200"/>
 </div>
 
 
