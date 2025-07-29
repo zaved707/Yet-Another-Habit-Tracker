@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
@@ -388,15 +389,17 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     // These are all the buttons
 
     OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { showDialog.value = true }) {
-
-        Text(
-            formatHabitFrequency(
-                streakType = viewModelHabitFrequencyType.value,
-                frequency = viewModelFrequency.value ?: 0.0,
-                cycle = viewModelCycle.value ?: 0,
-                formatFrequencyNumber = true
+        Row (Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+            Text(
+                formatHabitFrequency(
+                    streakType = viewModelHabitFrequencyType.value,
+                    frequency = viewModelFrequency.value ?: 0.0,
+                    cycle = viewModelCycle.value ?: 0,
+                    formatFrequencyNumber = true
+                )
             )
-        )
+            Icon(Icons.Default.ArrowDropDown, "Show Options")
+        }
     }
     if (showDialog.value) {
         Dialog(onDismissRequest = { showDialog.value = false }) {

@@ -83,7 +83,7 @@ fun CustomTheme(
                 isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
 
-                contrastLevel = 0.0 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
+                contrastLevel = 0.5 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
             )
         }
 
