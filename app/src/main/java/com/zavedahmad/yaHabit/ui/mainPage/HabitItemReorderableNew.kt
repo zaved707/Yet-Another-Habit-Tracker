@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
@@ -39,6 +41,7 @@ import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
+import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
@@ -58,10 +61,10 @@ fun HabitItemReorderableNew(
 
     val coroutineScope = rememberCoroutineScope()
     val color = if (isDragging) {
-        CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
+        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
 
     } else {
-        CardDefaults.outlinedCardColors()
+        CardDefaults.cardColors()
     }
     val cardElevation = if (isDragging) {
         CardDefaults.outlinedCardElevation(defaultElevation = 10.dp)
@@ -80,13 +83,14 @@ fun HabitItemReorderableNew(
 
 
     }
-    OutlinedCard(
+    Card(
         modifier =
             Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth().padding(horizontal = 10.dp),
         elevation = cardElevation,
 
         colors = color,
+        border = BorderStroke(width = LocalOutlineSizes.current.small, color = MaterialTheme.colorScheme.outlineVariant.copy(0.5f)),
         onClick = {
             if (!isReorderableMode) {
                 backStack.add(Screen.HabitDetailsPageRoute(habit.id))
@@ -266,7 +270,7 @@ fun HabitItemReorderableNew(
 
                     Spacer(Modifier.height(20.dp))
 
-                    HorizontalDivider()
+                    HorizontalDivider(color =  MaterialTheme.colorScheme.outlineVariant.copy(0.5f))
 
                     Column(
                         Modifier

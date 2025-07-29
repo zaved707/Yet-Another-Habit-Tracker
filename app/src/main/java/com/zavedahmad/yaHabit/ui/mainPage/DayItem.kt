@@ -69,7 +69,8 @@ fun DayItem(
     dialogueComposable(isDialogVisible.value, { isDialogVisible.value = false })
     val fontSizeForRepetition = listOf(13, 15)
     val formattedNumber = formatNumberToReadable(number = repetitionsOnThisDay)
-    val makeToast = { Toast.makeText(context, "Cannot modify future data", Toast.LENGTH_SHORT).show() }
+    val makeToast =
+        { Toast.makeText(context, "Cannot modify future data", Toast.LENGTH_SHORT).show() }
     when (state) {
         "absoluteMore", "absoluteLess" -> {
             buttonAction = listOf(skipHabit, { isDialogVisible.value = true })
@@ -145,7 +146,7 @@ fun DayItem(
         }
 
         "absoluteDisabled" -> {
-            buttonAction = listOf(makeToast,makeToast)
+            buttonAction = listOf(makeToast, makeToast)
             bgColor = MaterialTheme.colorScheme.inverseSurface.copy(0.5f)
             textColor = MaterialTheme.colorScheme.onSurface.copy(0.5f)
             borderColor = MaterialTheme.colorScheme.inverseSurface.copy(0.1f)
@@ -212,7 +213,7 @@ fun DayItem(
         }
 
     }
-    Surface(
+   Box(
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -274,7 +275,7 @@ fun DayItem(
                                 textColor
                             }
                         )
-                        HorizontalDivider(modifier = Modifier.height(5.dp), thickness = 0.5.dp)
+                        HorizontalDivider(modifier = Modifier.height(5.dp).fillMaxWidth(0.8f), color =  MaterialTheme.colorScheme.outlineVariant.copy(0.5f), thickness = 0.5.dp)
                     }
 
                     Column(

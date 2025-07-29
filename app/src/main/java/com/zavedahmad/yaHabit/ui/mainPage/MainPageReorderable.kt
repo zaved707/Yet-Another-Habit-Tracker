@@ -89,7 +89,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             )
         }
     } else {
-        val colorForBorder = MaterialTheme.colorScheme.outlineVariant
+        val colorForBorder = MaterialTheme.colorScheme.outlineVariant.copy(0.5f)
 
         Scaffold(
             modifier = Modifier
@@ -273,7 +273,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                     CustomTheme(
                                         theme = themeReal.value, // Ensure themeReal.value is not null here or provide a default
                                         primaryColor = habit.color,
-                                        isAmoled = isAmoledColor?.value == "true"
+                                        isAmoled = false
+//                                        isAmoled = isAmoledColor?.value == "true"  // Todo temporarily removing amoled
                                     ) {
 
 
