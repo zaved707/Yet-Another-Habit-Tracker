@@ -147,7 +147,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
 
     }
     val animatedVisibilityOne = @Composable {
-        if(streakChecked.value == 0) {
+        if (streakChecked.value == 0) {
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -191,7 +191,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
     }
     val animatedVisibilityTwo = @Composable {
-        if(streakChecked.value == 1) {
+        if (streakChecked.value == 1) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -238,7 +238,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
     }
     val animatedVisibilityThree = @Composable {
-        if(streakChecked.value == 2) {
+        if (streakChecked.value == 2) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -283,7 +283,8 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
     }
     val animatedVisibilityFour = @Composable {
-        if(streakChecked.value == 3) { Column(
+        if (streakChecked.value == 3) {
+            Column(
                 Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -390,7 +391,11 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     // These are all the buttons
 
     OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { showDialog.value = true }) {
-        Row (Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 formatHabitFrequency(
                     streakType = viewModelHabitFrequencyType.value,

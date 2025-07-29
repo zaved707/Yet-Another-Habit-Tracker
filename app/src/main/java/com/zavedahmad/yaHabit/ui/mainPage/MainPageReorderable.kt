@@ -222,17 +222,22 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
 
 
-            Column(
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+
+            ) { Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                val pagerState = rememberPagerState(pageCount = {
-                    1
-                })
+
 
 
                 if (habits.value.isEmpty()) {
+                    val pagerState = rememberPagerState(pageCount = {
+                        1
+                    })
                     VerticalPager(state = pagerState) {
                         Column(
                             modifier = Modifier.fillMaxSize(),
@@ -260,7 +265,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                             modifier = Modifier
                                 .fillMaxSize(),
                             state = lazyListState,
-                            contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
+//                            contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
                             item { }
@@ -295,10 +300,10 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                 }
                             }
 
-                            item { Spacer(Modifier.height(20.dp)) }
+                                     item { Spacer(Modifier.height(20.dp)) }
                         }
                     }
-                }
+                }}
             }
         }
     }
