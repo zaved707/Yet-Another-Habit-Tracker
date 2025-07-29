@@ -12,13 +12,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
@@ -36,7 +45,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zavedahmad.yaHabit.ui.components.DialogItem
+import com.zavedahmad.yaHabit.ui.habitsDetailPage.formatHabitFrequency
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -51,13 +63,15 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     val isCycleValidCustom = rememberSaveable { mutableStateOf(true) }
     val isFrequencyValidMonth = rememberSaveable { mutableStateOf(true) }
     val isFrequencyValidWeek = rememberSaveable { mutableStateOf(true) }
-
+    val showDialog = rememberSaveable { mutableStateOf(false) }
     val isErrorCustom by remember { derivedStateOf { !(frequencyValidCustom.value && isCycleValidCustom.value) } }
     var isErrorDaily by remember { mutableStateOf(false) }
     val options = listOf("Everyday", "Weekly", "Monthly", "Custom")
     val existingHabitData = viewModel.existingHabitData.collectAsStateWithLifecycle().value
     val measurementUnit by viewModel.measurementUnit.collectAsStateWithLifecycle()
-
+    val viewModelFrequency = viewModel.habitFrequency.collectAsStateWithLifecycle()
+    val viewModelCycle = viewModel.habitCycle.collectAsStateWithLifecycle()
+    val viewModelHabitFrequencyType = viewModel.habitStreakType.collectAsStateWithLifecycle()
     val upperLimit = 1000000
     val errorCommon = remember {
 
@@ -129,299 +143,313 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
 
     }
-    // These are all the buttons
-    Row(Modifier.fillMaxWidth()) {
-        options.forEachIndexed { index, item ->
-            val isChecked = streakChecked.value == index
-            Row(
-                modifier = if (!isChecked) {
-                    Modifier.weight(1f)
-                } else {
-                    Modifier
-                       .weight(1.4f)
-                        .wrapContentWidth()
-                }
+    val animatedVisibilityOne = @Composable {
+        AnimatedVisibility(visible = streakChecked.value == 0) {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                ToggleButton(                                                   //TODO this shrinks on large screens fix it
-                    modifier = if (!isChecked) {
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                    } else {
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(1.2f)
-                    },
-                    checked = isChecked, shapes = when (index) {
-                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes(
-                            pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
-                            shape = ButtonGroupDefaults.connectedLeadingButtonPressShape
-                        )
+                InvalidValueIndicator(visible = isErrorDaily)
+                OutlinedTextField(
+                    value = frequencyEveryDay.value,
+                    onValueChange = {
+                        val num = it.toDoubleOrNull()
+                        if (num != null) {
+                            if (num < upperLimit) {
+                                frequencyEveryDay.value = it
+                            }
 
-                        options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes(
-                            pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
-                            shape = ButtonGroupDefaults.connectedTrailingButtonPressShape
-                        )
-
-                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes(
-                            pressedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
-                            shape = ButtonGroupDefaults.connectedMiddleButtonPressShape
-                        )
-                    }, onCheckedChange = {
-                        if (!isChecked) {
-
-                            streakChecked.value = index
+                        } else {
+                            frequencyEveryDay.value = ""
+                            isErrorDaily = false
                         }
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(keyboardType = KeyboardType.Number),
+                    trailingIcon = {
+                        Text(
+                            measurementUnit ?: "Unit"
+                        )
                     })
 
-                {
-                    Row {  /*AnimatedVisibility(visible = streakChecked.value == index) {
-                                Icon(Icons.Default.Check, contentDescription = "selected", modifier = Modifier.size(15.dp))
-                            }*/
-                        Text(item, overflow = TextOverflow.MiddleEllipsis, maxLines = 1)
-                    }
+                Text("Everyday")
+            }
+            LaunchedEffect(frequencyEveryDay.value) {
+
+                val frequency = frequencyEveryDay.value.toDoubleOrNull()
+                if (frequency != null) {
+                    viewModel.setHabitFrequency(frequency)
+                    isErrorDaily = false
+                } else {
+                    isErrorDaily = true
                 }
             }
         }
     }
-    Card(modifier = Modifier
-        .padding(top = 8.dp)
-        .fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) { // Changed Box to Column here
-            AnimatedVisibility(visible = streakChecked.value == 0) {
+    val animatedVisibilityTwo = @Composable {
+        AnimatedVisibility(visible = streakChecked.value == 1) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                InvalidValueIndicator(
+                    Modifier.fillMaxWidth(0.5f),
+                    visible = !isFrequencyValidWeek.value
+                )
+
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = frequencyForStreakWeek.value,
+
+                        onValueChange = {
+                            if (it.toDoubleOrNull() != null) {
+                                if (it.toDouble() < upperLimit && it.toDouble() > 0) {
+                                    frequencyForStreakWeek.value = it
+                                    isFrequencyValidWeek.value = true
+                                    viewModel.setHabitFrequency(it.toDouble())
+                                } else if (it.toDoubleOrNull() == 0.0) {
+                                    frequencyForStreakWeek.value = it
+                                    isFrequencyValidWeek.value = false
+
+                                }
+
+
+                            } else {
+                                frequencyForStreakWeek.value = ""
+                                isFrequencyValidWeek.value = false
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        trailingIcon = { Text(measurementUnit ?: "Unit") })
+
+                }
+                Spacer(Modifier.width(10.dp))
+
+                Text("per Week")
+            }
+        }
+    }
+    val animatedVisibilityThree = @Composable {
+        AnimatedVisibility(visible = streakChecked.value == 2) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                InvalidValueIndicator(
+                    Modifier.fillMaxWidth(0.5f),
+                    visible = !isFrequencyValidMonth.value
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+
+                        value = frequencyForStreakMonth.value,
+
+                        onValueChange = {
+                            if (it.toDoubleOrNull() != null) {
+                                if (it.toDouble() < upperLimit && it.toDouble() > 0) {
+                                    frequencyForStreakMonth.value = it
+                                    isFrequencyValidMonth.value = true
+                                    viewModel.setHabitFrequency(it.toDouble())
+                                } else if (it.toDoubleOrNull() == 0.0) {
+                                    frequencyForStreakMonth.value = it
+                                    isFrequencyValidMonth.value = false
+
+                                }
+                            } else {
+                                frequencyForStreakMonth.value = ""
+                                isFrequencyValidMonth.value = false
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        trailingIcon = { Text(measurementUnit ?: "Unit") })
+
+
+                }
+                Spacer(Modifier.width(10.dp))
+
+                Text("per Month")
+            }
+        }
+    }
+    val animatedVisibilityFour = @Composable {
+        AnimatedVisibility(visible = streakChecked.value == 3) {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                InvalidValueIndicator(
+                    Modifier.fillMaxWidth(0.5f),
+                    visible = isErrorCustom
+                )
 
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    InvalidValueIndicator(visible = isErrorDaily)
                     OutlinedTextField(
-                        value = frequencyEveryDay.value,
+
+                        value =
+                            frequencyCustom.value,
+
+
                         onValueChange = {
                             val num = it.toDoubleOrNull()
                             if (num != null) {
                                 if (num < upperLimit) {
-                                   frequencyEveryDay.value = it
+                                    if (cycleLengthCustom.value.isNotEmpty()) {
+                                        frequencyCustom.value = it
+                                        frequencyValidCustom.value = true
+                                        viewModel.setHabitFrequency(it.toDouble())
+                                        isCycleValidCustom.value = true
+                                    } else {
+                                        frequencyValidCustom.value = true
+                                        frequencyCustom.value =
+                                            num.toString()
+                                        viewModel.setHabitFrequency(it.toDouble())
+                                    }
                                 }
 
                             } else {
-                                frequencyEveryDay.value = ""
-                                isErrorDaily = false
-                            } },
+                                frequencyCustom.value = ""
+                                frequencyValidCustom.value = false
+                            }
+                        },
                         keyboardOptions =
                             KeyboardOptions(keyboardType = KeyboardType.Number),
-                        trailingIcon = {
-                            Text(
-                                measurementUnit ?: "Unit"
-                            )
-                        })
-
-                    Text("Everyday")
-                }
-                LaunchedEffect(frequencyEveryDay.value) {
-
-                    val frequency = frequencyEveryDay.value.toDoubleOrNull()
-                    if (frequency != null) {
-                        viewModel.setHabitFrequency(frequency)
-                        isErrorDaily = false
-                    } else {
-                        isErrorDaily = true
-                    }
-                }
-            }
-
-
-            AnimatedVisibility(visible = streakChecked.value == 1) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    InvalidValueIndicator(
-                        Modifier.fillMaxWidth(0.5f),
-                        visible = !isFrequencyValidWeek.value
+                        trailingIcon = { Text(measurementUnit ?: "Unit") }
                     )
+                    Spacer(Modifier.height(20.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
 
-
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                        Text("per")
+                        Spacer(Modifier.width(10.dp))
                         OutlinedTextField(
-                            value = frequencyForStreakWeek.value,
-
+                            modifier = Modifier.width(70.dp),
+                            value = cycleLengthCustom.value,
                             onValueChange = {
-                                if (it.toDoubleOrNull() != null) {
-                                    if (it.toDouble() < upperLimit && it.toDouble() > 0) {
-                                        frequencyForStreakWeek.value = it
-                                        isFrequencyValidWeek.value = true
-                                        viewModel.setHabitFrequency(it.toDouble())
-                                    } else if (it.toDoubleOrNull() == 0.0) {
-                                        frequencyForStreakWeek.value = it
-                                        isFrequencyValidWeek.value = false
 
-                                    }
-
-
-                                } else {
-                                    frequencyForStreakWeek.value = ""
-                                    isFrequencyValidWeek.value = false
-                                }
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            trailingIcon = { Text(measurementUnit ?: "Unit") })
-
-                    }
-                    Spacer(Modifier.width(10.dp))
-
-                    Text("per Week")
-                }
-            }
-            AnimatedVisibility(visible = streakChecked.value == 2) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    InvalidValueIndicator(
-                        Modifier.fillMaxWidth(0.5f),
-                        visible = !isFrequencyValidMonth.value
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-
-                            value = frequencyForStreakMonth.value,
-
-                            onValueChange = {
-                                if (it.toDoubleOrNull() != null) {
-                                    if (it.toDouble() < upperLimit && it.toDouble() > 0) {
-                                        frequencyForStreakMonth.value = it
-                                        isFrequencyValidMonth.value = true
-                                        viewModel.setHabitFrequency(it.toDouble())
-                                    } else if (it.toDoubleOrNull() == 0.0) {
-                                        frequencyForStreakMonth.value = it
-                                        isFrequencyValidMonth.value = false
-
-                                    }
-                                } else {
-                                    frequencyForStreakMonth.value = ""
-                                    isFrequencyValidMonth.value = false
-                                }
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            trailingIcon = { Text(measurementUnit ?: "Unit") })
-
-
-                    }
-                    Spacer(Modifier.width(10.dp))
-
-                    Text("per Month")
-                }
-            }
-            AnimatedVisibility(visible = streakChecked.value == 3) {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    InvalidValueIndicator(
-                        Modifier.fillMaxWidth(0.5f),
-                        visible = isErrorCustom
-                    )
-                    Text("Custom")
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        OutlinedTextField(
-
-                            value =
-                                frequencyCustom.value,
-
-
-                            onValueChange = {
-                                val num = it.toDoubleOrNull()
+                                val num = it.toIntOrNull()
                                 if (num != null) {
-                                    if (num < upperLimit) {
-                                        if (cycleLengthCustom.value.isNotEmpty()) {
-                                            frequencyCustom.value = it
-                                            frequencyValidCustom.value = true
-                                            viewModel.setHabitFrequency(it.toDouble())
+                                    if (num <= 999 && num > 0) {
+                                        if (frequencyCustom.value.isNotEmpty()) {
+                                            cycleLengthCustom.value = it
                                             isCycleValidCustom.value = true
-                                        } else {
+                                            viewModel.setHabitCycle(it.toInt())
                                             frequencyValidCustom.value = true
-                                            frequencyCustom.value =
-                                                num.toString()
-                                            viewModel.setHabitFrequency(it.toDouble())
+                                        } else {
+                                            isCycleValidCustom.value = false
+                                            cycleLengthCustom.value = it
+                                            viewModel.setHabitCycle(it.toInt())
                                         }
                                     }
 
                                 } else {
-                                    frequencyCustom.value = ""
-                                    frequencyValidCustom.value = false
+                                    cycleLengthCustom.value = ""
+                                    isCycleValidCustom.value = false
                                 }
+
                             },
-                            keyboardOptions =
-                                KeyboardOptions(keyboardType = KeyboardType.Number),
-                            trailingIcon = { Text(measurementUnit ?: "Unit") }
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
-                        Spacer(Modifier.height(20.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-
-                            Text("per")
-                            Spacer(Modifier.width(10.dp))
-                            OutlinedTextField(
-                                modifier = Modifier.width(70.dp),
-                                value = cycleLengthCustom.value,
-                                onValueChange = {
-
-                                    val num = it.toIntOrNull()
-                                    if (num != null) {
-                                        if (num <= 999 && num > 0) {
-                                            if (frequencyCustom.value.isNotEmpty()) {
-                                                cycleLengthCustom.value = it
-                                                isCycleValidCustom.value = true
-                                                viewModel.setHabitCycle(it.toInt())
-                                                frequencyValidCustom.value = true
-                                            } else {
-                                                isCycleValidCustom.value = false
-                                                cycleLengthCustom.value = it
-                                                viewModel.setHabitCycle(it.toInt())
-                                            }
-                                        }
-
-                                    } else {
-                                        cycleLengthCustom.value = ""
-                                        isCycleValidCustom.value = false
-                                    }
-
-                                },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                            )
-                            Spacer(Modifier.width(10.dp))
-                            Text("days")
-                        }
-                        /*AnimatedVisibility(visible = isErrorCustom) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }*/
-                        /* AnimatedVisibility(visible = !isErrorCustom) {
-                             Icon(Icons.Default.Check, contentDescription = "")
-                         }*/
-                        Spacer(Modifier.height(20.dp))
+                        Spacer(Modifier.width(10.dp))
+                        Text("days")
                     }
+                    /*AnimatedVisibility(visible = isErrorCustom) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }*/
+                    /* AnimatedVisibility(visible = !isErrorCustom) {
+                         Icon(Icons.Default.Check, contentDescription = "")
+                     }*/
+                    Spacer(Modifier.height(20.dp))
+                }
 
+            }
+        }
+    }
+    val animatedVisibilities = listOf<@Composable () -> Unit>(
+        animatedVisibilityOne,
+        animatedVisibilityTwo,
+        animatedVisibilityThree,
+        animatedVisibilityFour
+    )
+    // These are all the buttons
+
+    OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { showDialog.value = true }) {
+
+        Text(
+            formatHabitFrequency(
+                streakType = viewModelHabitFrequencyType.value,
+                frequency = viewModelFrequency.value ?: 0.0,
+                cycle = viewModelCycle.value ?: 0,
+                formatFrequencyNumber = true
+            )
+        )
+    }
+    if (showDialog.value) {
+        Dialog(onDismissRequest = { showDialog.value = false }) {
+            OutlinedCard(
+                Modifier
+
+                    .widthIn(max = 300.dp)
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    options.forEachIndexed { index, item ->
+                        val isChecked = streakChecked.value == index
+                        DialogItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            state = isChecked,
+                            onValueChange = {
+                                if (!isChecked) {
+
+                                    streakChecked.value = index
+                                }
+                            }) {
+                            Box(Modifier.padding(15.dp)) {
+                                Column {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            item,
+                                            overflow = TextOverflow.MiddleEllipsis,
+                                            maxLines = 1
+                                        )
+
+                                        RadioButton(selected = isChecked, onClick = null)
+
+                                    }
+                                    Spacer(Modifier.height(20.dp))
+                                    animatedVisibilities[index]()
+                                }
+                            }
+                        }
+
+                    }
                 }
             }
         }
     }
+
+
 }
 
 @Composable

@@ -237,15 +237,8 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                             ) {
                                 Icon(Icons.Default.Repeat, "")
                                 Spacer(Modifier.width(10.dp))
-                                if (habit.streakType == "everyday") {
-                                    Text("EveryDay")
-                                } else if (habit.streakType == "week") {
-                                    Text("${habit.frequency} times per Week")
-                                } else if (habit.streakType == "month") {
-                                    Text("${habit.frequency} times per Month")
-                                } else {
-                                    Text("${habit.frequency} times per ${habit.cycle} Days")
-                                }
+
+                             Text(formatHabitFrequency(habit.streakType,habit.frequency,habit.cycle))
                             }
                         }
                         Column(
