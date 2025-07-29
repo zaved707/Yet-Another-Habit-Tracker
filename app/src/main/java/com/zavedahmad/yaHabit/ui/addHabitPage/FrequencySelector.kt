@@ -1,8 +1,6 @@
 package com.zavedahmad.yaHabit.ui.addHabitPage
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,17 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +25,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -60,27 +52,27 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     val streakChecked = rememberSaveable { mutableStateOf(0) }
     val frequencyEveryDay = rememberSaveable { mutableStateOf("1") }
     val frequencyCustom = rememberSaveable { mutableStateOf("3") }
-    val frequencyValidCustom = rememberSaveable { mutableStateOf(true) }
+    val frequencyValidCustom = remember { derivedStateOf { frequencyCustom.value.toDoubleOrNull() != null} }
     val frequencyForStreakWeek = rememberSaveable { mutableStateOf("3") }
     val frequencyForStreakMonth = rememberSaveable { mutableStateOf("3") }
     val cycleLengthCustom = rememberSaveable { mutableStateOf("14") }
-    val isCycleValidCustom = rememberSaveable { mutableStateOf(true) }
-    val isFrequencyValidMonth = rememberSaveable { mutableStateOf(true) }
-    val isFrequencyValidWeek = rememberSaveable { mutableStateOf(true) }
+    val isCycleValidCustom =remember { derivedStateOf { cycleLengthCustom.value.toIntOrNull() != null} }
+    val isFrequencyValidMonth = remember { derivedStateOf { frequencyForStreakMonth.value.toDoubleOrNull() != null} }
+    val isFrequencyValidWeek =remember { derivedStateOf { frequencyForStreakWeek.value.toDoubleOrNull() != null} }
     val showDialog = rememberSaveable { mutableStateOf(false) }
     val isErrorCustom by remember { derivedStateOf { !(frequencyValidCustom.value && isCycleValidCustom.value) } }
-    var isErrorDaily by remember { mutableStateOf(false) }
+    val isErrorDaily =  remember { derivedStateOf { frequencyEveryDay.value.toDoubleOrNull() == null} }
     val options = listOf("Everyday", "Weekly", "Monthly", "Custom")
     val existingHabitData = viewModel.existingHabitData.collectAsStateWithLifecycle().value
     val measurementUnit by viewModel.measurementUnit.collectAsStateWithLifecycle()
     val viewModelFrequency = viewModel.habitFrequency.collectAsStateWithLifecycle()
     val viewModelCycle = viewModel.habitCycle.collectAsStateWithLifecycle()
-    val viewModelHabitFrequencyType = viewModel.habitStreakType.collectAsStateWithLifecycle()
+    val viewModelHabitStreakType = viewModel.habitStreakType.collectAsStateWithLifecycle()
     val upperLimit = 1000000
     val errorCommon = remember {
 
         derivedStateOf {
-            if (streakChecked.value == 0 && isErrorDaily) {
+            if (streakChecked.value == 0 && isErrorDaily.value) {
                 true
             } else if (streakChecked.value == 1 && !isFrequencyValidWeek.value) {
                 true
@@ -120,6 +112,41 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
             }
         }
     }
+    val checkErrorsAndRectify = {
+        // this will set the value to whatever is in viewmodel
+        if (isErrorDaily.value) {
+            if (streakChecked.value == 0) {
+                frequencyEveryDay.value = viewModelFrequency.value.toString()
+            } else {
+                frequencyEveryDay.value = "1"
+            }
+        }
+        if (!isFrequencyValidWeek.value) {
+            if (streakChecked.value == 1) {
+                frequencyForStreakWeek.value = viewModelFrequency.value.toString()
+            } else {
+                frequencyForStreakWeek.value = "3"
+            }
+        }
+        if (!isFrequencyValidMonth.value) {
+            if (streakChecked.value == 2) {
+                frequencyForStreakMonth.value = viewModelFrequency.value.toString()
+            } else {
+                frequencyForStreakMonth.value = "3"
+            }
+        }
+        if (isErrorCustom) {
+            if (streakChecked.value == 3) {
+                frequencyCustom.value = viewModelFrequency.value.toString()
+                cycleLengthCustom.value = viewModelCycle.value.toString()
+            } else {
+                frequencyCustom.value = "3"
+                cycleLengthCustom.value = "14"
+            }
+
+        }
+    }   //TODO enable soft formatting of numbers whne rectified
+
     // this keeps track of when user selects another kind of frequency it sets appropriate values for its fields
     LaunchedEffect(streakChecked.value) {
         if (streakChecked.value == 0) {
@@ -147,7 +174,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
 
     }
-    val setValuesProper = {}
+
     val animatedVisibilityOne = @Composable {
         if (streakChecked.value == 0) {
 
@@ -155,7 +182,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                InvalidValueIndicator(visible = isErrorDaily)
+                InvalidValueIndicator(visible = isErrorDaily.value)
                 OutlinedTextField(
                     value = frequencyEveryDay.value,
                     onValueChange = {
@@ -167,7 +194,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
 
                         } else {
                             frequencyEveryDay.value = ""
-                            isErrorDaily = false
+
                         }
                     },
                     keyboardOptions =
@@ -185,10 +212,10 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                 val frequency = frequencyEveryDay.value.toDoubleOrNull()
                 if (frequency != null) {
                     viewModel.setHabitFrequency(frequency)
-                    isErrorDaily = false
-                } else {
-                    isErrorDaily = true
+
                 }
+
+
             }
         }
     }
@@ -215,18 +242,18 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                             if (it.toDoubleOrNull() != null) {
                                 if (it.toDouble() < upperLimit && it.toDouble() > 0) {
                                     frequencyForStreakWeek.value = it
-                                    isFrequencyValidWeek.value = true
+
                                     viewModel.setHabitFrequency(it.toDouble())
                                 } else if (it.toDoubleOrNull() == 0.0) {
                                     frequencyForStreakWeek.value = it
-                                    isFrequencyValidWeek.value = false
+
 
                                 }
 
 
                             } else {
                                 frequencyForStreakWeek.value = ""
-                                isFrequencyValidWeek.value = false
+
                             }
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -261,16 +288,16 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                             if (it.toDoubleOrNull() != null) {
                                 if (it.toDouble() < upperLimit && it.toDouble() > 0) {
                                     frequencyForStreakMonth.value = it
-                                    isFrequencyValidMonth.value = true
+
                                     viewModel.setHabitFrequency(it.toDouble())
                                 } else if (it.toDoubleOrNull() == 0.0) {
                                     frequencyForStreakMonth.value = it
-                                    isFrequencyValidMonth.value = false
+
 
                                 }
                             } else {
                                 frequencyForStreakMonth.value = ""
-                                isFrequencyValidMonth.value = false
+
                             }
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -312,11 +339,11 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                                 if (num < upperLimit) {
                                     if (cycleLengthCustom.value.isNotEmpty()) {
                                         frequencyCustom.value = it
-                                        frequencyValidCustom.value = true
+
                                         viewModel.setHabitFrequency(it.toDouble())
-                                        isCycleValidCustom.value = true
+
                                     } else {
-                                        frequencyValidCustom.value = true
+
                                         frequencyCustom.value =
                                             num.toString()
                                         viewModel.setHabitFrequency(it.toDouble())
@@ -325,7 +352,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
 
                             } else {
                                 frequencyCustom.value = ""
-                                frequencyValidCustom.value = false
+
                             }
                         },
                         keyboardOptions =
@@ -347,11 +374,11 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                                     if (num <= 999 && num > 0) {
                                         if (frequencyCustom.value.isNotEmpty()) {
                                             cycleLengthCustom.value = it
-                                            isCycleValidCustom.value = true
+
                                             viewModel.setHabitCycle(it.toInt())
-                                            frequencyValidCustom.value = true
+
                                         } else {
-                                            isCycleValidCustom.value = false
+
                                             cycleLengthCustom.value = it
                                             viewModel.setHabitCycle(it.toInt())
                                         }
@@ -359,7 +386,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
 
                                 } else {
                                     cycleLengthCustom.value = ""
-                                    isCycleValidCustom.value = false
+
                                 }
 
                             },
@@ -392,7 +419,8 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     )
     // These are all the buttons
 
-    OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { showDialog.value = true }) {
+    OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { checkErrorsAndRectify()
+        showDialog.value = true }) {
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -400,7 +428,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         ) {
             Text(
                 formatHabitFrequency(
-                    streakType = viewModelHabitFrequencyType.value,
+                    streakType = viewModelHabitStreakType.value,
                     frequency = viewModelFrequency.value ?: 0.0,
                     cycle = viewModelCycle.value ?: 0,
                     formatFrequencyNumber = true
@@ -429,6 +457,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                             state = isChecked,
                             onValueChange = {
                                 if (!isChecked) {
+                                    checkErrorsAndRectify()
 
                                     streakChecked.value = index
                                 }
@@ -455,7 +484,10 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                         }
 
                     }
-                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){ Button(onClick = { showDialog.value = false }) { Text("Done") } }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) { Button(onClick = { showDialog.value = false }) { Text("Done") } }
                 }
             }
         }
