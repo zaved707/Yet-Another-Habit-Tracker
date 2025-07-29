@@ -1,6 +1,8 @@
 package com.zavedahmad.yaHabit.ui.addHabitPage
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -145,7 +147,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
 
     }
     val animatedVisibilityOne = @Composable {
-        AnimatedVisibility(visible = streakChecked.value == 0) {
+        if(streakChecked.value == 0) {
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -189,7 +191,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
     }
     val animatedVisibilityTwo = @Composable {
-        AnimatedVisibility(visible = streakChecked.value == 1) {
+        if(streakChecked.value == 1) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -236,7 +238,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
     }
     val animatedVisibilityThree = @Composable {
-        AnimatedVisibility(visible = streakChecked.value == 2) {
+        if(streakChecked.value == 2) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -281,8 +283,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         }
     }
     val animatedVisibilityFour = @Composable {
-        AnimatedVisibility(visible = streakChecked.value == 3) {
-            Column(
+        if(streakChecked.value == 3) { Column(
                 Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
