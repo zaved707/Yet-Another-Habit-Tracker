@@ -55,6 +55,8 @@ class MainPageViewModel @Inject constructor(
     val firstDayOfWeek = _firstDayOfWeek.asStateFlow()
     private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
     val amoledTheme = _amoledTheme.asStateFlow()
+    private val _devMode = MutableStateFlow<Boolean>(false)
+    val devMode = _devMode.asStateFlow()
     init {
         collectAmoledTheme()
         viewModelScope.launch(Dispatchers.IO) {
@@ -70,6 +72,10 @@ class MainPageViewModel @Inject constructor(
         viewModelScope.launch {
             preferencesRepository.setFirstDayOfWeek(dayOfWeek)
         }
+    }
+    fun deleteAllHabits(){
+        viewModelScope.launch (Dispatchers.IO){
+        habitRepository.deleteAllHabits()}
     }
     fun collectFirstDayOfWeek(){
         viewModelScope.launch { preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it } }
@@ -107,7 +113,10 @@ class MainPageViewModel @Inject constructor(
 
     }
 
-
+    fun addSampleHabits(){
+        viewModelScope.launch(Dispatchers.IO) {
+        habitRepository.addSampleHabits()}
+    }
 
     fun generateInitialDates(): List<LocalDate> {
         val today = LocalDate.now()

@@ -1,12 +1,13 @@
 package com.zavedahmad.yaHabit.roomDatabase
 
+import androidx.compose.ui.graphics.Color
 import androidx.room.withTransaction
 import com.zavedahmad.yaHabit.utils.findHabitClusters
 import com.zavedahmad.yaHabit.utils.processDateTriples
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
+import kotlin.random.Random
 import javax.inject.Inject
 
 class HabitRepository @Inject constructor(
@@ -14,8 +15,72 @@ class HabitRepository @Inject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val db: MainDatabase
 ) {
-    suspend fun addSampleHabits(){
+    suspend fun addSampleHabits() {
+        val listOfHabits = listOf<HabitEntity>(
+            HabitEntity(
+                name = "Running",
+                color = Color.Red,
+                streakType = "weekly",
+                frequency = 15.0,
+                cycle = 7,
+                repetitionPerDay = 5.0,
+                measurementUnit = "Miles"
+            ),
+            HabitEntity(
+                name = "Do Study",
+                color = Color.White,
+                streakType = "daily",
+                frequency = 7.0,
+                cycle = 7,
+                repetitionPerDay = 1.0,
+                measurementUnit = "Hours"
+            ),
+            HabitEntity(
+                name = "Read Books",
+                color = Color.Green,
+                streakType = "daily",
+                frequency = 5.0,
+                cycle = 7,
+                repetitionPerDay = 1.0,
+                measurementUnit = "Pages"
+            ),
+            HabitEntity(
+                name = "Exercise Daily",
+                color = Color.Blue,
+                streakType = "daily",
+                frequency = 7.0,
+                cycle = 7,
+                repetitionPerDay = 8.0,
+                measurementUnit = "Glasses"
+            ),
+            HabitEntity(
+                name = "Meditate",
+                color = Color.Magenta,
+                streakType = "weekly",
+                frequency = 3.0,
+                cycle = 7,
+                repetitionPerDay = 1.0,
+                measurementUnit = "Minutes"
+            )
+        )
+        listOfHabits.forEach {  habit ->
+        val habitId = habitDao.addHabit(
+          habit
+        )
+        val todayDate = LocalDate.now()
+        for (i in 1..300) {
+            if (Random.nextDouble() < 0.7) {
+                applyRepetitionForADate(
+                    date = todayDate.minusDays(i.toLong()),
+                    habitId = habitId.toInt(),
+                    newRepetitionValue = 5.0
+                )
+            }
+        }}
 
+    }
+    suspend fun deleteAllHabits(){
+        habitDao.deleteAllHabits()
     }
 
     // HabitDao functions
@@ -34,7 +99,7 @@ class HabitRepository @Inject constructor(
     }
 
 
-    suspend fun addItem(habitEntity: HabitEntity) {
+    suspend fun addHabitItem(habitEntity: HabitEntity) {
         val max = habitDao.getMaxIndex()
         habitDao.addHabit(
             HabitEntity(
@@ -189,7 +254,7 @@ class HabitRepository @Inject constructor(
             val absoluteEntries =
                 entries?.filter { entry -> entry.isAbsolute() }
             val noteEntries = entries?.filter { it.isOnlyNote() }
-            val skipEntries = entries?.filter{it.isSkip()}
+            val skipEntries = entries?.filter { it.isSkip() }
 
             // swap the new value
             val entriesList = absoluteEntries?.toMutableList() ?: mutableListOf()
@@ -221,7 +286,8 @@ class HabitRepository @Inject constructor(
                     ?: true) && !(skipEntries?.any { it.completionDate == date }
                     ?: true)
             }
-            val presentAsSkip = skipEntries?.filter{skipEntry -> datesInLimitOfCycleOfDateBeingAdded.any { it == skipEntry.completionDate }}
+            val presentAsSkip =
+                skipEntries?.filter { skipEntry -> datesInLimitOfCycleOfDateBeingAdded.any { it == skipEntry.completionDate } }
             // for all present as notes turn their partial to true and add them to db
             presentAsNote?.forEach { addHabitCompletionEntry(it.copy(partial = true)) }
             presentAsSkip?.forEach { addHabitCompletionEntry(it.copy(partial = true)) }
@@ -313,60 +379,61 @@ class HabitRepository @Inject constructor(
     suspend fun setSkip(date: LocalDate, habitId: Int, skipValue: Boolean) {
 
         db.withTransaction {
-        val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
-            habitId = habitId,
-            completionDate = date
-        )
-        if (skipValue) {
-            //decrease to zero
-            // set skip to true
-            if (entry != null) {
-                if (entry.repetitionsOnThisDay != 0.0) {
-                    applyRepetitionForADate(
-                        date = date,
-                        habitId = habitId,
-                        newRepetitionValue = 0.0
-                    )
-                    setSkip(
-                        date = date,
-                        habitId = habitId,
-                        skipValue = skipValue
-                    )
+            val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
+                habitId = habitId,
+                completionDate = date
+            )
+            if (skipValue) {
+                //decrease to zero
+                // set skip to true
+                if (entry != null) {
+                    if (entry.repetitionsOnThisDay != 0.0) {
+                        applyRepetitionForADate(
+                            date = date,
+                            habitId = habitId,
+                            newRepetitionValue = 0.0
+                        )
+                        setSkip(
+                            date = date,
+                            habitId = habitId,
+                            skipValue = skipValue
+                        )
+                    } else {
+                        addHabitCompletionEntry(entry.copy(skip = true))
+                    }
                 } else {
-                    addHabitCompletionEntry(entry.copy(skip = true))
+                    addHabitCompletionEntry(
+                        HabitCompletionEntity(
+                            habitId = habitId,
+                            completionDate = date,
+                            skip = skipValue
+                        )
+                    )
                 }
             } else {
-                addHabitCompletionEntry(
-                    HabitCompletionEntity(
-                        habitId = habitId,
-                        completionDate = date,
-                        skip = skipValue
+                if (entry != null) {
+                    if (entry.copy(skip = false).isDeletable()) {
+                        habitCompletionDao.deleteHabitCompletionEntryById(entry.id)
+                    } else {
+                        addHabitCompletionEntry(entry.copy(skip = false))
+                    }
+                } else {
+                    addHabitCompletionEntry(
+                        HabitCompletionEntity(
+                            habitId = habitId,
+                            completionDate = date,
+                            skip = skipValue
+                        )
                     )
-                )
-            }
-        } else {
-            if (entry != null) {
-                if (entry.copy(skip = false).isDeletable()){
-                    habitCompletionDao.deleteHabitCompletionEntryById(entry.id)
-                }else{
-                addHabitCompletionEntry(entry.copy(skip = false))}
-            } else {
-                addHabitCompletionEntry(
-                    HabitCompletionEntity(
-                        habitId = habitId,
-                        completionDate = date,
-                        skip = skipValue
-                    )
-                )
-            }
+                }
 
-        }}
+            }
+        }
 
     }
 
     // HabitCompletionDao functions
     // Write operations
-
 
 
     suspend fun repairPartials(newHabitEntity: HabitEntity) {
@@ -405,7 +472,6 @@ class HabitRepository @Inject constructor(
 
 
     }
-
 
 
     // No checks

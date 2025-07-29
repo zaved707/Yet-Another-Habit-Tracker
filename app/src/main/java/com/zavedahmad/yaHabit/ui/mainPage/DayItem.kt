@@ -163,7 +163,7 @@ fun DayItem(
                 Image(
                     painter = painterResource(R.drawable.hollowtick),
                     contentDescription = "hollow tick",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary.copy(0.8f))
+                    colorFilter = ColorFilter.tint(textColor)
                 )
             }
 

@@ -10,12 +10,15 @@ import kotlinx.coroutines.flow.Flow
 interface HabitDao {
 
     @Upsert
-    suspend fun addHabit(habitEntity: HabitEntity)
+    suspend fun addHabit(habitEntity: HabitEntity) : Long
 
     @Query("SELECT * FROM HabitTable WHERE id= :id")
     suspend fun getHabitById(id : Int): HabitEntity
     @Query("SELECT * FROM HabitTable")
     fun getHabitsFlow(): Flow<List<HabitEntity>>
+
+    @Query("DELETE FROM HabitTable")
+    suspend fun deleteAllHabits()
 
     @Query("SELECT * FROM HabitTable ORDER BY `index` ASC")
     fun  getHabitsFlowSortedByIndex(): Flow<List<HabitEntity>>

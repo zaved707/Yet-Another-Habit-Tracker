@@ -130,7 +130,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
             }
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                habitRepository.addItem(
+                habitRepository.addHabitItem(
                     HabitEntity(
                         name = habitName.value,
                         color = _selectedColor.value,
