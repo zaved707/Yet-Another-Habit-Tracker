@@ -6,11 +6,11 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
 class StreakTypeConverter {
     @TypeConverter
     fun toStreakType(streakType : String): HabitStreakType{
-        return HabitStreakType.valueOf(streakType)
+        return HabitStreakType.entries.find { it.dbValue == streakType } ?: HabitStreakType.DAILY
     }
 
     @TypeConverter
     fun fromStreakType(streakType: HabitStreakType): String{
-        return streakType.name
+        return streakType.dbValue
     }
 }
