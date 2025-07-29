@@ -13,7 +13,7 @@ data class HabitEntity(
     val name: String,
     val description : String= "",
     val color : Color,
-    val streakType : String,
+    val streakType : HabitStreakType,
     val frequency :Double,
     val cycle : Int,
     @ColumnInfo(defaultValue = "1.0")

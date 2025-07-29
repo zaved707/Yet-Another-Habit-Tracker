@@ -62,7 +62,7 @@ import kotlinx.coroutines.channels.Channel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
-// TODO when user changes note and the day is skip then skip is removed
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
@@ -226,10 +226,6 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                 modifier = Modifier
                     .fillMaxSize()
 
-            ) { Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
             ) {
 
 
@@ -240,7 +236,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     })
                     VerticalPager(state = pagerState) {
                         Column(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize()  .padding(innerPadding),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -263,7 +259,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                         //HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         LazyColumn(
                             modifier = Modifier
-                                .fillMaxSize(),
+                                .fillMaxSize()  .padding(innerPadding),
                             state = lazyListState,
 //                            contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -306,6 +302,6 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                 }}
             }
         }
-    }
+
 }
 

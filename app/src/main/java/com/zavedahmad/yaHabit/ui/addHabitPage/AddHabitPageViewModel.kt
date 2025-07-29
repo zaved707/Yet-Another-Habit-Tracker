@@ -7,6 +7,7 @@ import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
+import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.assisted.Assisted
@@ -69,7 +70,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
     val habitFrequency = _habitFrequency.asStateFlow()
     private val _habitCycle = MutableStateFlow<Int?>(null)
     val habitCycle = _habitCycle.asStateFlow()
-    private val _habitStreakType = MutableStateFlow<String>("everyday")
+    private val _habitStreakType = MutableStateFlow<HabitStreakType>(HabitStreakType.DAILY)
     val habitStreakType = _habitStreakType.asStateFlow()
 
     private val _measurementUnit = MutableStateFlow<String?>(null)
@@ -161,7 +162,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
         _habitCycle.value = cycle
     }
 
-    fun setHabitStreakType(streakType: String) {
+    fun setHabitStreakType(streakType: HabitStreakType) {
         _habitStreakType.value = streakType
     }
 

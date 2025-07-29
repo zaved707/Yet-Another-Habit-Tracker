@@ -1,19 +1,21 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
+import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
 import com.zavedahmad.yaHabit.utils.formatNumberToReadable
 
-fun formatHabitFrequency(streakType: String, frequency: Double, cycle: Int, formatFrequencyNumber : Boolean = false): String {
+fun formatHabitFrequency(streakType: HabitStreakType, frequency: Double, cycle: Int, formatFrequencyNumber : Boolean = false): String {
     val formattedNumber =  if (formatFrequencyNumber){
   formatNumberToReadable(frequency)}else{frequency.toString()}
 
     return when (streakType) {
-        "everyday" -> {
+        HabitStreakType.DAILY  -> {
             "$formattedNumber times EveryDay"
         }
-        "week" -> {
+        HabitStreakType.WEEKLY ->  {
             "$formattedNumber times per Week"
         }
-        "month" -> {
+
+        HabitStreakType.MONTHLY ->  {
             "$formattedNumber times per Month"
         }
         else -> {

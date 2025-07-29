@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
 import com.zavedahmad.yaHabit.ui.components.DialogItem
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.formatHabitFrequency
 
@@ -101,17 +102,17 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         LaunchedEffect(Unit) {
             if (viewModel.navKey.habitId != null) {
 
-                if (existingHabitData.streakType == "everyday") {
+                if (existingHabitData.streakType == HabitStreakType.DAILY) {
                     frequencyEveryDay.value = existingHabitData.frequency.toString()
                     streakChecked.value = 0
 
-                } else if (existingHabitData.streakType == "week") {
+                } else if (existingHabitData.streakType == HabitStreakType.WEEKLY) {
                     frequencyForStreakWeek.value = existingHabitData.frequency.toString()
                     streakChecked.value = 1
-                } else if (existingHabitData.streakType == "month") {
+                } else if (existingHabitData.streakType == HabitStreakType.MONTHLY) {
                     streakChecked.value = 2
                     frequencyForStreakMonth.value = existingHabitData.frequency.toString()
-                } else if (existingHabitData.streakType == "custom") {
+                } else if (existingHabitData.streakType == HabitStreakType.CUSTOM) {
                     streakChecked.value = 3
                     cycleLengthCustom.value = existingHabitData.cycle.toString()
                     frequencyCustom.value = existingHabitData.frequency.toString()
@@ -124,28 +125,29 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         if (streakChecked.value == 0) {
             viewModel.setHabitFrequency(frequencyEveryDay.value.toDoubleOrNull() ?: 1.0)
             viewModel.setHabitCycle(1)
-            viewModel.setHabitStreakType("everyday")
+            viewModel.setHabitStreakType(HabitStreakType.DAILY)
         } else if (streakChecked.value == 1) {
             viewModel.setHabitFrequency(
                 frequencyForStreakWeek.value.toDoubleOrNull() ?: 3.0
             )
             viewModel.setHabitCycle(7)
-            viewModel.setHabitStreakType("week")
+            viewModel.setHabitStreakType(HabitStreakType.WEEKLY)
         } else if (streakChecked.value == 2) {
             viewModel.setHabitFrequency(
                 frequencyForStreakMonth.value.toDoubleOrNull() ?: 3.0
             )
             viewModel.setHabitCycle(30)
-            viewModel.setHabitStreakType("month")
+            viewModel.setHabitStreakType(HabitStreakType.MONTHLY)
         } else if (streakChecked.value == 3) {
             viewModel.setHabitFrequency(
                 frequencyCustom.value.toDoubleOrNull() ?: 3.0
             )
             viewModel.setHabitCycle(cycleLengthCustom.value.toIntOrNull() ?: 14)
-            viewModel.setHabitStreakType("custom")
+            viewModel.setHabitStreakType(HabitStreakType.CUSTOM)
         }
 
     }
+    val setValuesProper = {}
     val animatedVisibilityOne = @Composable {
         if (streakChecked.value == 0) {
 
@@ -453,6 +455,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                         }
 
                     }
+                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){ Button(onClick = { showDialog.value = false }) { Text("Done") } }
                 }
             }
         }
@@ -474,7 +477,9 @@ fun InvalidValueIndicator(modifier: Modifier = Modifier, visible: Boolean) {
                 "Invalid Values",
                 Modifier.padding(5.dp),
                 color = MaterialTheme.colorScheme.onError,
-                fontSize = 15.sp
+                fontSize = 15.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

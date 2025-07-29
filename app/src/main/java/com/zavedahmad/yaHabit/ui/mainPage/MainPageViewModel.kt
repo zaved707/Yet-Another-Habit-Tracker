@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-data class habitWithEntries(
+data class HabitWithEntries(
     val habit: HabitEntity,
     val entries: List<HabitCompletionEntity>?
 )

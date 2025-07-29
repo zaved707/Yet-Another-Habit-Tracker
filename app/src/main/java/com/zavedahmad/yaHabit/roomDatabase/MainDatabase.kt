@@ -11,22 +11,17 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.zavedahmad.yaHabit.roomDatabase.typeConverters.ColorConvertor
 import com.zavedahmad.yaHabit.roomDatabase.typeConverters.LocalDateConverter
+import com.zavedahmad.yaHabit.roomDatabase.typeConverters.StreakTypeConverter
 
-val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("CREATE TABLE `Fruit` (`id` INTEGER, `name` TEXT, " +
-                "PRIMARY KEY(`id`))")
-    }
-}
 
 @Database(
     entities = [PreferenceEntity::class, HabitEntity::class, HabitCompletionEntity::class],
     version = 2,
     autoMigrations = [AutoMigration(from = 1, to = 2)],
 
-)
+    )
 
-@TypeConverters(LocalDateConverter::class, ColorConvertor::class)
+@TypeConverters(LocalDateConverter::class, ColorConvertor::class, StreakTypeConverter::class)
 abstract class MainDatabase : RoomDatabase() {
     abstract fun preferencesDao(): PreferencesDao
     abstract fun habitDao(): HabitDao

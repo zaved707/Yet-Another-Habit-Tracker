@@ -20,7 +20,7 @@ class HabitRepository @Inject constructor(
             HabitEntity(
                 name = "Running",
                 color = Color.Red,
-                streakType = "weekly",
+                streakType = HabitStreakType.WEEKLY,
                 frequency = 15.0,
                 cycle = 7,
                 repetitionPerDay = 5.0,
@@ -29,7 +29,7 @@ class HabitRepository @Inject constructor(
             HabitEntity(
                 name = "Do Study",
                 color = Color.White,
-                streakType = "daily",
+                streakType = HabitStreakType.DAILY,
                 frequency = 7.0,
                 cycle = 7,
                 repetitionPerDay = 1.0,
@@ -38,7 +38,7 @@ class HabitRepository @Inject constructor(
             HabitEntity(
                 name = "Read Books",
                 color = Color.Green,
-                streakType = "daily",
+                streakType = HabitStreakType.DAILY,
                 frequency = 5.0,
                 cycle = 7,
                 repetitionPerDay = 1.0,
@@ -47,7 +47,7 @@ class HabitRepository @Inject constructor(
             HabitEntity(
                 name = "Exercise Daily",
                 color = Color.Blue,
-                streakType = "daily",
+                streakType = HabitStreakType.DAILY,
                 frequency = 7.0,
                 cycle = 7,
                 repetitionPerDay = 8.0,
@@ -56,7 +56,7 @@ class HabitRepository @Inject constructor(
             HabitEntity(
                 name = "Meditate",
                 color = Color.Magenta,
-                streakType = "weekly",
+                streakType = HabitStreakType.WEEKLY,
                 frequency = 3.0,
                 cycle = 7,
                 repetitionPerDay = 1.0,
