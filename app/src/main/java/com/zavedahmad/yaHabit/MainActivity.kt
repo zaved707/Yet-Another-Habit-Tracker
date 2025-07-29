@@ -1,5 +1,6 @@
 package com.zavedahmad.yaHabit
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,12 +10,10 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,16 +30,10 @@ import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.zavedahmad.yaHabit.ui.TestingPage.TestingPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
-import com.zavedahmad.yaHabit.ui.calenderPage.CalenderPage
-import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageViewModel
-import com.zavedahmad.yaHabit.ui.errorPages.SplashScreen
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
-
-
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageReorderable
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
-
 import com.zavedahmad.yaHabit.ui.setEdgeToEdgeConfig
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsScreen
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsViewModel
@@ -185,13 +178,7 @@ class RecipePickerActivity : ComponentActivity() {
 
                                         is Screen.CalenderPageRoute -> {
                                             NavEntry(key = key) {
-                                                val calendarPageViewModel =
-                                                    hiltViewModel<CalendarPageViewModel, CalendarPageViewModel.Factory>(
-                                                        creationCallback = { factory ->
-                                                            factory.create(key)
-                                                        }
-                                                    )
-                                                CalenderPage(calendarPageViewModel)
+
                                             }
                                         }
 

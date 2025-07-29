@@ -14,7 +14,12 @@ class HabitRepository @Inject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val db: MainDatabase
 ) {
+    suspend fun addSampleHabits(){
+
+    }
+
     // HabitDao functions
+
     // Write operations
 
     suspend fun move(fromIndex: Int, toIndex: Int) {
@@ -361,79 +366,7 @@ class HabitRepository @Inject constructor(
 
     // HabitCompletionDao functions
     // Write operations
-    suspend fun addWithPartialCheck(entry: HabitCompletionEntity) {
-        /* 1. get the habitEntity associated with the entry */
-        val habitEntity = habitDao.getHabitById(entry.habitId)
-        /*  2. get all entries from database  where date is date of entry.date + habitEntity.frequency -1 and entry.date - habitEntity.frequency -1 */
-        val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
-            habitEntity.id,
-            entry.completionDate.minusDays((habitEntity.cycle - 1).toLong()),
-            entry.completionDate.plusDays((habitEntity.cycle - 1).toLong())
-        )
-        val partialEntries = entries?.filter { entry -> entry.partial == true }
-        val absoluteEntries =
-            entries?.filter { entry -> entry.partial != true && entry.repetitionsOnThisDay > 0.0 }
-        val blankEntries =
-            entries?.filter { entry -> entry.partial == false && entry.repetitionsOnThisDay == 0.0 }
 
-        val currentEntryPresentInPartial =
-            partialEntries?.any { it.completionDate == entry.completionDate } ?: false
-        /*    3. get clustersOfStreaks from those entries */
-        val entriesList = absoluteEntries?.toMutableList() ?: mutableListOf()
-        entriesList.add(entry)
-
-        val clusters = findHabitClusters(entriesList, habitEntity.cycle, habitEntity.frequency)
-        /*     4. if clusters are there then for each cluster extract the dates*/
-        val processedClusters = processDateTriples(clusters).toMutableList()
-
-        val datesInLimitOfCycleOfDateBeingAdded = processedClusters.filter { date ->
-
-            date <= entry.completionDate.plusDays(habitEntity.cycle.toLong() - 1) && date >= entry.completionDate.minusDays(
-                habitEntity.cycle.toLong() - 1
-            )
-        }
-        /*  5 for each day in the extracted dates from clusters if  entry does already exists in the entries then add a entry for that date with partial = true */
-        val datesNotPresentInDataBase =
-            datesInLimitOfCycleOfDateBeingAdded.filter { date ->
-                !entriesList.any { it.completionDate == date } && !(partialEntries?.any { it.completionDate == date }
-                    ?: true)
-            }
-
-        /* now add all datesNotPresentIndDatabase to database as partial Entries*/
-        db.runInTransaction {
-            runBlocking {
-                datesNotPresentInDataBase.forEach { date ->
-                    addHabitCompletionEntry(
-                        HabitCompletionEntity(
-                            habitId = habitEntity.id,
-                            completionDate = date,
-                            partial = true,
-
-                            repetitionsOnThisDay = 0.0
-                        )
-                    )
-                }
-                /*then add the entry as non partial*/
-
-                /* add a condition where current Entry is partial. in that case turn it to absolute*/
-                if (currentEntryPresentInPartial) {
-                    habitCompletionDao.deleteHabitCompletionEntry(
-                        habitEntity.id,
-                        entry.completionDate
-                    )
-
-                }
-
-
-                println("adding date to database")
-                addHabitCompletionEntry(
-                    entry = entry
-                )
-
-            }
-
-        }
-    }
 
 
     suspend fun repairPartials(newHabitEntity: HabitEntity) {
@@ -473,71 +406,7 @@ class HabitRepository @Inject constructor(
 
     }
 
-    suspend fun deleteWithPartialCheck(entry: HabitCompletionEntity) {
-        // extract cycle from 2*cycle in past and future of the entry.completionDate ,
-        val habitEntity = habitDao.getHabitById(entry.habitId)
 
-        val entries = habitCompletionDao.getHabitsInDateRangeOfaCertainHabitId(
-            habitEntity.id,
-            entry.completionDate.minusDays((habitEntity.cycle * 2 - 2).toLong()),
-            entry.completionDate.plusDays((habitEntity.cycle * 2 - 2).toLong())
-        )
-        println(entries?.size)
-        //  seperate in partial and absolute lists
-        val partialEntries = entries?.filter { entry -> entry.partial == true }
-        val absoluteEntries = entries?.filter { entry -> entry.partial != true }
-
-        // remove entry.completiondate item from Absolute List
-        val absoluteWithoutCurrentDay =
-            absoluteEntries?.filter { item -> item.completionDate != entry.completionDate }
-
-        // get clusters of the new absolute List and get their dates
-        val clusters = findHabitClusters(
-            absoluteWithoutCurrentDay ?: mutableListOf(),
-            habitEntity.cycle,
-            minOccurrences = habitEntity.frequency
-        )
-
-        val processedClusters = processDateTriples(clusters)
-
-        processedClusters
-        // check the items which are present in all extracted list from db. and are not present in the new
-
-        var entriesToPurge =
-            partialEntries?.filter { item -> item.completionDate !in processedClusters }
-        entriesToPurge = entriesToPurge?.filter {
-            it.completionDate >= entry.completionDate.minusDays((habitEntity.cycle - 1).toLong()) && it.completionDate <= entry.completionDate.plusDays(
-                (habitEntity.cycle - 1).toLong()
-            )
-        }
-
-
-        // remove those entries from db
-        db.runInTransaction {
-            runBlocking {
-                entriesToPurge?.forEach {
-                    deleteHabitCompletionEntry(
-                        it.habitId,
-                        it.completionDate
-                    )
-                }
-
-                // remove the current date item
-                deleteHabitCompletionEntry(habitEntity.id, entry.completionDate)
-                // checking if current entity will change to partial or not
-                if (entry.completionDate in processedClusters) {
-                    addHabitCompletionEntry(
-                        HabitCompletionEntity(
-                            habitId = habitEntity.id,
-                            completionDate = entry.completionDate,
-                            partial = true
-                        )
-                    )
-                }
-            }
-        }
-
-    }
 
     // No checks
     suspend fun addHabitCompletionEntry(entry: HabitCompletionEntity) {

@@ -13,8 +13,8 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.hasNote
 import com.zavedahmad.yaHabit.roomDatabase.state
-import com.zavedahmad.yaHabit.ui.calenderPage.CalendarPageDayItem
-import com.zavedahmad.yaHabit.ui.calenderPage.DaysOfWeekTitle
+
+import com.zavedahmad.yaHabit.ui.components.DaysOfWeekTitle
 import java.time.DayOfWeek
 import java.time.LocalDate
 

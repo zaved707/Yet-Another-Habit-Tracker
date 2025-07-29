@@ -107,13 +107,7 @@ class MainPageViewModel @Inject constructor(
 
     }
 
-    fun deleteHabitEntryWithPartialCheck(date: LocalDate, habitId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            habitRepository.deleteWithPartialCheck(
-                HabitCompletionEntity(habitId, date)
-            )
-        }
-    }
+
 
     fun generateInitialDates(): List<LocalDate> {
         val today = LocalDate.now()

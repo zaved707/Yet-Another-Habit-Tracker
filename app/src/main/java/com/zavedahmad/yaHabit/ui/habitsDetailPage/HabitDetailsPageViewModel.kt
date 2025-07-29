@@ -87,13 +87,6 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     }
 
 
-    fun deleteHabitEntryWithPartialCheck(date: LocalDate, habitId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            habitRepository.deleteWithPartialCheck(
-                HabitCompletionEntity(habitId = habitId, completionDate =  date)
-            )
-        }
-    }
 
     fun deleteHabitById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }

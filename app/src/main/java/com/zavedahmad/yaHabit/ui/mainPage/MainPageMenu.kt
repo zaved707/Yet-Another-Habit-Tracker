@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -24,7 +25,7 @@ import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 
 @Composable
-fun Menu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
+fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
@@ -57,6 +58,8 @@ fun Menu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
                 viewModel.changeReorderableMode(!isReorderableMode.value)
                 menuVisible.value = false
             })
+            DropdownMenuItem(onClick = {}, text = {Button(onClick = {}) { Text("add sample habits")}})
+
         }
     }
 }

@@ -179,7 +179,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                         }
                                     }
                                 }
-                                Menu(viewModel, backStack)
+                                MainPageMenu(viewModel, backStack)
                             }
                         }
 
@@ -250,29 +250,27 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                 textAlign = TextAlign.Center
                             )
 
+
                         }
                     }
                 } else {
                     Box {
                         //HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize(),
-
                             state = lazyListState,
                             contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
                             item { }
-
                             items(habits.value, key = { it.id }) { habit ->
                                 ReorderableItem(
                                     reorderableLazyListState,
                                     key = habit.id
                                 ) { isDragging ->
                                     CustomTheme(
-                                        theme = themeReal.value,
+                                        theme = themeReal.value, // Ensure themeReal.value is not null here or provide a default
                                         primaryColor = habit.color,
                                         isAmoled = isAmoledColor?.value == "true"
                                     ) {
@@ -280,13 +278,11 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
                                         // Text("id :  ${habit.id.toString()}, index: ${habit.index}")
 
-
                                         HabitItemReorderableNew(
                                             backStack = backStack,
                                             viewModel = viewModel,
                                             habit = habit,
                                             reorderableListScope = this,
-
                                             isDragging = isDragging,
                                             isReorderableMode = isReorderableMode.value,
                                             firstDayOfWeek = firstDayOfWeek
@@ -298,9 +294,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                     }
                                 }
                             }
+
                             item { Spacer(Modifier.height(20.dp)) }
-
-
                         }
                     }
                 }
