@@ -64,13 +64,13 @@ fun HabitItemReorderableNew(
         CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
 
     } else {
-        CardDefaults.cardColors()
+        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim)
     }
     val cardElevation = if (isDragging) {
-        CardDefaults.outlinedCardElevation(defaultElevation = 10.dp)
+        CardDefaults.cardElevation(defaultElevation = 10.dp)
 
     } else {
-        CardDefaults.outlinedCardElevation()
+        CardDefaults.cardElevation()
     }
     val habitData = rememberSaveable { mutableStateOf<List<HabitCompletionEntity>?>(null) }
     val showDialog = rememberSaveable { mutableStateOf(false) }
