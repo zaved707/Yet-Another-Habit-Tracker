@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -172,7 +173,8 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
             }
         }
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
 
         ) {
@@ -304,7 +306,9 @@ fun SettingsItem(
             verticalAlignment = Alignment.CenterVertically
         ) { // Added weight to allow this Row to take available space
             Icon(
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(24.dp),
                 imageVector = icon,
                 contentDescription = description
             )
@@ -341,11 +345,12 @@ fun SettingsItem(
 fun SettingsHeading(text: String) {
     Row {
         Spacer(Modifier.width(30.dp))
+        Spacer(Modifier.width(54.dp))
         Text(
             text,
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelLargeEmphasized
-        )
+            fontSize = 12.sp,
+            style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Medium, letterSpacing = 3.sp)
     }
 
 }
