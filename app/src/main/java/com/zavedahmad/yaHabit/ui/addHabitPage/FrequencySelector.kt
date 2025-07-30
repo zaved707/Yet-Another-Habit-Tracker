@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
@@ -452,7 +454,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     if (showDialog.value) {
         Dialog(onDismissRequest = { showDialog.value = false }) {
             CardMyStyle(modifier = Modifier .widthIn(max = 300.dp)
-                .fillMaxWidth()) {
+                .fillMaxWidth().verticalScroll(rememberScrollState())) {
                  Column(
                      Modifier
                          .fillMaxWidth()
