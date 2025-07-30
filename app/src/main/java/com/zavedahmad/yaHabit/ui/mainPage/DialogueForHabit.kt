@@ -7,27 +7,35 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.isSkip
+import com.zavedahmad.yaHabit.ui.components.CardMyStyle
+import com.zavedahmad.yaHabit.utils.formatNumber.softFormatNumber
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DialogueForHabit(
     isVisible: Boolean,
@@ -43,11 +51,7 @@ fun DialogueForHabit(
             val repetitions = remember {
                 mutableStateOf(
                     if (entityAlreadyExists) {
-                        if (habitCompletionEntity.repetitionsOnThisDay % 1.0 == 0.0) {
-                            habitCompletionEntity.repetitionsOnThisDay.toLong().toString()
-                        } else {
-                            habitCompletionEntity.repetitionsOnThisDay.toString()
-                        }
+                        softFormatNumber(habitCompletionEntity.repetitionsOnThisDay)
                     } else {
                         ""
                     }
@@ -101,29 +105,36 @@ fun DialogueForHabit(
                     }
                 }
 
-            Card {
+            CardMyStyle {
                 Column(
                     modifier = Modifier.Companion.padding(20.dp)
 
 
                 ) {
-                    TextField(
-                        value = note.value ?: "",
-                        onValueChange = {
-                            note.value = if (it == "") {
-                                null
-                            } else {
-                                it
-                            }
-                        },
-                        placeholder = {
-                            Text(
-                                "Note",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        })
+                    Row(
+                        Modifier.Companion.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+
+                            onClick = {
+                                onFinalised(
+                                    isRepetitionsValueChanged.value,
+                                    isNoteValueChanged.value,
+                                    repetitions.value,
+                                    note.value
+                                )
+
+                                onDismissRequest()
+
+
+                            }) { Text("Apply") }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
                     if (!isSkip) {
-                        TextField(
+
+                        OutlinedTextField(
+                            shape = MaterialTheme.shapes.extraLarge,
                             value = repetitions.value,
                             onValueChange = {
                                 if (it != "") {
@@ -137,32 +148,36 @@ fun DialogueForHabit(
                                     repetitions.value = ""
                                 }
 
-                            }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), maxLines = 1,
-                            placeholder = {Text("Repetitions")}
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            maxLines = 1,
+                           label = { Text("Repetitions") }
                         )
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
+                    TextField(
+                        shape = MaterialTheme.shapes.extraLarge,
+                        value = note.value ?: "",
+                        onValueChange = {
+                            note.value = if (it == "") {
+                                null
+                            } else {
+                                it
+                            }
+                        }, maxLines = 4,
+                        label = { Text("Notes") },
 
-                Row(
-                    Modifier.Companion.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Button(
-
-                        onClick = {
-                            onFinalised(
-                                isRepetitionsValueChanged.value,
-                                isNoteValueChanged.value,
-                                repetitions.value,
-                                note.value
-                            )
-
-                            onDismissRequest()
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceBright,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceBright,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        )
+                    )
 
 
-                        }) { Text("Apply") }
                 }
             }
-        }}
+        }
     }
 }

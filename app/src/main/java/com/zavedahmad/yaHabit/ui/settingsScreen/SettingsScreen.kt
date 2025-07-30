@@ -2,6 +2,7 @@ package com.zavedahmad.yaHabit.ui.settingsScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,6 +60,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.kizitonwose.calendar.core.daysOfWeek
+import com.zavedahmad.yaHabit.ui.components.CardMyStyle
 import java.time.DayOfWeek
 
 @Composable
@@ -93,81 +95,79 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
 
         if (isThemeDialogActive) {
             Dialog(onDismissRequest = { isThemeDialogActive = false }) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .width(300.dp)
-                            .background(MaterialTheme.colorScheme.surface)
-                    ) {
-                        Text(
-                            "Theme Mode",
-                            modifier = Modifier.padding(start = 10.dp),
-                            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                        )
+                CardMyStyle(
 
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Row(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .clickable(onClick = {
-                                    viewModel.setTheme("system")
+                 ) {
+                     Column(
+                         modifier = Modifier
+                             .padding(20.dp)
+                             .width(300.dp)
 
-                                    isThemeDialogActive = false
-                                })
-                                .fillMaxWidth()
-                                .padding(10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                     ) {
+                         Text(
+                             "Theme Mode",
+                             modifier = Modifier.padding(start = 10.dp),
+                             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                         )
 
-                            RadioButton(
-                                onClick = null,
-                                selected = themeNow?.value == "system"
-                            )
-                            Text("Follow System")
-                        }
-                        Row(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .clickable(onClick = {
-                                    viewModel.setTheme("dark")
-                                    isThemeDialogActive = false
-                                })
-                                .fillMaxWidth()
-                                .padding(10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                         Spacer(modifier = Modifier.height(10.dp))
+                         Row(
+                             modifier = Modifier
+                                 .clip(RoundedCornerShape(20.dp))
+                                 .clickable(onClick = {
+                                     viewModel.setTheme("system")
 
-                            RadioButton(
-                                onClick = null,
-                                selected = themeNow?.value == "dark"
-                            )
-                            Text("Dark")
-                        }
-                        Row(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .clickable(onClick = {
-                                    viewModel.setTheme("light")
-                                    isThemeDialogActive = false
-                                })
-                                .fillMaxWidth()
-                                .padding(10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                                     isThemeDialogActive = false
+                                 })
+                                 .fillMaxWidth()
+                                 .padding(10.dp),
+                             verticalAlignment = Alignment.CenterVertically
+                         ) {
 
-                            RadioButton(
-                                onClick = null,
-                                selected = themeNow?.value == "light"
-                            )
-                            Text("Light")
-                        }
-                    }
-                }
+                             RadioButton(
+                                 onClick = null,
+                                 selected = themeNow?.value == "system"
+                             )
+                             Text("Follow System")
+                         }
+                         Row(
+                             modifier = Modifier
+                                 .clip(RoundedCornerShape(20.dp))
+                                 .clickable(onClick = {
+                                     viewModel.setTheme("dark")
+                                     isThemeDialogActive = false
+                                 })
+                                 .fillMaxWidth()
+                                 .padding(10.dp),
+                             verticalAlignment = Alignment.CenterVertically
+                         ) {
+
+                             RadioButton(
+                                 onClick = null,
+                                 selected = themeNow?.value == "dark"
+                             )
+                             Text("Dark")
+                         }
+                         Row(
+                             modifier = Modifier
+                                 .clip(RoundedCornerShape(20.dp))
+                                 .clickable(onClick = {
+                                     viewModel.setTheme("light")
+                                     isThemeDialogActive = false
+                                 })
+                                 .fillMaxWidth()
+                                 .padding(10.dp),
+                             verticalAlignment = Alignment.CenterVertically
+                         ) {
+
+                             RadioButton(
+                                 onClick = null,
+                                 selected = themeNow?.value == "light"
+                             )
+                             Text("Light")
+                         }
+                     }
+                 }
 
             }
         }
@@ -253,11 +253,11 @@ fun ModalForWeekSelection(
 
     if (isVisible) {
         Dialog(onDismissRequest = { onDismissRequest() }) {
-            Card(Modifier) {
+            CardMyStyle() {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     for (i in 1..7) {
                         val currentDay = DayOfWeek.of(i)
-                        Card(onClick = { onDaySelect(currentDay) }) {
+                       Box(Modifier.combinedClickable(onClick = { onDaySelect(currentDay) })) {
                             Row(
                                 Modifier
                                     .padding(20.dp)

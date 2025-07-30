@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
+import com.zavedahmad.yaHabit.ui.components.CardMyStyle
 import com.zavedahmad.yaHabit.ui.components.DialogItem
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.formatHabitFrequency
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
@@ -450,60 +451,54 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     }
     if (showDialog.value) {
         Dialog(onDismissRequest = { showDialog.value = false }) {
-            OutlinedCard(
-                Modifier
+            CardMyStyle(modifier = Modifier .widthIn(max = 300.dp)
+                .fillMaxWidth()) {
+                 Column(
+                     Modifier
+                         .fillMaxWidth()
+                         .padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
+                 ) {
+                     Row(
+                         modifier = Modifier.fillMaxWidth(),
+                         horizontalArrangement = Arrangement.End
+                     ) { Button(onClick = { showDialog.value = false }) { Text("Done") } }
+                     options.forEachIndexed { index, item ->
+                         val isChecked = streakChecked.value == index
+                         DialogItem(
+                             modifier = Modifier.fillMaxWidth(),
+                             state = isChecked,
+                             onValueChange = {
+                                 if (!isChecked) {
+                                     checkErrorsAndRectify()
 
-                    .widthIn(max = 300.dp)
-                    .fillMaxWidth(),
+                                     streakChecked.value = index
+                                 }
+                             }) {
+                             Box(Modifier.padding(15.dp)) {
+                                 Column {
+                                     Row(
+                                         modifier = Modifier.fillMaxWidth(),
+                                         horizontalArrangement = Arrangement.SpaceBetween
+                                     ) {
+                                         Text(
+                                             item,
+                                             overflow = TextOverflow.MiddleEllipsis,
+                                             maxLines = 1
+                                         )
 
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            ) {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) { Button(onClick = { showDialog.value = false }) { Text("Done") } }
-                    options.forEachIndexed { index, item ->
-                        val isChecked = streakChecked.value == index
-                        DialogItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            state = isChecked,
-                            onValueChange = {
-                                if (!isChecked) {
-                                    checkErrorsAndRectify()
+                                         RadioButton(selected = isChecked, onClick = null)
 
-                                    streakChecked.value = index
-                                }
-                            }) {
-                            Box(Modifier.padding(15.dp)) {
-                                Column {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            item,
-                                            overflow = TextOverflow.MiddleEllipsis,
-                                            maxLines = 1
-                                        )
+                                     }
+                                     Spacer(Modifier.height(20.dp))
+                                     animatedVisibilities[index]()
+                                 }
+                             }
+                         }
 
-                                        RadioButton(selected = isChecked, onClick = null)
+                     }
 
-                                    }
-                                    Spacer(Modifier.height(20.dp))
-                                    animatedVisibilities[index]()
-                                }
-                            }
-                        }
-
-                    }
-
-                }
-            }
+                 }
+             }
         }
     }
 
