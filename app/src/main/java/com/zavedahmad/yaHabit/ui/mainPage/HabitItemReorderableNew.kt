@@ -64,7 +64,7 @@ fun HabitItemReorderableNew(
         CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
 
     } else {
-        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim)
+        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceDim )
     }
     val cardElevation = if (isDragging) {
         CardDefaults.cardElevation(defaultElevation = 10.dp)

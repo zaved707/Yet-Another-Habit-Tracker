@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.addHabitPage
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +47,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
 import com.zavedahmad.yaHabit.ui.components.DialogItem
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.formatHabitFrequency
+import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
+import com.zavedahmad.yaHabit.utils.formatNumber.softFormatNumber
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -51,16 +56,21 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     val streakChecked = rememberSaveable { mutableStateOf(0) }
     val frequencyEveryDay = rememberSaveable { mutableStateOf("1") }
     val frequencyCustom = rememberSaveable { mutableStateOf("3") }
-    val frequencyValidCustom = remember { derivedStateOf { frequencyCustom.value.toDoubleOrNull() != null} }
+    val frequencyValidCustom =
+        remember { derivedStateOf { frequencyCustom.value.toDoubleOrNull() != null } }
     val frequencyForStreakWeek = rememberSaveable { mutableStateOf("3") }
     val frequencyForStreakMonth = rememberSaveable { mutableStateOf("3") }
     val cycleLengthCustom = rememberSaveable { mutableStateOf("14") }
-    val isCycleValidCustom =remember { derivedStateOf { cycleLengthCustom.value.toIntOrNull() != null} }
-    val isFrequencyValidMonth = remember { derivedStateOf { frequencyForStreakMonth.value.toDoubleOrNull() != null} }
-    val isFrequencyValidWeek =remember { derivedStateOf { frequencyForStreakWeek.value.toDoubleOrNull() != null} }
+    val isCycleValidCustom =
+        remember { derivedStateOf { cycleLengthCustom.value.toIntOrNull() != null } }
+    val isFrequencyValidMonth =
+        remember { derivedStateOf { frequencyForStreakMonth.value.toDoubleOrNull() != null } }
+    val isFrequencyValidWeek =
+        remember { derivedStateOf { frequencyForStreakWeek.value.toDoubleOrNull() != null } }
     val showDialog = rememberSaveable { mutableStateOf(false) }
     val isErrorCustom by remember { derivedStateOf { !(frequencyValidCustom.value && isCycleValidCustom.value) } }
-    val isErrorDaily =  remember { derivedStateOf { frequencyEveryDay.value.toDoubleOrNull() == null} }
+    val isErrorDaily =
+        remember { derivedStateOf { frequencyEveryDay.value.toDoubleOrNull() == null } }
     val options = listOf("Everyday", "Weekly", "Monthly", "Custom")
     val existingHabitData = viewModel.existingHabitData.collectAsStateWithLifecycle().value
     val measurementUnit by viewModel.measurementUnit.collectAsStateWithLifecycle()
@@ -115,28 +125,28 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
         // this will set the value to whatever is in viewmodel
         if (isErrorDaily.value) {
             if (streakChecked.value == 0) {
-                frequencyEveryDay.value = viewModelFrequency.value.toString()
+                frequencyEveryDay.value = softFormatNumber(viewModelFrequency.value ?: 0.0)
             } else {
                 frequencyEveryDay.value = "1"
             }
         }
         if (!isFrequencyValidWeek.value) {
             if (streakChecked.value == 1) {
-                frequencyForStreakWeek.value = viewModelFrequency.value.toString()
+                frequencyForStreakWeek.value = softFormatNumber(viewModelFrequency.value ?: 0.0)
             } else {
                 frequencyForStreakWeek.value = "3"
             }
         }
         if (!isFrequencyValidMonth.value) {
             if (streakChecked.value == 2) {
-                frequencyForStreakMonth.value = viewModelFrequency.value.toString()
+                frequencyForStreakMonth.value = softFormatNumber(viewModelFrequency.value ?: 0.0)
             } else {
                 frequencyForStreakMonth.value = "3"
             }
         }
         if (isErrorCustom) {
             if (streakChecked.value == 3) {
-                frequencyCustom.value = viewModelFrequency.value.toString()
+                frequencyCustom.value = softFormatNumber(viewModelFrequency.value ?: 0.0)
                 cycleLengthCustom.value = viewModelCycle.value.toString()
             } else {
                 frequencyCustom.value = "3"
@@ -418,8 +428,10 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
     )
     // These are all the buttons
 
-    OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { checkErrorsAndRectify()
-        showDialog.value = true }) {
+    OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = {
+        checkErrorsAndRectify()
+        showDialog.value = true
+    }) {
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -442,7 +454,9 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                 Modifier
 
                     .widthIn(max = 300.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             ) {
                 Column(
                     Modifier

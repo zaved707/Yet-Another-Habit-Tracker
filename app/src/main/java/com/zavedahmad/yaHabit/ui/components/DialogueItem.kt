@@ -1,12 +1,14 @@
 package com.zavedahmad.yaHabit.ui.components
 
 import android.app.Dialog
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,13 +28,19 @@ fun DialogItem(
 
     Box(
         modifier
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(10.dp)).background(    MaterialTheme.colorScheme.surfaceDim)
+            .border(shape = RoundedCornerShape(10.dp),
+                border = BorderStroke(
+                    width = LocalOutlineSizes.current.small,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(0.5f)
+                )
+            )
 
             .combinedClickable(onClick = { onValueChange() })
 
     ) {
 
-            content()
+        content()
 
     }
 }
