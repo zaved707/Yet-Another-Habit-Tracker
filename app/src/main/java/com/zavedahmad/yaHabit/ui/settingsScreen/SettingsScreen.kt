@@ -178,7 +178,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 .padding(innerPadding)
 
         ) {
-            SettingsHeading("THEMING")
+            SettingsHeading("THEMING", topPadding = false)
             SettingsItem(
                 Icons.Default.DarkMode,
                 title = "Theme Mode",
@@ -342,7 +342,9 @@ fun SettingsItem(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SettingsHeading(text: String) {
+fun SettingsHeading(text: String, topPadding: Boolean = true) {
+    if (topPadding){
+    Spacer(Modifier.height(30.dp))}
     Row {
         Spacer(Modifier.width(30.dp))
         Spacer(Modifier.width(54.dp))
