@@ -18,7 +18,9 @@ import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
+import com.zavedahmad.yaHabit.roomDatabase.utils.DatabaseUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +51,9 @@ class MainPageViewModel @Inject constructor(
     val preferencesDao: PreferencesDao,
     val habitRepository: HabitRepository,
     val preferencesRepository: PreferencesRepository,
-    val mainDatabase: MainDatabase
+    val mainDatabase: MainDatabase,
+    @ApplicationContext val context: Context,
+    val databaseUtils: DatabaseUtils,
 ) :
     ViewModel() {
     override fun onCleared() {
@@ -199,40 +203,62 @@ class MainPageViewModel @Inject constructor(
     }
 
     fun importDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
-        val mutex = Mutex()
-        val dispatcher = Dispatchers.IO
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val databaseFile = databaseUtils.getDatabasePath()
 
-        suspend fun importDatabase(context: Context, uri: Uri) {
-            withContext(dispatcher + viewModelScope.coroutineContext) {
-                mutex.withLock {
-                    // Get file name
-                    val fileName = context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-                        cursor.moveToFirst()
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME))
-                    } ?: throw IllegalStateException("Could not retrieve file name")
+                if (databaseFile.exists()) {
+                    val backupDatabaseFile = File.createTempFile("old", ".db")
 
-                    // Check .db extension
-                    if (!fileName.endsWith(".db", ignoreCase = true)) {
-                        throw IllegalStateException("Not a .db file")
+                    databaseUtils.closeDatabase()
+                    if (!databaseUtils.isDatabaseOpen()) {
+                        backupDatabaseFile.writeBytes(databaseFile.readBytes())
+                        deleteDatabaseFiles(databaseFile)
+
+                        // Copy from Uri input stream
+                        context.contentResolver.openInputStream(uri)?.use { input ->
+                            databaseFile.writeBytes(input.readBytes())
+                        } ?: throw IllegalStateException("Failed to open input stream")
+                    } else {
+                        throw IllegalStateException("Database could not be closed")
                     }
 
-                    // Close and delete existing database
-                    mainDatabase.close()
-                    val dbFile = context.getDatabasePath("main_database")
-                    dbFile.delete()
+                    if (!databaseUtils.isDatabaseValid()) {
+                        deleteDatabaseFiles(databaseFile)
+                        databaseFile.writeBytes(backupDatabaseFile.readBytes())
+                        throw IllegalStateException("Invalid database file")
+                    }
 
-                    // Copy .db file
-                    context.contentResolver.openInputStream(uri)?.use { stream ->
-                        dbFile.outputStream().use { output ->
-                            stream.copyTo(output)
-                        }
-                    } ?: throw IllegalStateException("Failed to open file")
+                    onComplete(Result.success(Unit))
+                } else {
+                    // If no existing database, still import the new one
+                    context.contentResolver.openInputStream(uri)?.use { input ->
+                        databaseFile.writeBytes(input.readBytes())
+                    } ?: throw IllegalStateException("Failed to open input stream")
 
-                    // Reopen database
-                    mainDatabase.openHelper.writableDatabase
+                    if (!databaseUtils.isDatabaseValid()) {
+                        deleteDatabaseFiles(databaseFile)
+                        throw IllegalStateException("Invalid database file")
+                    }
+
+                    onComplete(Result.success(Unit))
+                }
+            } catch (e: Exception) {
+                onComplete(Result.failure(e))
+            }
+        }
+    }
+
+    private fun deleteDatabaseFiles(databaseFile: File) {
+        val databaseDirectory = File(databaseFile.parent!!)
+        if (databaseDirectory.isDirectory) {
+            databaseDirectory.listFiles()?.forEach { child ->
+                if (child.name.endsWith("-shm") || child.name.endsWith("-wal")) {
+                    child.deleteRecursively()
                 }
             }
         }
+        databaseFile.deleteRecursively()
     }
 }
 

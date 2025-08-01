@@ -25,7 +25,7 @@ import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 
 @Composable
-fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
+fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>,onDatabaseImport : (Boolean) -> Unit) {
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
@@ -62,6 +62,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
             DropdownMenuItem(onClick = {viewModel.addSampleHabits()}, text = { Text("add sample habits")})
             DropdownMenuItem(onClick = {viewModel.deleteAllHabits()}, text = {Text("clean Habits")})}
             ExportDatabase(viewModel)
+            ImportDatabase(viewModel, onDatabaseImport)
         }
     }
 }

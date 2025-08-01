@@ -78,7 +78,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
+fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel,onDatabaseImport : (Boolean) -> Unit) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
     val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
@@ -192,7 +192,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                         }
                                     }
                                 }
-                                MainPageMenu(viewModel, backStack)
+                                MainPageMenu(viewModel, backStack, onDatabaseImport= onDatabaseImport)
                             }
                         }
 
@@ -356,7 +356,8 @@ fun makeToast(context: Context, text: String) {
 }
 
 @Composable
-fun ImportDatabase(viewModel: MainPageViewModel) {
+fun ImportDatabase(viewModel: MainPageViewModel, onDatabaseImport : (Boolean) -> Unit) {
+
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val importLauncher = rememberLauncherForActivityResult(
@@ -370,9 +371,15 @@ fun ImportDatabase(viewModel: MainPageViewModel) {
             viewModel.importDatabase(context, uri) { result ->
                 coroutineScope.launch {
                     result.onSuccess {
-                        makeToast(context, "Database imported successfully")
+                        onDatabaseImport(true)
+
+
+
+//                        makeToast(context, "Database imported successfully")
+
                     }.onFailure { e ->
-                        makeToast(context, "Import failed: ${e.message}")
+                        onDatabaseImport(false)
+//                        makeToast(context, "Import failed: ${e.message}")
                     }
                 }
             }
