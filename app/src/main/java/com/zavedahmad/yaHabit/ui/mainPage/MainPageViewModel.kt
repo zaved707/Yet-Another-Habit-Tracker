@@ -1,6 +1,8 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
@@ -8,17 +10,20 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
+import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.FileInputStream
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -33,7 +38,8 @@ class MainPageViewModel @Inject constructor(
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
     val habitRepository: HabitRepository,
-    val preferencesRepository: PreferencesRepository
+    val preferencesRepository: PreferencesRepository,
+    val mainDatabase: MainDatabase
 ) :
     ViewModel() {
     override fun onCleared() {
@@ -151,6 +157,22 @@ class MainPageViewModel @Inject constructor(
     fun move(from: Int, to: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.move(from, to)
+        }
+    }
+    fun exportDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                mainDatabase.close() // Close to avoid conflicts
+                val dbFile = context.getDatabasePath("main_database")
+                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    FileInputStream(dbFile).use { inputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                } ?: throw IllegalStateException("Failed to open output stream")
+                onComplete(Result.success(Unit))
+            } catch (e: Exception) {
+                onComplete(Result.failure(e))
+            }
         }
     }
 

@@ -61,6 +61,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
             if (viewModel.devMode.value){
             DropdownMenuItem(onClick = {viewModel.addSampleHabits()}, text = { Text("add sample habits")})
             DropdownMenuItem(onClick = {viewModel.deleteAllHabits()}, text = {Text("clean Habits")})}
+            ExportDatabase(viewModel)
         }
     }
 }

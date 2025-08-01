@@ -1,6 +1,9 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -50,9 +53,11 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
@@ -61,7 +66,6 @@ import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.channels.Channel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -230,13 +234,16 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 
 
+
                 if (habits.value.isEmpty()) {
                     val pagerState = rememberPagerState(pageCount = {
                         1
                     })
                     VerticalPager(state = pagerState) {
                         Column(
-                            modifier = Modifier.fillMaxSize()  .padding(innerPadding),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -259,7 +266,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                         //HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         LazyColumn(
                             modifier = Modifier
-                                .fillMaxSize()  .padding(innerPadding),
+                                .fillMaxSize()
+                                .padding(innerPadding),
                             state = lazyListState,
 //                            contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -297,12 +305,37 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                 }
                             }
 
-                                     item { Spacer(Modifier.height(20.dp)) }
+                            item { Spacer(Modifier.height(20.dp)) }
                         }
                     }
-                }}
+                }
             }
         }
+    }
 
 }
 
+@Composable
+fun ExportDatabase(viewModel: MainPageViewModel ) {
+    val context = LocalContext.current
+    val exportLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.CreateDocument("application/x-sqlite3")
+        ) { uri: Uri? ->
+            uri?.let {
+                viewModel.exportDatabase(context, it) { result ->
+                    result.onSuccess {
+                        println("Database exported successfully")
+                    }.onFailure { e ->
+                        println("Export failed: ${e.message}")
+                    }
+                }
+            }
+
+
+        }
+    Button(onClick = { exportLauncher.launch("main_database.db") }) {
+        Text("Export Database")
+    }
+
+}
