@@ -1,7 +1,9 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
+import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -63,7 +65,11 @@ import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -325,9 +331,9 @@ fun ExportDatabase(viewModel: MainPageViewModel ) {
             uri?.let {
                 viewModel.exportDatabase(context, it) { result ->
                     result.onSuccess {
-                        println("Database exported successfully")
+                        makeToast(context,"databaseExported")
                     }.onFailure { e ->
-                        println("Export failed: ${e.message}")
+                        makeToast(context,"failure")
                     }
                 }
             }
@@ -338,4 +344,12 @@ fun ExportDatabase(viewModel: MainPageViewModel ) {
         Text("Export Database")
     }
 
+}
+
+
+fun makeToast(context : Context, text : String) {
+    CoroutineScope(Dispatchers.Main).launch {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+
+    }
 }
