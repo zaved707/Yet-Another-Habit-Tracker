@@ -3,8 +3,12 @@ package com.zavedahmad.yaHabit.ui.mainPage
 
 import android.content.Context
 import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
@@ -23,7 +27,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -63,6 +73,7 @@ class MainPageViewModel @Inject constructor(
     val amoledTheme = _amoledTheme.asStateFlow()
     private val _devMode = MutableStateFlow<Boolean>(false)
     val devMode = _devMode.asStateFlow()
+
     init {
         collectAmoledTheme()
         viewModelScope.launch(Dispatchers.IO) {
@@ -71,20 +82,27 @@ class MainPageViewModel @Inject constructor(
         collectFirstDayOfWeek()
         collectThemeMode()
     }
-    fun changeReorderableMode(value : Boolean){
+
+    fun changeReorderableMode(value: Boolean) {
         _isReorderableMode.value = value
     }
+
     fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {
         viewModelScope.launch {
             preferencesRepository.setFirstDayOfWeek(dayOfWeek)
         }
     }
-    fun deleteAllHabits(){
-        viewModelScope.launch (Dispatchers.IO){
-        habitRepository.deleteAllHabits()}
+
+    fun deleteAllHabits() {
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.deleteAllHabits()
+        }
     }
-    fun collectFirstDayOfWeek(){
-        viewModelScope.launch { preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it } }
+
+    fun collectFirstDayOfWeek() {
+        viewModelScope.launch {
+            preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it }
+        }
 
     }
 
@@ -119,9 +137,10 @@ class MainPageViewModel @Inject constructor(
 
     }
 
-    fun addSampleHabits(){
+    fun addSampleHabits() {
         viewModelScope.launch(Dispatchers.IO) {
-        habitRepository.addSampleHabits()}
+            habitRepository.addSampleHabits()
+        }
     }
 
     fun generateInitialDates(): List<LocalDate> {
@@ -159,9 +178,12 @@ class MainPageViewModel @Inject constructor(
             habitRepository.move(from, to)
         }
     }
+
     fun exportDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                // Run checkpoint to ensure WAL is committed to the main database file
+                habitDao.rawQuery(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
 
                 val dbFile = context.getDatabasePath("main_database")
                 context.contentResolver.openOutputStream(uri)?.use { outputStream ->
@@ -176,4 +198,41 @@ class MainPageViewModel @Inject constructor(
         }
     }
 
+    fun importDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
+        val mutex = Mutex()
+        val dispatcher = Dispatchers.IO
+
+        suspend fun importDatabase(context: Context, uri: Uri) {
+            withContext(dispatcher + viewModelScope.coroutineContext) {
+                mutex.withLock {
+                    // Get file name
+                    val fileName = context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                        cursor.moveToFirst()
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME))
+                    } ?: throw IllegalStateException("Could not retrieve file name")
+
+                    // Check .db extension
+                    if (!fileName.endsWith(".db", ignoreCase = true)) {
+                        throw IllegalStateException("Not a .db file")
+                    }
+
+                    // Close and delete existing database
+                    mainDatabase.close()
+                    val dbFile = context.getDatabasePath("main_database")
+                    dbFile.delete()
+
+                    // Copy .db file
+                    context.contentResolver.openInputStream(uri)?.use { stream ->
+                        dbFile.outputStream().use { output ->
+                            stream.copyTo(output)
+                        }
+                    } ?: throw IllegalStateException("Failed to open file")
+
+                    // Reopen database
+                    mainDatabase.openHelper.writableDatabase
+                }
+            }
+        }
+    }
 }
+

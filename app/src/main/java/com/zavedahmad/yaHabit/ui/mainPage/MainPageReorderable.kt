@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -45,8 +46,10 @@ import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -239,8 +242,6 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             ) {
 
 
-
-
                 if (habits.value.isEmpty()) {
                     val pagerState = rememberPagerState(pageCount = {
                         1
@@ -322,7 +323,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 }
 
 @Composable
-fun ExportDatabase(viewModel: MainPageViewModel ) {
+fun ExportDatabase(viewModel: MainPageViewModel) {
     val context = LocalContext.current
     val exportLauncher =
         rememberLauncherForActivityResult(
@@ -331,9 +332,9 @@ fun ExportDatabase(viewModel: MainPageViewModel ) {
             uri?.let {
                 viewModel.exportDatabase(context, it) { result ->
                     result.onSuccess {
-                        makeToast(context,"databaseExported")
+                        makeToast(context, "databaseExported")
                     }.onFailure { e ->
-                        makeToast(context,"failure")
+                        makeToast(context, "failure")
                     }
                 }
             }
@@ -347,9 +348,46 @@ fun ExportDatabase(viewModel: MainPageViewModel ) {
 }
 
 
-fun makeToast(context : Context, text : String) {
+fun makeToast(context: Context, text: String) {
     CoroutineScope(Dispatchers.Main).launch {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 
+    }
+}
+
+@Composable
+fun ImportDatabase(viewModel: MainPageViewModel) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val importLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri == null) {
+            coroutineScope.launch {
+                makeToast(context, "Import canceled")
+            }
+        } else {
+            viewModel.importDatabase(context, uri) { result ->
+                coroutineScope.launch {
+                    result.onSuccess {
+                        makeToast(context, "Database imported successfully")
+                    }.onFailure { e ->
+                        makeToast(context, "Import failed: ${e.message}")
+                    }
+                }
+            }
+        }
+    }
+    Button(onClick = {
+        importLauncher.launch(
+            arrayOf(
+                "application/x-sqlite3",
+                "application/vnd.sqlite3",
+                "application/octet-stream",
+                "*/*"
+            )
+        )
+    }) {
+        Text("Import Database")
     }
 }
