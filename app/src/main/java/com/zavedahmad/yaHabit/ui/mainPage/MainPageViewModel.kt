@@ -162,7 +162,7 @@ class MainPageViewModel @Inject constructor(
     fun exportDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                mainDatabase.close() // Close to avoid conflicts
+
                 val dbFile = context.getDatabasePath("main_database")
                 context.contentResolver.openOutputStream(uri)?.use { outputStream ->
                     FileInputStream(dbFile).use { inputStream ->
