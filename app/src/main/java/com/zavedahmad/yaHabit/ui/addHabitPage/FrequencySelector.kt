@@ -157,7 +157,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
             }
 
         }
-    }   //TODO enable soft formatting of numbers whne rectified
+    }
 
     // this keeps track of when user selects another kind of frequency it sets appropriate values for its fields
     LaunchedEffect(streakChecked.value) {

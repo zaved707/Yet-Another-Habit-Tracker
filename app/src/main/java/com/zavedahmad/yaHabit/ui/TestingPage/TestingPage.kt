@@ -20,10 +20,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.rememberOverscrollEffect
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -36,23 +38,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import androidx.navigation3.runtime.NavKey
+import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.components.MyMediumTopABCommon
+import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun TestingPage(backStack: SnapshotStateList<NavKey>) {
+fun TestingPage(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
+
 
     val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+        TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
-        topBar = { MyMediumTopABCommon(backStack, scrollBehavior, "Habits") })
+        topBar = {
+            TopAppBar(title = { Text("Habits") }, actions = {
+                Button(onClick = {
+                    backStack.add(
+                        Screen.MainPageRoute
+                    )
+                }) { Text("go to main page") }
+            })
+        })
     { innerPadding ->
 //        LaunchedEffect(lazyRowState.firstVisibleItemIndex) { }
         Box(
@@ -60,55 +74,7 @@ fun TestingPage(backStack: SnapshotStateList<NavKey>) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val rowCount = 10
-            val rowStates = List(rowCount) { rememberLazyListState() }
-            val overscrollEffect = rememberOverscrollEffect()
-            val stateRowX = rememberLazyListState() // State for the first Row, X
-            val stateRowY = rememberLazyListState() // State for the second Row, Y
-            val scope = rememberCoroutineScope()
-            val scrollState = rememberScrollableState { delta ->
-                scope.launch {
-                    rowStates.forEach { state ->
-                        state.scrollBy(-delta)
-                    }
-
-                }
-                delta
-            }
-
-            LazyColumn(
-                modifier = Modifier.scrollable(
-                    overscrollEffect = overscrollEffect,
-                    state = scrollState,
-                    orientation = Orientation.Horizontal,
-                    flingBehavior = ScrollableDefaults.flingBehavior()
-                ).overscroll(overscrollEffect), verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-
-                items(rowCount) { index ->
-                    LazyRow(Modifier.clickable(onClick = {}),
-                        state = rowStates[index],
-                        userScrollEnabled = false, horizontalArrangement = Arrangement.spacedBy(20.dp)
-                    ) {
-                        items(getInitialDates()) {
-                            Card {
-                                Column(
-                                    Modifier
-                                        .padding(10.dp)
-                                        .width(30.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(text = it.dayOfMonth.toString())
-
-                                }
-                            }
-                        }
-                    }
-
-
-                }
-
-            }
+                ImplementationSingleScrollable(viewModel)
         }
     }
 }

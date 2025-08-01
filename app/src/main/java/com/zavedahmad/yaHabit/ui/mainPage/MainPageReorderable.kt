@@ -69,7 +69,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
     val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
-    val coroutineScope = rememberCoroutineScope()
+
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val isAmoledColor by viewModel.amoledTheme.collectAsStateWithLifecycle()

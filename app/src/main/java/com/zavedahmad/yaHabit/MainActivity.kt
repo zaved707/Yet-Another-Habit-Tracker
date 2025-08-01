@@ -201,7 +201,7 @@ class RecipePickerActivity : ComponentActivity() {
 
                                         is Screen.TestingPageRoute -> {
                                             NavEntry(key = key) {
-                                                TestingPage(backStack)
+                                                TestingPage(backStack, viewModel = viewModelMainPage)
                                             }
                                         }
 
