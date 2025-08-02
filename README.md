@@ -64,8 +64,8 @@ Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/re
 - navigation 3 for navigation
 ## Roadmap
 - [x] Custom Starting  day of week
-- [x] Measurable Habits
-- [ ] data backup and restore
+- [x] Measurable Habits (since >= v0.1.0 )
+- [x] data backup and restore (since >= v0.2.0 )
 - [ ] swipe all habits at once in main page
 - [ ] HomeScreen Widgets
 
