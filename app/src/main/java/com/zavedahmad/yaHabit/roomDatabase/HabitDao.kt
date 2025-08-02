@@ -3,12 +3,15 @@ package com.zavedahmad.yaHabit.roomDatabase
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Upsert
+import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitDao {
-
+    @RawQuery
+    suspend fun rawQuery(supportSQLiteQuery: SupportSQLiteQuery): Int
     @Upsert
     suspend fun addHabit(habitEntity: HabitEntity) : Long
 

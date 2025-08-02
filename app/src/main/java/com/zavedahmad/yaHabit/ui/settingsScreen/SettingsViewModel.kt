@@ -1,7 +1,10 @@
 package com.zavedahmad.yaHabit.ui.settingsScreen
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zavedahmad.yaHabit.roomDatabase.ImportExportRepository
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
@@ -16,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel()
 class SettingsViewModel @Inject constructor(
     val preferencesDao: PreferencesDao,
-    val preferencesRepository: PreferencesRepository
+    val preferencesRepository: PreferencesRepository,
+    val importExportRepository: ImportExportRepository
 ) : ViewModel() {
 
 
@@ -38,6 +42,17 @@ class SettingsViewModel @Inject constructor(
         collectDynamicColor()
         collectAmoledTheme()
         collectFirstDayOfWeek()
+    }
+    fun exportDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            importExportRepository.exportDatabase(uri =  uri , onComplete = onComplete)
+        }
+    }
+
+    fun importDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            importExportRepository.importDatabase(uri = uri , onComplete = onComplete)
+        }
     }
 
     fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {

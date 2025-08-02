@@ -1,24 +1,42 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
+import android.content.Context
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
+import com.zavedahmad.yaHabit.roomDatabase.ImportExportRepository
+import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
+import com.zavedahmad.yaHabit.roomDatabase.utils.DatabaseUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -33,7 +51,11 @@ class MainPageViewModel @Inject constructor(
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
     val habitRepository: HabitRepository,
-    val preferencesRepository: PreferencesRepository
+    val preferencesRepository: PreferencesRepository,
+    val mainDatabase: MainDatabase,
+    @ApplicationContext val context: Context,
+    val databaseUtils: DatabaseUtils,
+    val importExportRepository: ImportExportRepository
 ) :
     ViewModel() {
     override fun onCleared() {
@@ -57,6 +79,7 @@ class MainPageViewModel @Inject constructor(
     val amoledTheme = _amoledTheme.asStateFlow()
     private val _devMode = MutableStateFlow<Boolean>(false)
     val devMode = _devMode.asStateFlow()
+
     init {
         collectAmoledTheme()
         viewModelScope.launch(Dispatchers.IO) {
@@ -65,20 +88,27 @@ class MainPageViewModel @Inject constructor(
         collectFirstDayOfWeek()
         collectThemeMode()
     }
-    fun changeReorderableMode(value : Boolean){
+
+    fun changeReorderableMode(value: Boolean) {
         _isReorderableMode.value = value
     }
+
     fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {
         viewModelScope.launch {
             preferencesRepository.setFirstDayOfWeek(dayOfWeek)
         }
     }
-    fun deleteAllHabits(){
-        viewModelScope.launch (Dispatchers.IO){
-        habitRepository.deleteAllHabits()}
+
+    fun deleteAllHabits() {
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.deleteAllHabits()
+        }
     }
-    fun collectFirstDayOfWeek(){
-        viewModelScope.launch { preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it } }
+
+    fun collectFirstDayOfWeek() {
+        viewModelScope.launch {
+            preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it }
+        }
 
     }
 
@@ -113,9 +143,10 @@ class MainPageViewModel @Inject constructor(
 
     }
 
-    fun addSampleHabits(){
+    fun addSampleHabits() {
         viewModelScope.launch(Dispatchers.IO) {
-        habitRepository.addSampleHabits()}
+            habitRepository.addSampleHabits()
+        }
     }
 
     fun generateInitialDates(): List<LocalDate> {
@@ -154,4 +185,18 @@ class MainPageViewModel @Inject constructor(
         }
     }
 
+    fun exportDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            importExportRepository.exportDatabase(uri =  uri , onComplete = onComplete)
+        }
+    }
+
+    fun importDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+          importExportRepository.importDatabase(uri = uri , onComplete = onComplete)
+        }
+    }
+
+
 }
+

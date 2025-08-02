@@ -73,9 +73,12 @@ sealed class Screen : NavKey {
 @AndroidEntryPoint
 class RecipePickerActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
+    private val IMPORT_SUCCESSFUL = "DATABASE_IMPORT_SUCCESSFUL"
+    private val IMPORT_INVALID = "DATABASE_IMPORT_INVALID"
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
 
         setEdgeToEdgeConfig()
         setContent {
@@ -158,7 +161,7 @@ class RecipePickerActivity : ComponentActivity() {
                                                     contentAlignment = Alignment.Center
                                                 ) {
 
-                                                    SettingsScreen(backStack, settingsViewModel)
+                                                    SettingsScreen(backStack, settingsViewModel,onDatabaseImport = { restartActivityOnImport(it) })
                                                 }
                                             }
                                         }
@@ -230,6 +233,14 @@ class RecipePickerActivity : ComponentActivity() {
 
             }
         }
+    }
+    fun restartActivityOnImport(successful: Boolean) {
+        finish()
+        if (successful)
+            startActivity(intent.putExtra(IMPORT_SUCCESSFUL, true))
+        else
+            startActivity(intent.putExtra(IMPORT_INVALID, true))
+        Runtime.getRuntime().exit(0)
     }
 
 
