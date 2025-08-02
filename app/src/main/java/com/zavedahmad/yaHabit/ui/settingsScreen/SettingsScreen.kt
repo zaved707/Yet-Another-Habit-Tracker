@@ -240,7 +240,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                     }
                 )
             }
-            SettingsHeading("Data")
+            SettingsHeading("DATA")
             ExportDatabaseSettingsItem(viewModel)
             ImportDatabaseSettingsItem(viewModel, onDatabaseImport = onDatabaseImport)
 
