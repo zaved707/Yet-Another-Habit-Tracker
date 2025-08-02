@@ -91,6 +91,7 @@ fun ImportDatabaseSettingsItem(viewModel: SettingsViewModel, onDatabaseImport: (
     }
 
         ConfirmationDialog(
+
             visible = showDialog.value,
             title = "Import Data?",
             text = "Are you sure you want to import the database? This will overwrite the current database.",

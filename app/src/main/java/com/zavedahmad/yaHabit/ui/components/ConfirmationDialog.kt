@@ -43,10 +43,11 @@ fun ConfirmationDialog(
 ) {
     if (visible) {
         Dialog(onDismissRequest = { onDismiss() }) {
-            OutlinedCard(
-                modifier = Modifier
+            OutlinedCard(modifier = Modifier, colors = CardDefaults.outlinedCardColors(
+                containerColor = MaterialTheme.colorScheme.surface),
 
-                    .background(MaterialTheme.colorScheme.surface)
+
+                shape = RoundedCornerShape(20.dp)
             ) {
                 Column(Modifier.padding(30.dp)) {
                     title?.let {
