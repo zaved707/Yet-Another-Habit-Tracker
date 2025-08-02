@@ -145,7 +145,7 @@ class RecipePickerActivity : ComponentActivity() {
 
                                                     MainPageReorderable(
                                                         backStack,
-                                                        viewModelMainPage,onDatabaseImport = { restartActivityOnImport(it) }
+                                                        viewModelMainPage
                                                     )
                                                 }
                                             }
@@ -161,7 +161,7 @@ class RecipePickerActivity : ComponentActivity() {
                                                     contentAlignment = Alignment.Center
                                                 ) {
 
-                                                    SettingsScreen(backStack, settingsViewModel)
+                                                    SettingsScreen(backStack, settingsViewModel,onDatabaseImport = { restartActivityOnImport(it) })
                                                 }
                                             }
                                         }

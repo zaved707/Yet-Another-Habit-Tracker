@@ -26,12 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 
 @Composable
 fun ConfirmationDialog(
     visible: Boolean,
+    title: String? = null,
     text: String = "do you want to confirm this?",
     confirmText: String = "Confirm!",
     cancelText: String = "Cancel?",
@@ -47,16 +49,24 @@ fun ConfirmationDialog(
                     .background(MaterialTheme.colorScheme.surface)
             ) {
                 Column(Modifier.padding(30.dp)) {
-                    OutlinedCard (colors = CardDefaults.outlinedCardColors()){
+                    title?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                    }
+
                         Row(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            Text(text)
+                            Text(text, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                    }
+
                     Spacer(Modifier.height(30.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),

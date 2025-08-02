@@ -1,11 +1,6 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
-import android.content.Context
-import android.net.Uri
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +25,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -46,10 +40,8 @@ import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +50,6 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,17 +59,13 @@ import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel,onDatabaseImport : (Boolean) -> Unit) {
+fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
     val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
@@ -192,7 +179,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                         }
                                     }
                                 }
-                                MainPageMenu(viewModel, backStack, onDatabaseImport= onDatabaseImport)
+                                MainPageMenu(viewModel, backStack)
                             }
                         }
 
@@ -322,79 +309,4 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 }
 
-@Composable
-fun ExportDatabase(viewModel: MainPageViewModel) {
-    val context = LocalContext.current
-    val exportLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.CreateDocument("application/x-sqlite3")
-        ) { uri: Uri? ->
-            uri?.let {
-                viewModel.exportDatabase(context, it) { result ->
-                    result.onSuccess {
-                        makeToast(context, "databaseExported")
-                    }.onFailure { e ->
-                        makeToast(context, "failure")
-                    }
-                }
-            }
 
-
-        }
-    Button(onClick = { exportLauncher.launch("main_database.db") }) {
-        Text("Export Database")
-    }
-
-}
-
-
-fun makeToast(context: Context, text: String) {
-    CoroutineScope(Dispatchers.Main).launch {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-
-    }
-}
-
-@Composable
-fun ImportDatabase(viewModel: MainPageViewModel, onDatabaseImport : (Boolean) -> Unit) {
-
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val importLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri: Uri? ->
-        if (uri == null) {
-            coroutineScope.launch {
-                makeToast(context, "Import canceled")
-            }
-        } else {
-            viewModel.importDatabase(context, uri) { result ->
-                coroutineScope.launch {
-                    result.onSuccess {
-                        onDatabaseImport(true)
-
-
-
-//                        makeToast(context, "Database imported successfully")
-
-                    }.onFailure { e ->
-                        onDatabaseImport(false)
-//                        makeToast(context, "Import failed: ${e.message}")
-                    }
-                }
-            }
-        }
-    }
-    Button(onClick = {
-        importLauncher.launch(
-            arrayOf(
-                "application/x-sqlite3",
-                "application/vnd.sqlite3",
-                "application/octet-stream",
-                "*/*"
-            )
-        )
-    }) {
-        Text("Import Database")
-    }
-}

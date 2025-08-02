@@ -25,6 +25,8 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.InvertColors
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -66,7 +68,7 @@ import java.time.DayOfWeek
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsViewModel) {
+fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsViewModel,onDatabaseImport : (Boolean) -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     var isThemeDialogActive by remember { mutableStateOf(false) }
@@ -238,6 +240,9 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                     }
                 )
             }
+            SettingsHeading("Data")
+            ExportDatabaseSettingsItem(viewModel)
+            ImportDatabaseSettingsItem(viewModel, onDatabaseImport = onDatabaseImport)
 
         }
 

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -22,10 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
+
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 
 @Composable
-fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>,onDatabaseImport : (Boolean) -> Unit) {
+fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
@@ -61,8 +61,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
             if (viewModel.devMode.value){
             DropdownMenuItem(onClick = {viewModel.addSampleHabits()}, text = { Text("add sample habits")})
             DropdownMenuItem(onClick = {viewModel.deleteAllHabits()}, text = {Text("clean Habits")})}
-            ExportDatabase(viewModel)
-            ImportDatabase(viewModel, onDatabaseImport)
+
         }
     }
 }
