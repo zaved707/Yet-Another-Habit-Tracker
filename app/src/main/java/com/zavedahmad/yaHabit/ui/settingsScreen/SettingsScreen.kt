@@ -1,5 +1,6 @@
 package com.zavedahmad.yaHabit.ui.settingsScreen
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -186,6 +187,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                 title = "Theme Mode",
                 description = themeNow?.value ?: "system",
                 task = { isThemeDialogActive = true })
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
             SettingsItem(
                 icon = Icons.Default.Palette,
                 title = "Dynamic Color",
@@ -202,7 +204,7 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
                                 dynamicColor.value == "true"
                             }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
                     }
-                })
+                })}
 
             SettingsItem(
                 icon = Icons.Default.InvertColors,
@@ -260,7 +262,7 @@ fun ModalForWeekSelection(
 
     if (isVisible) {
         Dialog(onDismissRequest = { onDismissRequest() }) {
-            CardMyStyle() {
+            CardMyStyle(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     for (i in 1..7) {
                         val currentDay = DayOfWeek.of(i)
