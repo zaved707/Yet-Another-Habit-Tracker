@@ -14,6 +14,7 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
+import com.zavedahmad.yaHabit.roomDatabase.ImportExportRepository
 import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
@@ -54,6 +55,7 @@ class MainPageViewModel @Inject constructor(
     val mainDatabase: MainDatabase,
     @ApplicationContext val context: Context,
     val databaseUtils: DatabaseUtils,
+    val importExportRepository: ImportExportRepository
 ) :
     ViewModel() {
     override fun onCleared() {
@@ -185,80 +187,16 @@ class MainPageViewModel @Inject constructor(
 
     fun exportDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                // Run checkpoint to ensure WAL is committed to the main database file
-                habitDao.rawQuery(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
-
-                val dbFile = context.getDatabasePath("main_database")
-                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                    FileInputStream(dbFile).use { inputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                } ?: throw IllegalStateException("Failed to open output stream")
-                onComplete(Result.success(Unit))
-            } catch (e: Exception) {
-                onComplete(Result.failure(e))
-            }
+            importExportRepository.exportDatabase(uri =  uri , onComplete = onComplete)
         }
     }
 
     fun importDatabase(context: Context, uri: Uri, onComplete: (Result<Unit>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val databaseFile = databaseUtils.getDatabasePath()
-
-                if (databaseFile.exists()) {
-                    val backupDatabaseFile = File.createTempFile("old", ".db")
-
-                    databaseUtils.closeDatabase()
-                    if (!databaseUtils.isDatabaseOpen()) {
-                        backupDatabaseFile.writeBytes(databaseFile.readBytes())
-                        deleteDatabaseFiles(databaseFile)
-
-                        // Copy from Uri input stream
-                        context.contentResolver.openInputStream(uri)?.use { input ->
-                            databaseFile.writeBytes(input.readBytes())
-                        } ?: throw IllegalStateException("Failed to open input stream")
-                    } else {
-                        throw IllegalStateException("Database could not be closed")
-                    }
-
-                    if (!databaseUtils.isDatabaseValid()) {
-                        deleteDatabaseFiles(databaseFile)
-                        databaseFile.writeBytes(backupDatabaseFile.readBytes())
-                        throw IllegalStateException("Invalid database file")
-                    }
-
-                    onComplete(Result.success(Unit))
-                } else {
-                    // If no existing database, still import the new one
-                    context.contentResolver.openInputStream(uri)?.use { input ->
-                        databaseFile.writeBytes(input.readBytes())
-                    } ?: throw IllegalStateException("Failed to open input stream")
-
-                    if (!databaseUtils.isDatabaseValid()) {
-                        deleteDatabaseFiles(databaseFile)
-                        throw IllegalStateException("Invalid database file")
-                    }
-
-                    onComplete(Result.success(Unit))
-                }
-            } catch (e: Exception) {
-                onComplete(Result.failure(e))
-            }
+          importExportRepository.importDatabase(uri = uri , onComplete = onComplete)
         }
     }
 
-    private fun deleteDatabaseFiles(databaseFile: File) {
-        val databaseDirectory = File(databaseFile.parent!!)
-        if (databaseDirectory.isDirectory) {
-            databaseDirectory.listFiles()?.forEach { child ->
-                if (child.name.endsWith("-shm") || child.name.endsWith("-wal")) {
-                    child.deleteRecursively()
-                }
-            }
-        }
-        databaseFile.deleteRecursively()
-    }
+
 }
 
