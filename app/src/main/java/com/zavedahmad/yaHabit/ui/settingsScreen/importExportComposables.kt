@@ -95,10 +95,7 @@ fun ImportDatabaseSettingsItem(viewModel: SettingsViewModel, onDatabaseImport: (
             title = "Import Data?",
             text = "Are you sure you want to import the database? This will overwrite the current database.",
             confirmAction = {  importLauncher.launch(
-                arrayOf(
-
-                    "*/*"
-                )
+                arrayOf("application/vnd.sqlite3", "application/octet-stream")
             )},
             onDismiss ={ showDialog.value = false}
         )
