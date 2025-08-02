@@ -463,7 +463,8 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                      Row(
                          modifier = Modifier.fillMaxWidth(),
                          horizontalArrangement = Arrangement.End
-                     ) { Button(onClick = { showDialog.value = false }) { Text("Done") } }
+                     ) { Button(onClick = { showDialog.value = false
+                         checkErrorsAndRectify() }) { Text("Done") } }
                      options.forEachIndexed { index, item ->
                          val isChecked = streakChecked.value == index
                          DialogItem(
