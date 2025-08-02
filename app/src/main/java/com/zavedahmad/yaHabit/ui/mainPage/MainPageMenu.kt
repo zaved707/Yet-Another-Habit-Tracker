@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -28,6 +29,7 @@ import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
+    val devMode = viewModel.devMode.collectAsStateWithLifecycle()
     IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
         Icon(
             imageVector = Icons.Outlined.MoreVert,
@@ -45,7 +47,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
         onDismissRequest = { menuVisible.value = false }
     ) {
         Column {
-            DropdownMenuItem(text = { Row { Text("Settings") } }, onClick = {
+            DropdownMenuItem(trailingIcon = {Icon(Icons.Filled.Settings, contentDescription = "setting")}, text = { Row { Text("Settings") } }, onClick = {
                 menuVisible.value = false
                 backStack.add(Screen.SettingsPageRoute)
             })
@@ -58,7 +60,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
                 viewModel.changeReorderableMode(!isReorderableMode.value)
                 menuVisible.value = false
             })
-            if (viewModel.devMode.value){
+            if (devMode.value){
             DropdownMenuItem(onClick = {viewModel.addSampleHabits()}, text = { Text("add sample habits")})
             DropdownMenuItem(onClick = {viewModel.deleteAllHabits()}, text = {Text("clean Habits")})}
 
