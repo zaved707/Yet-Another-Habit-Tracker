@@ -11,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.materialkolor.Contrast
 import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicColorScheme
@@ -62,30 +64,22 @@ fun CustomTheme(
             dynamicLightColorScheme(context)
         }
     } else {
-        if(useExistingTheme) {
+        val realPrimaryColor = primaryColor ?: MaterialTheme.colorScheme.primary
+
+
             rememberDynamicColorScheme(
-                primary = primaryColor ?: MaterialTheme.colorScheme.primary,
-                secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
-                tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
-                neutral = MaterialTheme.colorScheme.surface,
+                primary = realPrimaryColor,
+
+//                secondary = secondaryColor ?: MaterialTheme.colorScheme.secondary,
+//                tertiary = tertiaryColor ?: MaterialTheme.colorScheme.tertiary,
+//                neutral = MaterialTheme.colorScheme.surface,
                 isDark = darkTheme,
                 isAmoled = isAmoled,
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
 
-                contrastLevel = 0.5 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
+              contrastLevel = Contrast.Medium.value// 0.0 for normal contrast, 0.5 for medium, 1.0 for high
             )
-        }else{
-            rememberDynamicColorScheme(
-                primary = primaryColor ?: Purple80,
-                secondary = secondaryColor ?: Color(0xFFFFAFAF),
-                tertiary = tertiaryColor ?: Pink80,
-                isDark = darkTheme,
-                isAmoled = isAmoled,
-                specVersion = ColorSpec.SpecVersion.SPEC_2025,
 
-                contrastLevel = 0.5 // 0.0 for normal contrast, 0.5 for medium, 1.0 for high
-            )
-        }
 
     }
 
@@ -98,3 +92,4 @@ fun CustomTheme(
         content = content
     )
 }}
+

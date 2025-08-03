@@ -36,7 +36,7 @@ fun PieChartDetail(habitAllData : List<HabitCompletionEntity>?) {
     val numberOfSkips by remember(habitAllData ){derivedStateOf { habitAllData?.filter { it.isSkip() }?.size ?: 0 }}
     val color1 = MaterialTheme.colorScheme.primary.copy(0.5f)
     val color2 = MaterialTheme.colorScheme.primary
-    val color3  = MaterialTheme.colorScheme.secondary
+    val color3  = MaterialTheme.colorScheme.tertiary
     val data = remember(habitAllData) {
         mutableStateOf(
             listOf(

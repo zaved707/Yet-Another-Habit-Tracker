@@ -22,7 +22,7 @@ fun ColorPalette() {
             Modifier
                 .weight(1f)
                 .height(30.dp)
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .background(MaterialTheme.colorScheme.secondary)
         )
         Box(
             Modifier
@@ -34,13 +34,13 @@ fun ColorPalette() {
             Modifier
                 .weight(1f)
                 .height(30.dp)
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(MaterialTheme.colorScheme.primaryContainer)
         )
         Box(
             Modifier
                 .weight(1f)
                 .height(30.dp)
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.secondaryContainer)
         )
         Box(
             Modifier

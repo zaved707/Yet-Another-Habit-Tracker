@@ -105,9 +105,9 @@ fun GridDayItem(
 
         "skip" -> {
             buttonAction = listOf(unSkipHabit, { isDialogVisible.value = true })
-            bgColor = MaterialTheme.colorScheme.secondary
-            textColor = MaterialTheme.colorScheme.onSecondary
-            noteIndicatorColor = MaterialTheme.colorScheme.onSecondary
+            bgColor = MaterialTheme.colorScheme.tertiary
+            textColor = MaterialTheme.colorScheme.onTertiary
+            noteIndicatorColor = MaterialTheme.colorScheme.onTertiary
 
         }
         else -> {

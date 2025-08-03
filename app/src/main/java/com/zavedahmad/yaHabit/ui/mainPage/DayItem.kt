@@ -205,7 +205,7 @@ fun DayItem(
             borderColor = MaterialTheme.colorScheme.primary
             buttonAction = listOf(unSkipHabit, { isDialogVisible.value = true })
             bgColor = MaterialTheme.colorScheme.secondaryContainer
-            textColor = MaterialTheme.colorScheme.secondary.copy(0.9f)
+            textColor = MaterialTheme.colorScheme.tertiary
             iconComposable = { Icon(Icons.Default.DoubleArrow, "", tint = textColor) }
         }
 

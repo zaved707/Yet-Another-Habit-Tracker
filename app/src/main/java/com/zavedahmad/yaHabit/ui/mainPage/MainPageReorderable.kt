@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.ui.components.ColorPalette
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.channels.Channel
@@ -229,6 +230,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             ) {
 
 
+
+
                 if (habits.value.isEmpty()) {
                     val pagerState = rememberPagerState(pageCount = {
                         1
@@ -241,6 +244,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+
                             Icon(
                                 Icons.AutoMirrored.Filled.FormatListBulleted,
                                 modifier = Modifier.size(200.dp),
