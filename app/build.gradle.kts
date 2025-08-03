@@ -88,7 +88,7 @@ dependencies {
     // glance for widgets
 //    implementation("androidx.glance:glance-appwidget:1.1.1")
     // For interop APIs with Material 3
-    implementation("androidx.glance:glance-material3:1.1.1")
+//    implementation("androidx.glance:glance-material3:1.1.1")
     // end
 
     implementation("io.github.ehsannarmani:compose-charts:0.1.7")
