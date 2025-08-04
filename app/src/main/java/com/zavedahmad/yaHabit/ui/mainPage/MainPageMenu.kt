@@ -50,6 +50,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
             DropdownMenuItem(trailingIcon = {Icon(Icons.Filled.Settings, contentDescription = "setting")}, text = { Row { Text("Settings") } }, onClick = {
                 menuVisible.value = false
                 backStack.add(Screen.SettingsPageRoute)
+
             })
             DropdownMenuItem(text = {
                 Row {
