@@ -28,6 +28,7 @@ import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.zavedahmad.yaHabit.ui.TestingPage.TestingPage
+import com.zavedahmad.yaHabit.ui.aboutPage.AboutPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
@@ -66,12 +67,15 @@ sealed class Screen : NavKey {
     @Serializable
     data object SettingsPageRoute : Screen()
 
+    @Serializable
+    data object AboutPageRoute : Screen()
+
 
 }
 
 
 @AndroidEntryPoint
-class RecipePickerActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     private val IMPORT_SUCCESSFUL = "DATABASE_IMPORT_SUCCESSFUL"
     private val IMPORT_INVALID = "DATABASE_IMPORT_INVALID"
@@ -83,7 +87,7 @@ class RecipePickerActivity : ComponentActivity() {
         setEdgeToEdgeConfig()
         setContent {
 
-            val backStack = rememberNavBackStack<Screen>(Screen.MainPageRoute)
+            val backStack = rememberNavBackStack<Screen>(Screen.AboutPageRoute)
 
             val viewModelMainPage = hiltViewModel<MainPageViewModel>()
 
@@ -165,6 +169,11 @@ class RecipePickerActivity : ComponentActivity() {
                                                 }
                                             }
                                         }
+                                        is Screen.AboutPageRoute -> {
+                                            NavEntry(key = key){
+                                                AboutPage()
+                                            }
+                                        }
 
                                         is Screen.AddHabitPageRoute -> {
                                             NavEntry(key = key) {
@@ -204,7 +213,8 @@ class RecipePickerActivity : ComponentActivity() {
 
                                         is Screen.TestingPageRoute -> {
                                             NavEntry(key = key) {
-                                                TestingPage(backStack)
+                                                AboutPage()
+
                                             }
                                         }
 

@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.InvertColors
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.SaveAlt
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,6 +65,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.kizitonwose.calendar.core.daysOfWeek
+import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.components.CardMyStyle
 import java.time.DayOfWeek
 
@@ -245,7 +247,12 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
             SettingsHeading("DATA")
             ExportDatabaseSettingsItem(viewModel)
             ImportDatabaseSettingsItem(viewModel, onDatabaseImport = onDatabaseImport)
-
+            SettingsHeading("MISC")
+            SettingsItem(
+                icon = Icons.Outlined.Info,
+                title = "About",
+                task = {backStack.add(Screen.AboutPageRoute)}
+            )
         }
 
 
