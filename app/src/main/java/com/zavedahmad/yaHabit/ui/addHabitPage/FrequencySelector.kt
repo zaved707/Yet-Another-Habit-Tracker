@@ -1,7 +1,6 @@
 package com.zavedahmad.yaHabit.ui.addHabitPage
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,13 +19,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -50,12 +46,13 @@ import com.zavedahmad.yaHabit.database.enums.HabitStreakType
 import com.zavedahmad.yaHabit.ui.components.CardMyStyle
 import com.zavedahmad.yaHabit.ui.components.DialogItem
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.formatHabitFrequency
-import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
-import com.zavedahmad.yaHabit.utils.formatNumber.softFormatNumber
+
+import com.zavedahmad.yahabit.common.formatNumber.softFormatNumber
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boolean) -> Unit) {
+
     val streakChecked = rememberSaveable { mutableStateOf(0) }
     val frequencyEveryDay = rememberSaveable { mutableStateOf("1") }
     val frequencyCustom = rememberSaveable { mutableStateOf("3") }

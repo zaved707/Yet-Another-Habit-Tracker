@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.utils.formatNumber
+package com.zavedahmad.yahabit.common.formatNumber
 
 fun formatNumberToReadable(number: Double) : String{
     return when {

@@ -28,7 +28,8 @@ import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.entities.isSkip
 import com.zavedahmad.yaHabit.ui.components.CardMyStyle
-import com.zavedahmad.yaHabit.utils.formatNumber.softFormatNumber
+
+import com.zavedahmad.yahabit.common.formatNumber.softFormatNumber
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

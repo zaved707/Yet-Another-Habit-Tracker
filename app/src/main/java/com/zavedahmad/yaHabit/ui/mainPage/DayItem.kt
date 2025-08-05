@@ -37,7 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import com.zavedahmad.yaHabit.R
-import com.zavedahmad.yaHabit.utils.formatNumber.formatNumberToReadable
+
+import com.zavedahmad.yahabit.common.formatNumber.formatNumberToReadable
 import java.time.LocalDate
 
 

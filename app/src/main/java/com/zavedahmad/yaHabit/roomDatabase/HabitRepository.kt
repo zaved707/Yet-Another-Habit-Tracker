@@ -13,8 +13,8 @@ import com.zavedahmad.yaHabit.database.entities.isPartial
 import com.zavedahmad.yaHabit.database.entities.isSkip
 import com.zavedahmad.yaHabit.database.entities.onlyPartial
 import com.zavedahmad.yaHabit.database.enums.HabitStreakType
-import com.zavedahmad.yaHabit.utils.findHabitClusters
-import com.zavedahmad.yaHabit.utils.processDateTriples
+import com.zavedahmad.yaHabit.database.utils.findHabitClusters
+import com.zavedahmad.yaHabit.database.utils.processDateTriples
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate

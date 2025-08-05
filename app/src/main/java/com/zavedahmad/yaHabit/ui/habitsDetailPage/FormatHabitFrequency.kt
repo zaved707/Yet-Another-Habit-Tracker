@@ -1,7 +1,8 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
 import com.zavedahmad.yaHabit.database.enums.HabitStreakType
-import com.zavedahmad.yaHabit.utils.formatNumber.formatNumberToReadable
+
+import com.zavedahmad.yahabit.common.formatNumber.formatNumberToReadable
 
 fun formatHabitFrequency(streakType: HabitStreakType, frequency: Double, cycle: Int, formatFrequencyNumber : Boolean = false): String {
     val formattedNumber =  if (formatFrequencyNumber){

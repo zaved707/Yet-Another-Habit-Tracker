@@ -17,9 +17,9 @@ import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 
 import com.zavedahmad.yaHabit.ui.components.DaysOfWeekTitle
-import com.zavedahmad.yaHabit.utils.convertHabitCompletionEntityListToDatesList
-import com.zavedahmad.yaHabit.utils.findHabitClusters
-import com.zavedahmad.yaHabit.utils.processDateTriples
+import com.zavedahmad.yaHabit.database.utils.convertHabitCompletionEntityListToDatesList
+import com.zavedahmad.yaHabit.database.utils.findHabitClusters
+import com.zavedahmad.yaHabit.database.utils.processDateTriples
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
