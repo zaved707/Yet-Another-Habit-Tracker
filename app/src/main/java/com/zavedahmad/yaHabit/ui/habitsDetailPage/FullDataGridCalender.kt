@@ -22,9 +22,9 @@ import com.kizitonwose.calendar.compose.HeatMapCalendar
 import com.kizitonwose.calendar.compose.heatmapcalendar.HeatMapWeekHeaderPosition
 import com.kizitonwose.calendar.compose.heatmapcalendar.rememberHeatMapCalendarState
 import com.kizitonwose.calendar.core.yearMonth
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.roomDatabase.hasNote
-import com.zavedahmad.yaHabit.roomDatabase.state
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.hasNote
+import com.zavedahmad.yaHabit.database.entities.state
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth

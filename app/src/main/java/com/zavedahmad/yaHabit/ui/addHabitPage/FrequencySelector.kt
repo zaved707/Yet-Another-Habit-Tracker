@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
+import com.zavedahmad.yaHabit.database.enums.HabitStreakType
 import com.zavedahmad.yaHabit.ui.components.CardMyStyle
 import com.zavedahmad.yaHabit.ui.components.DialogItem
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.formatHabitFrequency

@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -27,13 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
-import com.zavedahmad.yaHabit.roomDatabase.isSkip
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
+import com.zavedahmad.yaHabit.database.entities.isSkip
 import com.zavedahmad.yaHabit.ui.components.CardMyStyle
 import com.zavedahmad.yaHabit.utils.formatNumber.softFormatNumber
-import kotlin.math.roundToInt
-import kotlin.math.roundToLong
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

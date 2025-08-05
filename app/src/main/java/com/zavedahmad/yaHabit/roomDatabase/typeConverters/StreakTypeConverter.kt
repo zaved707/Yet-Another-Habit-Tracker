@@ -1,7 +1,7 @@
 package com.zavedahmad.yaHabit.roomDatabase.typeConverters
 
 import androidx.room.TypeConverter
-import com.zavedahmad.yaHabit.roomDatabase.HabitStreakType
+import com.zavedahmad.yaHabit.database.enums.HabitStreakType
 
 class StreakTypeConverter {
     @TypeConverter

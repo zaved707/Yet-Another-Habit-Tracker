@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

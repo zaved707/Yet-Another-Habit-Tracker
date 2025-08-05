@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.Upsert
 import androidx.sqlite.db.SupportSQLiteQuery
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

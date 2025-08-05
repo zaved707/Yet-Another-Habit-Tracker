@@ -21,7 +21,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 import kotlinx.coroutines.Dispatchers

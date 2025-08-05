@@ -1,6 +1,6 @@
 package com.zavedahmad.yaHabit.utils
 
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import java.time.LocalDate
 
 /**

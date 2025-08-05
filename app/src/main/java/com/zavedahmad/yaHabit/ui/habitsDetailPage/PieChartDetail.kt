@@ -1,6 +1,5 @@
 package com.zavedahmad.yaHabit.ui.habitsDetailPage
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.roomDatabase.isAbsolute
-import com.zavedahmad.yaHabit.roomDatabase.isPartial
-import com.zavedahmad.yaHabit.roomDatabase.isSkip
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.isAbsolute
+import com.zavedahmad.yaHabit.database.entities.isPartial
+import com.zavedahmad.yaHabit.database.entities.isSkip
 import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.models.Pie
 

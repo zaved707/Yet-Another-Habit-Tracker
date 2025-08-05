@@ -12,8 +12,8 @@ import androidx.compose.ui.draw.alpha
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 
 import com.zavedahmad.yaHabit.ui.components.DaysOfWeekTitle

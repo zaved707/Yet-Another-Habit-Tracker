@@ -1,6 +1,4 @@
-package com.zavedahmad.yaHabit.database.entities
-
-
+package com.zavedahmad.yaHabit.database.enums
 
 enum class HabitStreakType(val dbValue: String) {
     DAILY("everyday"),

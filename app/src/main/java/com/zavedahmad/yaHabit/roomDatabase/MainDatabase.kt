@@ -5,10 +5,9 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.typeConverters.ColorConvertor
 import com.zavedahmad.yaHabit.roomDatabase.typeConverters.LocalDateConverter
 import com.zavedahmad.yaHabit.roomDatabase.typeConverters.StreakTypeConverter

@@ -3,16 +3,12 @@ package com.zavedahmad.yaHabit.ui.mainPage
 
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
-import androidx.sqlite.db.SimpleSQLiteQuery
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
-import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.ImportExportRepository
 import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
@@ -23,20 +19,12 @@ import com.zavedahmad.yaHabit.roomDatabase.utils.DatabaseUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 import java.time.DayOfWeek
 import java.time.LocalDate
 

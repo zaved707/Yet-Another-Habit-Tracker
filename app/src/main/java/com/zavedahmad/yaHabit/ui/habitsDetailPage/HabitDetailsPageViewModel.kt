@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionEntity
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitDao
-import com.zavedahmad.yaHabit.roomDatabase.HabitEntity
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.zavedahmad.yaHabit.database.enums.HabitStreakType
 
 @Entity(tableName = "HabitTable")
 data class HabitEntity(
@@ -17,8 +18,8 @@ data class HabitEntity(
     val frequency :Double,
     val cycle : Int,
     @ColumnInfo(defaultValue = "1.0")
-    val repetitionPerDay : Double ,
+    val repetitionPerDay : Double,
     @ColumnInfo(defaultValue = "Unit")
-    val measurementUnit : String ,
+    val measurementUnit : String,
 
-)
+    )
