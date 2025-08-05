@@ -3,6 +3,8 @@ package com.zavedahmad.yaHabit.roomDatabase
 import android.content.Context
 import android.net.Uri
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
+import com.zavedahmad.yaHabit.database.daos.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.utils.DatabaseUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

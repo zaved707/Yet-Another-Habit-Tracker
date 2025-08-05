@@ -7,6 +7,9 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.zavedahmad.yaHabit.database.PreferenceEntity
+import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
+import com.zavedahmad.yaHabit.database.daos.HabitDao
+import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.typeConverters.ColorConvertor

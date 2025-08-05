@@ -4,10 +4,10 @@ package com.zavedahmad.yaHabit.hilt
 
 import android.content.Context
 import androidx.room.Room
-import com.zavedahmad.yaHabit.roomDatabase.HabitCompletionDao
-import com.zavedahmad.yaHabit.roomDatabase.HabitDao
+import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
+import com.zavedahmad.yaHabit.database.daos.HabitDao
 import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
-import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
+import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.roomDatabase
+package com.zavedahmad.yaHabit.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query

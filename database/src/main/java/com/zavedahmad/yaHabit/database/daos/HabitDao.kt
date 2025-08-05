@@ -1,7 +1,6 @@
-package com.zavedahmad.yaHabit.roomDatabase
+package com.zavedahmad.yaHabit.database.daos
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.Upsert
