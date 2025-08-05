@@ -1,7 +1,7 @@
 package com.zavedahmad.yaHabit.hilt
 
-import com.zavedahmad.yaHabit.roomDatabase.utils.DatabaseUtils
-import com.zavedahmad.yaHabit.roomDatabase.utils.LocalDatabaseUtils
+import com.zavedahmad.yaHabit.database.utils.DatabaseUtils
+import com.zavedahmad.yaHabit.database.utils.LocalDatabaseUtils
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

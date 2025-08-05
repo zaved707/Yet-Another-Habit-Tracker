@@ -1,9 +1,8 @@
-package com.zavedahmad.yaHabit.roomDatabase.utils
+package com.zavedahmad.yaHabit.database.utils
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Room
-import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
+import com.zavedahmad.yaHabit.database.MainDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject

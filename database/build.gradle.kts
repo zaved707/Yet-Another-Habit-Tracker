@@ -46,7 +46,7 @@ android {
     }
 }
 room{
-    schemaDirectory("${projectDir}/src/main/java/com/zavedahmad/yaHabit/roomDatabase/schemas")
+    schemaDirectory("${projectDir}/src/main/java/com/zavedahmad/yaHabit/database/schemas")
 }
 
 dependencies {

@@ -14,7 +14,7 @@ import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
-import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
+import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 
 import com.zavedahmad.yaHabit.ui.components.DaysOfWeekTitle
 import com.zavedahmad.yaHabit.database.utils.convertHabitCompletionEntityListToDatesList

@@ -1,7 +1,8 @@
-package com.zavedahmad.yaHabit.roomDatabase
+package com.zavedahmad.yaHabit.database.repositories
 
 import androidx.compose.ui.graphics.Color
 import androidx.room.withTransaction
+import com.zavedahmad.yaHabit.database.MainDatabase
 import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
 import com.zavedahmad.yaHabit.database.daos.HabitDao
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity

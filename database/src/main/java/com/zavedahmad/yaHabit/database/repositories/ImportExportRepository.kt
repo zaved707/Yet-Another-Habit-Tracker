@@ -1,11 +1,13 @@
-package com.zavedahmad.yaHabit.roomDatabase
+package com.zavedahmad.yaHabit.database.repositories
 
 import android.content.Context
 import android.net.Uri
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.zavedahmad.yaHabit.database.MainDatabase
 import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
 import com.zavedahmad.yaHabit.database.daos.HabitDao
-import com.zavedahmad.yaHabit.roomDatabase.utils.DatabaseUtils
+import com.zavedahmad.yaHabit.database.utils.DatabaseUtils
+
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

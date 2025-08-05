@@ -4,10 +4,10 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zavedahmad.yaHabit.roomDatabase.ImportExportRepository
+import com.zavedahmad.yaHabit.database.repositories.ImportExportRepository
 import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
-import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
+import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,5 +1,6 @@
-package com.zavedahmad.yaHabit.roomDatabase
+package com.zavedahmad.yaHabit.database.repositories
 
+import com.zavedahmad.yaHabit.database.MainDatabase
 import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import kotlinx.coroutines.flow.Flow

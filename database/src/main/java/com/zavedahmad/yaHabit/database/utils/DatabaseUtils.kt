@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.roomDatabase.utils
+package com.zavedahmad.yaHabit.database.utils
 
 import java.io.File
 
