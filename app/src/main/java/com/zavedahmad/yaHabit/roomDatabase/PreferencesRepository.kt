@@ -1,5 +1,6 @@
 package com.zavedahmad.yaHabit.roomDatabase
 
+import com.zavedahmad.yaHabit.database.PreferenceEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.DayOfWeek

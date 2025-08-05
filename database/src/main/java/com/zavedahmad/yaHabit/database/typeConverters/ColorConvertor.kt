@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.roomDatabase.typeConverters
+package com.zavedahmad.yaHabit.database.typeConverters
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.fromColorLong

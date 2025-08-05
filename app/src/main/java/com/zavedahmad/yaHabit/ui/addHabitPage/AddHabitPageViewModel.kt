@@ -8,7 +8,7 @@ import com.zavedahmad.yaHabit.roomDatabase.HabitDao
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.database.enums.HabitStreakType
-import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
+import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

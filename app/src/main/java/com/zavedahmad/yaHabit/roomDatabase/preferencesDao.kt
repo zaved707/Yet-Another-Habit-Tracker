@@ -3,6 +3,7 @@ package com.zavedahmad.yaHabit.roomDatabase
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import com.zavedahmad.yaHabit.database.PreferenceEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

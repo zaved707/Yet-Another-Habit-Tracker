@@ -6,11 +6,12 @@ import androidx.room.Database
 
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
-import com.zavedahmad.yaHabit.roomDatabase.typeConverters.ColorConvertor
-import com.zavedahmad.yaHabit.roomDatabase.typeConverters.LocalDateConverter
-import com.zavedahmad.yaHabit.roomDatabase.typeConverters.StreakTypeConverter
+import com.zavedahmad.yaHabit.database.typeConverters.ColorConvertor
+import com.zavedahmad.yaHabit.database.typeConverters.LocalDateConverter
+import com.zavedahmad.yaHabit.database.typeConverters.StreakTypeConverter
 
 
 @Database(

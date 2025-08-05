@@ -12,7 +12,7 @@ import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.roomDatabase.HabitRepository
 import com.zavedahmad.yaHabit.roomDatabase.ImportExportRepository
 import com.zavedahmad.yaHabit.roomDatabase.MainDatabase
-import com.zavedahmad.yaHabit.roomDatabase.PreferenceEntity
+import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesDao
 import com.zavedahmad.yaHabit.roomDatabase.PreferencesRepository
 import com.zavedahmad.yaHabit.roomDatabase.utils.DatabaseUtils

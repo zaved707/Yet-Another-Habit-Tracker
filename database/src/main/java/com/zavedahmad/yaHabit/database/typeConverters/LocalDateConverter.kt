@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.roomDatabase.typeConverters
+package com.zavedahmad.yaHabit.database.typeConverters
 
 import androidx.room.TypeConverter
 import java.time.LocalDate
