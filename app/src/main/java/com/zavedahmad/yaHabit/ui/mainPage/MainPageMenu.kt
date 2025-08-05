@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.database.printFromDatabaseModule
 
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 
@@ -57,6 +58,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
 
                 }
             }, onClick = {
+                printFromDatabaseModule("hii")
                 viewModel.changeReorderableMode(!isReorderableMode.value)
                 menuVisible.value = false
             })

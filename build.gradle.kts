@@ -24,4 +24,5 @@ plugins {
     id("androidx.room") version "$roomVersion" apply false //TODO keep matching this with room version in app gadle
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.android.library) apply false
 }
