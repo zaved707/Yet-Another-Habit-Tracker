@@ -30,6 +30,9 @@ android {
             )
         }
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -37,10 +40,12 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    
-    room{
-        schemaDirectory("${projectDir}/src/main/java/com/zavedahmad/yaHabit/roomDatabase/schemas")
+    buildFeatures {
+        compose = true
     }
+}
+room{
+    schemaDirectory("${projectDir}/src/main/java/com/zavedahmad/yaHabit/roomDatabase/schemas")
 }
 
 dependencies {
@@ -54,7 +59,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-
+    //compose
+    implementation(libs.androidx.ui.graphics)
 
     
 
