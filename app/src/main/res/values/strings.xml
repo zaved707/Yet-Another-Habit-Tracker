@@ -16,4 +16,5 @@
 
 <resources>
     <string name="app_name">YA Habit Tracker</string>
+    <string name="app_version">0.2.1</string>
 </resources>
