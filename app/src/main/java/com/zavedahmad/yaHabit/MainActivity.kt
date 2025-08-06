@@ -29,6 +29,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.zavedahmad.yaHabit.ui.TestingPage.TestingPage
 import com.zavedahmad.yaHabit.ui.aboutPage.AboutPage
+import com.zavedahmad.yaHabit.ui.aboutPage.AboutPageViewModel
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPage
 import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPage
@@ -171,7 +172,8 @@ class MainActivity : ComponentActivity() {
                                         }
                                         is Screen.AboutPageRoute -> {
                                             NavEntry(key = key){
-                                                AboutPage()
+                                                val aboutPageViewModel = hiltViewModel<AboutPageViewModel>()
+                                                AboutPage(backStack = backStack , viewModel =  aboutPageViewModel)
                                             }
                                         }
 
@@ -213,7 +215,7 @@ class MainActivity : ComponentActivity() {
 
                                         is Screen.TestingPageRoute -> {
                                             NavEntry(key = key) {
-                                                AboutPage()
+                                                TestingPage(backStack )
 
                                             }
                                         }

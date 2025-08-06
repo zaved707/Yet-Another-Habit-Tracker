@@ -28,10 +28,6 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-data class HabitWithEntries(
-    val habit: HabitEntity,
-    val entries: List<HabitCompletionEntity>?
-)
 
 @HiltViewModel()
 class MainPageViewModel @Inject constructor(
