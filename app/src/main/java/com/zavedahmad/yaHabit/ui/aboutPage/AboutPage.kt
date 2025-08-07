@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +49,7 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
     val context = LocalContext.current
     val sourceCodeUrl = stringResource(R.string.github_repo)
     val issueTrackerUrl = stringResource(R.string.issue_tracker)
+    val developerEmail = stringResource(R.string.developer_address)
     val scrollBehavior =
         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val allPreferences = viewModel.allPreferences.collectAsStateWithLifecycle().value
@@ -113,7 +116,7 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                 SettingsItem(
                     icon = {
                         Icon(
-                            imageVector =  Icons.Default.BugReport,
+                            imageVector =  Icons.Outlined.BugReport,
                             contentDescription = "Issue Tracker"
                         )
                     },
@@ -124,6 +127,21 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                             issueTrackerUrl.toUri()
                         )
                         context.startActivity(intent)
+                    },
+                )
+                SettingsItem(
+                    icon = {
+                        Icon(
+                            imageVector =  Icons.Default.MailOutline,
+                            contentDescription = "contact Developer"
+                        )
+                    },
+                    title = "Contact Me", description = developerEmail,
+                    task = {
+                        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                            data = ("mailto:" + developerEmail).toUri() // Replace with desired email
+                        }
+                        context.startActivity(Intent.createChooser(emailIntent, "Send Email"))
                     },
                 )
             }
