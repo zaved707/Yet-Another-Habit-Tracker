@@ -5,32 +5,39 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Balance
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,6 +57,8 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
     val sourceCodeUrl = stringResource(R.string.github_repo)
     val issueTrackerUrl = stringResource(R.string.issue_tracker)
     val developerEmail = stringResource(R.string.developer_address)
+    val privacyPolicyUrl = stringResource(R.string.privacy_policy)
+    val licenseLink = stringResource(R.string.license)
     val scrollBehavior =
         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val allPreferences = viewModel.allPreferences.collectAsStateWithLifecycle().value
@@ -96,6 +105,9 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                     Text("YA Habit Tracker", style = MaterialTheme.typography.titleLargeEmphasized)
                     Text("Version " + stringResource(R.string.app_version))
                 }
+                Spacer(Modifier.height(10.dp))
+                HorizontalDivider(Modifier.fillMaxWidth())
+                Spacer(Modifier.height(10.dp))
 
                 SettingsItem(
                     icon = {
@@ -144,6 +156,41 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                         context.startActivity(Intent.createChooser(emailIntent, "Send Email"))
                     },
                 )
+
+                SettingsItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.shield_lock_open_outline),
+                            contentDescription = "contact Developer"
+                        )
+                    },
+                    title = "Privacy Policy", description = privacyPolicyUrl,
+                    task = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            privacyPolicyUrl.toUri()
+                        )
+                        context.startActivity(intent)
+                    },
+                )
+
+                SettingsItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Balance,
+                            contentDescription = "Apache-2.0"
+                        )
+                    },
+                    title = "License", description = "Apache License 2.0",
+                    task = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            licenseLink.toUri()
+                        )
+                        context.startActivity(intent)
+                    },
+                )
+
             }
         }
     }
