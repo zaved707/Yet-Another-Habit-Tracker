@@ -28,7 +28,11 @@ import androidx.compose.material.icons.filled.InvertColors
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.SaveAlt
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.InvertColors
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,7 +75,11 @@ import java.time.DayOfWeek
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsViewModel,onDatabaseImport : (Boolean) -> Unit) {
+fun SettingsScreen(
+    backStack: SnapshotStateList<NavKey>,
+    viewModel: SettingsViewModel,
+    onDatabaseImport: (Boolean) -> Unit
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     var isThemeDialogActive by remember { mutableStateOf(false) }
@@ -103,77 +111,77 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
             Dialog(onDismissRequest = { isThemeDialogActive = false }) {
                 CardMyStyle(
 
-                 ) {
-                     Column(
-                         modifier = Modifier
-                             .padding(20.dp)
-                             .width(300.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .width(300.dp)
 
-                     ) {
-                         Text(
-                             "Theme Mode",
-                             modifier = Modifier.padding(start = 10.dp),
-                             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                         )
+                    ) {
+                        Text(
+                            "Theme Mode",
+                            modifier = Modifier.padding(start = 10.dp),
+                            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        )
 
-                         Spacer(modifier = Modifier.height(10.dp))
-                         Row(
-                             modifier = Modifier
-                                 .clip(RoundedCornerShape(20.dp))
-                                 .clickable(onClick = {
-                                     viewModel.setTheme("system")
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .clickable(onClick = {
+                                    viewModel.setTheme("system")
 
-                                     isThemeDialogActive = false
-                                 })
-                                 .fillMaxWidth()
-                                 .padding(10.dp),
-                             verticalAlignment = Alignment.CenterVertically
-                         ) {
+                                    isThemeDialogActive = false
+                                })
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                             RadioButton(
-                                 onClick = null,
-                                 selected = themeNow?.value == "system"
-                             )
-                             Text("Follow System")
-                         }
-                         Row(
-                             modifier = Modifier
-                                 .clip(RoundedCornerShape(20.dp))
-                                 .clickable(onClick = {
-                                     viewModel.setTheme("dark")
-                                     isThemeDialogActive = false
-                                 })
-                                 .fillMaxWidth()
-                                 .padding(10.dp),
-                             verticalAlignment = Alignment.CenterVertically
-                         ) {
+                            RadioButton(
+                                onClick = null,
+                                selected = themeNow?.value == "system"
+                            )
+                            Text("Follow System")
+                        }
+                        Row(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .clickable(onClick = {
+                                    viewModel.setTheme("dark")
+                                    isThemeDialogActive = false
+                                })
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                             RadioButton(
-                                 onClick = null,
-                                 selected = themeNow?.value == "dark"
-                             )
-                             Text("Dark")
-                         }
-                         Row(
-                             modifier = Modifier
-                                 .clip(RoundedCornerShape(20.dp))
-                                 .clickable(onClick = {
-                                     viewModel.setTheme("light")
-                                     isThemeDialogActive = false
-                                 })
-                                 .fillMaxWidth()
-                                 .padding(10.dp),
-                             verticalAlignment = Alignment.CenterVertically
-                         ) {
+                            RadioButton(
+                                onClick = null,
+                                selected = themeNow?.value == "dark"
+                            )
+                            Text("Dark")
+                        }
+                        Row(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .clickable(onClick = {
+                                    viewModel.setTheme("light")
+                                    isThemeDialogActive = false
+                                })
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                             RadioButton(
-                                 onClick = null,
-                                 selected = themeNow?.value == "light"
-                             )
-                             Text("Light")
-                         }
-                     }
-                 }
+                            RadioButton(
+                                onClick = null,
+                                selected = themeNow?.value == "light"
+                            )
+                            Text("Light")
+                        }
+                    }
+                }
 
             }
         }
@@ -185,37 +193,53 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
         ) {
             SettingsHeading("THEMING", topPadding = false)
             SettingsItem(
-                Icons.Default.DarkMode,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.DarkMode,
+                        contentDescription = "Info"
+                    )
+                },
                 title = "Theme Mode",
                 description = themeNow?.value ?: "system",
                 task = { isThemeDialogActive = true })
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-            SettingsItem(
-                icon = Icons.Default.Palette,
-                title = "Dynamic Color",
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SettingsItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Palette,
+                            contentDescription = "Info"
+                        )
+                    },
+                    title = "Dynamic Color",
 
-                task = {viewModel.setDynamicColor((!dynamicColor?.value.toBoolean()).toString())},
-                actions = {
-                    Row {
+                    task = { viewModel.setDynamicColor((!dynamicColor?.value.toBoolean()).toString()) },
+                    actions = {
+                        Row {
 //                        VerticalDivider()
-                        Spacer(Modifier.width(20.dp))
-                        Switch(
-                            checked = if (dynamicColor?.value == null) {
-                                false
-                            } else {
-                                dynamicColor.value == "true"
-                            }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
-                    }
-                })}
+                            Spacer(Modifier.width(20.dp))
+                            Switch(
+                                checked = if (dynamicColor?.value == null) {
+                                    false
+                                } else {
+                                    dynamicColor.value == "true"
+                                }, onCheckedChange = { viewModel.setDynamicColor(it.toString()) })
+                        }
+                    })
+            }
 
             SettingsItem(
-                icon = Icons.Default.InvertColors,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.InvertColors,
+                        contentDescription = "Info"
+                    )
+                },
                 title = "Amoled",
                 description = "use Amoled Colors (only for dark theme).",
-                task = {viewModel.setAmoledTheme((!amoledColors?.value.toBoolean()).toString())},
+                task = { viewModel.setAmoledTheme((!amoledColors?.value.toBoolean()).toString()) },
                 actions = {
-                    Row( verticalAlignment = Alignment.CenterVertically) {
-                       // VerticalDivider()
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // VerticalDivider()
                         Spacer(Modifier.width(20.dp))
                         Switch(
                             checked = if (amoledColors?.value == null) {
@@ -228,7 +252,12 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
 
             SettingsHeading("DISPLAY")
             SettingsItem(
-                icon = Icons.Default.CalendarToday,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.CalendarToday,
+                        contentDescription = "Info"
+                    )
+                },
                 title = "Select First Day Of Week",
                 description = firstDayOfWeek?.name,
                 task = { dialogueSelectWeekDayOpen.value = true },
@@ -249,9 +278,14 @@ fun SettingsScreen(backStack: SnapshotStateList<NavKey>, viewModel: SettingsView
             ImportDatabaseSettingsItem(viewModel, onDatabaseImport = onDatabaseImport)
             SettingsHeading("MISC")
             SettingsItem(
-                icon = Icons.Outlined.Info,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = "Info"
+                    )
+                },
                 title = "About",
-                task = {backStack.add(Screen.AboutPageRoute)}
+                task = { backStack.add(Screen.AboutPageRoute) }
             )
         }
 
@@ -273,7 +307,7 @@ fun ModalForWeekSelection(
                 Column(Modifier.fillMaxWidth(0.7f)) {
                     for (i in 1..7) {
                         val currentDay = DayOfWeek.of(i)
-                       Box(Modifier.combinedClickable(onClick = { onDaySelect(currentDay) })) {
+                        Box(Modifier.combinedClickable(onClick = { onDaySelect(currentDay) })) {
                             Row(
                                 Modifier
                                     .padding(20.dp)
@@ -296,36 +330,38 @@ fun ModalForWeekSelection(
 
 @Composable
 fun SettingsItem(
-    icon: ImageVector,
+    icon: @Composable (() -> Unit) = { Column {Spacer(Modifier.size(24.dp))  } },
     title: String,
     description: String? = null,
     task: () -> Unit,
-    actions: @Composable (() -> Unit)?  = null
+    actions: @Composable (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
             .clickable(onClick = { task() })
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp)
-            , // Use IntrinsicSize.Min to allow flexible height
+            .padding(
+                horizontal = 20.dp,
+                vertical = 10.dp
+            ), // Use IntrinsicSize.Min to allow flexible height
         horizontalArrangement = Arrangement.Absolute.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically // Center items vertically
 
     ) {
         Row(
-            modifier =  if (actions != null){Modifier
+            modifier = if (actions != null) {
+                Modifier
 
-                .fillMaxWidth(0.7f)}else{Modifier.fillMaxWidth()},
+                    .fillMaxWidth(0.7f)
+            } else {
+                Modifier.fillMaxWidth()
+            },
             verticalAlignment = Alignment.CenterVertically
         ) { // Added weight to allow this Row to take available space
-            Icon(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .size(24.dp),
-                imageVector = icon,
-                contentDescription = description
-            )
+            Column (Modifier.padding(10.dp)) {
+                icon()
+            }
             Spacer(Modifier.width(20.dp))
             Column(Modifier.fillMaxWidth()) {
                 Text(
@@ -357,8 +393,9 @@ fun SettingsItem(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsHeading(text: String, topPadding: Boolean = true) {
-    if (topPadding){
-    Spacer(Modifier.height(30.dp))}
+    if (topPadding) {
+        Spacer(Modifier.height(30.dp))
+    }
     Row {
         Spacer(Modifier.width(30.dp))
         Spacer(Modifier.width(54.dp))
@@ -366,7 +403,10 @@ fun SettingsHeading(text: String, topPadding: Boolean = true) {
             text,
             color = MaterialTheme.colorScheme.primary,
             fontSize = 12.sp,
-            style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Medium, letterSpacing = 3.sp)
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Medium,
+            letterSpacing = 3.sp
+        )
     }
 
 }

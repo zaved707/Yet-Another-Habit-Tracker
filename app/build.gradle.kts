@@ -135,4 +135,5 @@ dependencies {
     implementation( "androidx.core:core-splashscreen:1.0.0")
     implementation(project(":database"))
     implementation(project(":common"))
+    implementation(libs.material.icons.extended)
 }

@@ -41,6 +41,7 @@ roomCompiler = "2.7.2"
 
 
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

@@ -17,4 +17,6 @@
 <resources>
     <string name="app_name">YA Habit Tracker</string>
     <string name="app_version">0.2.1</string>
+    <string name="github_repo">https://github.com/zaved707/Yet-Another-Habit-Tracker/tree/master</string>
+    <string name="issue_tracker">https://github.com/zaved707/Yet-Another-Habit-Tracker/issues</string>
 </resources>

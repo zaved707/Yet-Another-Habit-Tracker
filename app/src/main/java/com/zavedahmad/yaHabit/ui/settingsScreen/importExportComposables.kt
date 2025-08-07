@@ -10,8 +10,12 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.FileUpload
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -44,7 +48,12 @@ fun ExportDatabaseSettingsItem(viewModel: SettingsViewModel) {
 
         }
     SettingsItem(
-        icon = Icons.Default.FileUpload,
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.FileUpload,
+                contentDescription = "Info"
+            )
+        },
         title = "Export Database",
         description = "Export the Entire Database File (Including Settings)",
         task = { exportLauncher.launch("main_database.db") }
@@ -102,7 +111,12 @@ fun ImportDatabaseSettingsItem(viewModel: SettingsViewModel, onDatabaseImport: (
         )
 
     SettingsItem(
-        icon = Icons.Default.Download,
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Download,
+                contentDescription = "Info"
+            )
+        },
         title = "Import Database",
         description = "Import a Database file. Please Note this will delete all existing Data",
         task = {showDialog.value = true

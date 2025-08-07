@@ -1,5 +1,8 @@
 package com.zavedahmad.yaHabit.ui.aboutPage
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +13,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Gite
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -26,18 +30,23 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.R
-import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsItem
+import dagger.hilt.android.qualifiers.ApplicationContext
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewModel) {
+    val context = LocalContext.current
+    val sourceCodeUrl = stringResource(R.string.github_repo)
+    val issueTrackerUrl = stringResource(R.string.issue_tracker)
     val scrollBehavior =
         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val allPreferences = viewModel.allPreferences.collectAsStateWithLifecycle().value
@@ -82,14 +91,41 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text("YA Habit Tracker", style = MaterialTheme.typography.titleLargeEmphasized)
-                    Text(stringResource(R.string.app_version))
+                    Text("Version " + stringResource(R.string.app_version))
                 }
 
                 SettingsItem(
-                    icon = Icons.Default.Gite, title = "follow on Github",
-                    task = { },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.source_branch),
+                            contentDescription = "Show Source Code"
+                        )
+                    },
+                    title = "View Source Code", description = sourceCodeUrl,
+                    task = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            sourceCodeUrl.toUri()
+                        )
+                        context.startActivity(intent)
+                    },
                 )
-
+                SettingsItem(
+                    icon = {
+                        Icon(
+                            imageVector =  Icons.Default.BugReport,
+                            contentDescription = "Issue Tracker"
+                        )
+                    },
+                    title = "Issue Tracker", description = issueTrackerUrl,
+                    task = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            issueTrackerUrl.toUri()
+                        )
+                        context.startActivity(intent)
+                    },
+                )
             }
         }
     }
