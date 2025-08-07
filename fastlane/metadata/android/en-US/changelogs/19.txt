@@ -1,0 +1,3 @@
+- refactor code
+- new theming
+- about page

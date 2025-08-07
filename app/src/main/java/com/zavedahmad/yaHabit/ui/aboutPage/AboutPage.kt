@@ -1,8 +1,6 @@
 package com.zavedahmad.yaHabit.ui.aboutPage
 
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Balance
-import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -31,24 +26,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.R
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsItem
-import dagger.hilt.android.qualifiers.ApplicationContext
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -103,10 +98,16 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text("YA Habit Tracker", style = MaterialTheme.typography.titleLargeEmphasized)
-                    Text("Version " + stringResource(R.string.app_version))
+                    Text(
+                        "Version " + stringResource(R.string.app_version),
+                        style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 15.sp),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
                 }
                 Spacer(Modifier.height(10.dp))
-                HorizontalDivider(Modifier.fillMaxWidth().padding(horizontal = 20.dp))
+                HorizontalDivider(Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp))
                 Spacer(Modifier.height(10.dp))
 
                 SettingsItem(
@@ -128,7 +129,7 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                 SettingsItem(
                     icon = {
                         Icon(
-                            imageVector =  Icons.Outlined.BugReport,
+                            imageVector = Icons.Outlined.BugReport,
                             contentDescription = "Issue Tracker"
                         )
                     },
@@ -144,14 +145,15 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                 SettingsItem(
                     icon = {
                         Icon(
-                            imageVector =  Icons.Default.MailOutline,
+                            imageVector = Icons.Default.MailOutline,
                             contentDescription = "contact Developer"
                         )
                     },
                     title = "Contact Me", description = developerEmail,
                     task = {
                         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                            data = ("mailto:" + developerEmail).toUri() // Replace with desired email
+                            data =
+                                ("mailto:$developerEmail").toUri() // Replace with desired email
                         }
                         context.startActivity(Intent.createChooser(emailIntent, "Send Email"))
                     },

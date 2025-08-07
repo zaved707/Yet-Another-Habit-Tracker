@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
         setEdgeToEdgeConfig()
         setContent {
 
-            val backStack = rememberNavBackStack<Screen>(Screen.AboutPageRoute)
+            val backStack = rememberNavBackStack<Screen>(Screen.MainPageRoute)
 
             val viewModelMainPage = hiltViewModel<MainPageViewModel>()
 
