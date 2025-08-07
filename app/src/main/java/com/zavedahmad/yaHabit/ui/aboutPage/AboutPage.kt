@@ -106,7 +106,7 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                     Text("Version " + stringResource(R.string.app_version))
                 }
                 Spacer(Modifier.height(10.dp))
-                HorizontalDivider(Modifier.fillMaxWidth())
+                HorizontalDivider(Modifier.fillMaxWidth().padding(horizontal = 20.dp))
                 Spacer(Modifier.height(10.dp))
 
                 SettingsItem(
