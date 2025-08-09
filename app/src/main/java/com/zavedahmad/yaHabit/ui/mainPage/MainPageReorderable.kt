@@ -57,31 +57,36 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
+import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
+import com.zavedahmad.yaHabit.database.utils.getTheme
 import com.zavedahmad.yaHabit.ui.components.ColorPalette
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.channels.Channel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
-    val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
-    val coroutineScope = rememberCoroutineScope()
+
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val isAmoledColor by viewModel.amoledTheme.collectAsStateWithLifecycle()
-    val theme by viewModel.themeMode.collectAsStateWithLifecycle()
-    val themeReal = theme
+
+
+
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     LaunchedEffect(habits.value) {
         listUpdatedChannel.trySend(Unit)
     }
+    val allPreferences = viewModel.allPreferences.collectAsStateWithLifecycle().value
 
-    if (themeReal == null || isAmoledColor == null || firstDayOfWeek == null) {
+
+    if (allPreferences.isEmpty()) {
         ComposeTemplateTheme("system") {
             Box(
                 Modifier
@@ -277,9 +282,9 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                     key = habit.id
                                 ) { isDragging ->
                                     CustomTheme(
-                                        theme = themeReal.value, // Ensure themeReal.value is not null here or provide a default
+                                        theme = allPreferences.getTheme(), // Ensure themeReal.value is not null here or provide a default
                                         primaryColor = habit.color,
-                                        isAmoled = false
+                                        isAmoled = allPreferences.getAmoledThemeMode()
 //                                        isAmoled = isAmoledColor?.value == "true"  // Todo temporarily removing amoled
                                     ) {
 
@@ -293,7 +298,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                             reorderableListScope = this,
                                             isDragging = isDragging,
                                             isReorderableMode = isReorderableMode.value,
-                                            firstDayOfWeek = firstDayOfWeek
+                                            firstDayOfWeek = allPreferences.getFirstDayOfWeek()  // TODO Fix this
                                         )
 
 //                                Spacer(Modifier.height(40.dp))

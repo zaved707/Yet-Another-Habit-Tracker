@@ -111,7 +111,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
 
         CustomTheme(
-            isAmoled = allPreferences.getAmoledThemeMode().toBoolean(),
+            isAmoled = allPreferences.getAmoledThemeMode(),
             theme = allPreferences.getTheme(),
             primaryColor = setColor.value,
 
