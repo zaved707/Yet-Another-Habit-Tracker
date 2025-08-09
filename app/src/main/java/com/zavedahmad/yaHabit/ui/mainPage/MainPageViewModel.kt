@@ -90,6 +90,18 @@ class MainPageViewModel @Inject constructor(
         }
     }
 
+    fun archive(id: Int): Unit {
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.archive(id)
+        }
+
+    }
+    fun unArchive(id: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.unArchive(id)
+        }
+    }
+
 
 }
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
@@ -283,6 +284,11 @@ fun HabitItemReorderableNew(
                         ) {
                             Column { }
                             Row {
+                                IconButton(
+                                    modifier = Modifier,
+                                    onClick = { if (habit.isArchived){ viewModel.unArchive(habit.id)}else{viewModel.archive(habit.id)} }) {
+                                    Icon(Icons.Default.Archive, contentDescription = "")
+                                }
 
                                 IconButton(
                                     modifier = Modifier,

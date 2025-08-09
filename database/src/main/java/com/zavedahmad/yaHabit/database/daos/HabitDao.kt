@@ -30,6 +30,9 @@ interface HabitDao {
     @Query("SELECT * FROM HabitTable ORDER BY `index` ASC")
     fun  getHabitsFlowSortedByIndex(): Flow<List<HabitEntity>>
 
+    @Query("UPDATE  HabitTable SET isArchived = :newValue WHERE id = :id")
+    suspend fun archive(id: Int, newValue : Boolean)
+
     @Query("SELECT MAX(`index`) FROM HabitTable")
     suspend fun getMaxIndex(): Int?
 

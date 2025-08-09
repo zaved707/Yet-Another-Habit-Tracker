@@ -492,6 +492,13 @@ class HabitRepositoryImpl @Inject constructor(
         habitCompletionDao.addHabitCompletionEntry(entry)
     }
 
+    override suspend fun archive(id: Int) {
+        habitDao.archive(id = id, true)
+    }
+
+    override suspend fun unArchive(id: Int) {
+        habitDao.archive(id = id, false)
+    }
     override suspend fun deleteHabitCompletionEntry(habitId: Int, date: LocalDate) {
         habitCompletionDao.deleteHabitCompletionEntry(habitId = habitId, completionDate = date)
     }

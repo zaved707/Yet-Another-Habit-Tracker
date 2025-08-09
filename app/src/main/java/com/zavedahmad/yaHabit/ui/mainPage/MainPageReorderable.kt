@@ -74,7 +74,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
-
+    val filteredHabits = habits.value.filter { !it.isArchived }
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 

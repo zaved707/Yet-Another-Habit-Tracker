@@ -13,6 +13,9 @@ interface HabitRepository {
     fun editItem(habitEntity: HabitEntity)
     fun deleteHabit(id: Int)
     fun getHabitsFlowSortedByIndex(): Flow<List<HabitEntity>>
+    suspend fun archive(id: Int)
+    suspend fun unArchive(id: Int)
+
     suspend fun getHabitDetailsById(id: Int): HabitEntity
     suspend fun decreaseRepetitions(entryId: Int, newRepetitionValue: Double)
     suspend fun cleanUp(habitId: Int, startDate: LocalDate, endDate: LocalDate)
