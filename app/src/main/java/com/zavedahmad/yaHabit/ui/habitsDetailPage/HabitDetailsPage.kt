@@ -140,7 +140,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                         coroutineScope.launch(
                                             Dispatchers.IO
                                         ) {
-                                            viewModel.habitRepository.applyRepetitionForADate(
+                                            viewModel.habitRepositoryImpl.applyRepetitionForADate(
                                                 date = date,
                                                 habitId = habit.id,
                                                 newRepetitionValue = habit.repetitionPerDay
@@ -151,7 +151,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                         coroutineScope.launch(
                                             Dispatchers.IO
                                         ) {
-                                            viewModel.habitRepository.applyRepetitionForADate(
+                                            viewModel.habitRepositoryImpl.applyRepetitionForADate(
                                                 date = date,
                                                 habitId = habit.id,
                                                 newRepetitionValue = 0.0
@@ -174,13 +174,13 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                             onFinalised = { isRepetitionsChanged, isNotesChanged, userTypedRepetition, userTypedNote ->
                                                 if (isRepetitionsChanged && userTypedRepetition.toDoubleOrNull() != null) {
                                                     coroutineScope.launch(Dispatchers.IO) {
-                                                        viewModel.habitRepository.applyRepetitionForADate(
+                                                        viewModel.habitRepositoryImpl.applyRepetitionForADate(
                                                             date = completionDate,
                                                             habitId = habit.id,
                                                             newRepetitionValue = userTypedRepetition.toDouble()
                                                         )
                                                         if (isNotesChanged) {
-                                                            viewModel.habitRepository.applyNotes(
+                                                            viewModel.habitRepositoryImpl.applyNotes(
                                                                 date = completionDate,
                                                                 habitId = habit.id,
                                                                 newNote = userTypedNote
@@ -190,7 +190,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                                 } else {
                                                     if (isNotesChanged) {
                                                         coroutineScope.launch(Dispatchers.IO) {
-                                                            viewModel.habitRepository.applyNotes(
+                                                            viewModel.habitRepositoryImpl.applyNotes(
                                                                 date = completionDate,
                                                                 habitId = habit.id,
                                                                 newNote = userTypedNote
@@ -203,14 +203,14 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                     },
                                     skipHabit = { date ->
                                         coroutineScope.launch(Dispatchers.IO) {
-                                            viewModel.habitRepository.setSkip(
+                                            viewModel.habitRepositoryImpl.setSkip(
                                                 date = date, habitId = habit.id, skipValue = true
                                             )
                                         }
                                     },
                                     unSkipHabit = { date ->
                                         coroutineScope.launch {
-                                            viewModel.habitRepository.setSkip(
+                                            viewModel.habitRepositoryImpl.setSkip(
                                                 date = date, habitId = habit.id, skipValue = false
                                             )
                                         }
@@ -264,7 +264,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                         coroutineScope.launch(
                                             Dispatchers.IO
                                         ) {
-                                            viewModel.habitRepository.applyRepetitionForADate(
+                                            viewModel.habitRepositoryImpl.applyRepetitionForADate(
                                                 date = date,
                                                 habitId = habit.id,
                                                 newRepetitionValue = habit.repetitionPerDay
@@ -275,7 +275,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                         coroutineScope.launch(
                                             Dispatchers.IO
                                         ) {
-                                            viewModel.habitRepository.applyRepetitionForADate(
+                                            viewModel.habitRepositoryImpl.applyRepetitionForADate(
                                                 date = date,
                                                 habitId = habit.id,
                                                 newRepetitionValue = 0.0

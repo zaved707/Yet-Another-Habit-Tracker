@@ -10,6 +10,7 @@ import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
+import com.zavedahmad.yaHabit.database.repositories.HabitRepositoryImpl
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -20,8 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
-import java.time.LocalDate
 
 @HiltViewModel(assistedFactory = HabitDetailsPageViewModel.Factory::class)
 class HabitDetailsPageViewModel @AssistedInject constructor(
@@ -29,7 +28,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
-    val habitRepository: HabitRepository,
+    val habitRepositoryImpl: HabitRepository,
     val preferencesRepository: PreferencesRepository
 
 ) : ViewModel() {
@@ -59,7 +58,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
 
     fun getHabitAllData() {
         viewModelScope.launch(Dispatchers.IO) {
-            habitRepository.getAllHabitCompletionsByIdFlow(navKey.habitId)
+            habitRepositoryImpl.getAllHabitCompletionsByIdFlow(navKey.habitId)
                 .collect { _habitAllData.value = it }
         }
     }
@@ -76,7 +75,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     }
 
     fun deleteHabitById(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
+        viewModelScope.launch(Dispatchers.IO) { habitRepositoryImpl.deleteHabit(id) }
     }
 
     fun getHabitDetails() {

@@ -8,6 +8,7 @@ import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
 import com.zavedahmad.yaHabit.database.daos.HabitDao
 import com.zavedahmad.yaHabit.database.MainDatabase
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,5 +39,6 @@ object HiltMainDbModule {
     fun provideHabitCompletionDao(database: MainDatabase): HabitCompletionDao{
         return database.habitCompletionDao()
     }
+
 
 }

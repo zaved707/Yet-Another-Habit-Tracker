@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.daos.HabitDao
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
-import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.enums.HabitStreakType
 import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
+import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 class AddHabitPageViewModel @AssistedInject constructor(
     @Assisted val navKey: Screen.AddHabitPageRoute,
     val habitDao: HabitDao,
-    val habitRepository: HabitRepository,
+    val habitRepositoryImpl: HabitRepository,
     val preferencesDao: PreferencesDao,
     val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
@@ -135,7 +135,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
 
             )
             viewModelScope.launch(Dispatchers.IO) {
-                habitRepository.editItem(
+                habitRepositoryImpl.editItem(
                     newHabitEntity
 
                 )
@@ -143,7 +143,7 @@ class AddHabitPageViewModel @AssistedInject constructor(
             }
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                habitRepository.addHabitItem(
+                habitRepositoryImpl.addHabitItem(
                     HabitEntity(
                         name = habitName.value,
                         color = _selectedColor.value,
