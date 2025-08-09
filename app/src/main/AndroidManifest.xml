@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.yaHabit"
         android:enableOnBackInvokedCallback="true"
-        android:name=".hilt.Nav3RecipesApplication"
+        android:name=".hilt.MainApplication"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
