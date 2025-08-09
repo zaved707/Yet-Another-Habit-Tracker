@@ -17,8 +17,7 @@ import javax.inject.Inject
 
 class ImportExportRepository @Inject constructor(
     val habitDao: HabitDao,
-    val habitCompletionDao: HabitCompletionDao,
-    val db: MainDatabase,
+
     @ApplicationContext val context : Context,
     val databaseUtils: DatabaseUtils,
 ) {

@@ -28,10 +28,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -39,9 +43,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,23 +52,22 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
+import com.zavedahmad.yaHabit.R
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
 import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
 import com.zavedahmad.yaHabit.database.utils.getTheme
-import com.zavedahmad.yaHabit.ui.components.ColorPalette
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.channels.Channel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +77,6 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
 
 
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
@@ -185,6 +185,13 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                         }
                                     }
                                 }
+                                OutlinedIconButton(onClick = {viewModel.setBottomSheetVisibility(true)} , shapes = IconButtonDefaults.shapes(
+                                    IconButtonDefaults.extraSmallRoundShape)) {
+                                    Icon(
+                                        painterResource(R.drawable.list_status),
+                                        contentDescription = "Sort and filter"
+                                    )
+                                }
                                 MainPageMenu(viewModel, backStack)
                             }
                         }
@@ -211,6 +218,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                  }
              }*/
         ) { innerPadding ->
+            BottomSheetForFiltersAndSorting(viewModel)
 
             val lazyListState = rememberLazyListState()
             val reorderableLazyListState =
@@ -233,8 +241,6 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     .fillMaxSize()
 
             ) {
-
-
 
 
                 if (habits.value.isEmpty()) {
@@ -285,7 +291,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                         theme = allPreferences.getTheme(), // Ensure themeReal.value is not null here or provide a default
                                         primaryColor = habit.color,
                                         isAmoled = allPreferences.getAmoledThemeMode()
-//                                        isAmoled = isAmoledColor?.value == "true"  // Todo temporarily removing amoled
+//
                                     ) {
 
 
@@ -298,7 +304,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                             reorderableListScope = this,
                                             isDragging = isDragging,
                                             isReorderableMode = isReorderableMode.value,
-                                            firstDayOfWeek = allPreferences.getFirstDayOfWeek()  // TODO Fix this
+                                            firstDayOfWeek = allPreferences.getFirstDayOfWeek()
                                         )
 
 //                                Spacer(Modifier.height(40.dp))

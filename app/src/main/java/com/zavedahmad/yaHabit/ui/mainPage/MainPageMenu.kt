@@ -31,42 +31,54 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     val devMode = viewModel.devMode.collectAsStateWithLifecycle()
-    IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
-        Icon(
-            imageVector = Icons.Outlined.MoreVert,
-            contentDescription = "More"
-        )
-    }
-    DropdownMenu(
-        modifier = Modifier.Companion.border(
-            width = LocalOutlineSizes.current.small,
-            shape = RoundedCornerShape(10.dp),
-            color = MaterialTheme.colorScheme.outline
-        ),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
-        expanded = menuVisible.value, // Set to true to show the menu
-        onDismissRequest = { menuVisible.value = false }
-    ) {
-        Column {
-            DropdownMenuItem(trailingIcon = {Icon(Icons.Filled.Settings, contentDescription = "setting")}, text = { Row { Text("Settings") } }, onClick = {
-                menuVisible.value = false
-                backStack.add(Screen.SettingsPageRoute)
+    Column {
+        IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
+            Icon(
+                imageVector = Icons.Outlined.MoreVert,
+                contentDescription = "More"
+            )
+        }
+        DropdownMenu(
+            modifier = Modifier.Companion.border(
+                width = LocalOutlineSizes.current.small,
+                shape = RoundedCornerShape(10.dp),
+                color = MaterialTheme.colorScheme.outline
+            ),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+            expanded = menuVisible.value, // Set to true to show the menu
+            onDismissRequest = { menuVisible.value = false }
+        ) {
+            Column {
+                DropdownMenuItem(trailingIcon = {
+                    Icon(
+                        Icons.Filled.Settings,
+                        contentDescription = "setting"
+                    )
+                }, text = { Row { Text("Settings") } }, onClick = {
+                    menuVisible.value = false
+                    backStack.add(Screen.SettingsPageRoute)
 
-            })
-            DropdownMenuItem(text = {
-                Row {
-                    Text("Reorder Mode")
+                })
+                DropdownMenuItem(text = {
+                    Row {
+                        Text("Reorder Mode")
 
+                    }
+                }, onClick = {
+                    printFromDatabaseModule("hii")
+                    viewModel.changeReorderableMode(!isReorderableMode.value)
+                    menuVisible.value = false
+                })
+                if (devMode.value) {
+                    DropdownMenuItem(
+                        onClick = { viewModel.addSampleHabits() },
+                        text = { Text("add sample habits") })
+                    DropdownMenuItem(
+                        onClick = { viewModel.deleteAllHabits() },
+                        text = { Text("clean Habits") })
                 }
-            }, onClick = {
-                printFromDatabaseModule("hii")
-                viewModel.changeReorderableMode(!isReorderableMode.value)
-                menuVisible.value = false
-            })
-            if (devMode.value){
-            DropdownMenuItem(onClick = {viewModel.addSampleHabits()}, text = { Text("add sample habits")})
-            DropdownMenuItem(onClick = {viewModel.deleteAllHabits()}, text = {Text("clean Habits")})}
 
+            }
         }
     }
 }

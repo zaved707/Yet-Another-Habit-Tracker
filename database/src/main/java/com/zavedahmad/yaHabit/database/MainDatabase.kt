@@ -15,8 +15,8 @@ import com.zavedahmad.yaHabit.database.typeConverters.StreakTypeConverter
 
 @Database(
     entities = [PreferenceEntity::class, HabitEntity::class, HabitCompletionEntity::class],
-    version = 2,
-    autoMigrations = [AutoMigration(from = 1, to = 2)],
+    version = 3,
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)],   // todo test migration from 1- 3 straight
 
     )
 

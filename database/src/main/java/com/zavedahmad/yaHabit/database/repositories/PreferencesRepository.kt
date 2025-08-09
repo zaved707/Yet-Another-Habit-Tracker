@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import java.time.DayOfWeek
 import javax.inject.Inject
 
-// todo get all preferences at once and return a default preference if it is null in database
+
 class PreferencesRepository @Inject constructor(
     val preferencesDao: PreferencesDao,
     val db: MainDatabase

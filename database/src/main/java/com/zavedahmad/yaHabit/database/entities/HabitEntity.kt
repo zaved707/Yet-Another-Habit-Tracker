@@ -21,5 +21,7 @@ data class HabitEntity(
     val repetitionPerDay : Double,
     @ColumnInfo(defaultValue = "Unit")
     val measurementUnit : String,
+    @ColumnInfo(defaultValue = "0")
+    val isArchived : Boolean = false
 
     )

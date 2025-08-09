@@ -14,7 +14,7 @@ class LocalDatabaseUtils @Inject constructor(
     override fun isDatabaseValid(): Boolean {
         val testDatabase: MainDatabase=
             Room.databaseBuilder(context, MainDatabase::class.java, "main_database")
-
+//                .addMigrations(MIGRATION_1_2)    //Todo this i migration
                 .build()
         try {
             testDatabase.openHelper.writableDatabase

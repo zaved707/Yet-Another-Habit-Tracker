@@ -40,7 +40,8 @@ class MainPageViewModel @Inject constructor(
     override fun onCleared() {
         println("mainViewModelCleared")
     }
-
+    private val _isBottomSheetVisible = MutableStateFlow(false)
+    val isBottomSheetVisible = _isBottomSheetVisible.asStateFlow()
     private val _allPreferences = MutableStateFlow<List<PreferenceEntity>>(emptyList())
     val allPreferences = _allPreferences.asStateFlow()
     private val _habits = MutableStateFlow<List<HabitEntity>>(emptyList())
@@ -68,6 +69,9 @@ class MainPageViewModel @Inject constructor(
         }
     }
 
+    fun setBottomSheetVisibility(value: Boolean){
+        _isBottomSheetVisible.value = value
+    }
     fun changeReorderableMode(value: Boolean) {
         _isReorderableMode.value = value
     }
