@@ -3,13 +3,13 @@ package com.zavedahmad.yaHabit.ui.habitsDetailPage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
-import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.daos.HabitDao
+import com.zavedahmad.yaHabit.database.daos.PreferencesDao
+import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
-import com.zavedahmad.yaHabit.database.PreferenceEntity
-import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -29,7 +29,8 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
-    val habitRepository: HabitRepository, val preferencesRepository: PreferencesRepository
+    val habitRepository: HabitRepository,
+    val preferencesRepository: PreferencesRepository
 
 ) : ViewModel() {
 
@@ -38,25 +39,21 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
     }
 
+    private val _allPreferences = MutableStateFlow<List<PreferenceEntity>>(emptyList())
+    val allPreferences = _allPreferences.asStateFlow()
     private val _habitAllData = MutableStateFlow<List<HabitCompletionEntity>?>(null)
     val habitAllData = _habitAllData.asStateFlow()
     private val _habitDetails = MutableStateFlow<HabitEntity?>(null)
     val habitDetails = _habitDetails.asStateFlow()
     private val _habitsPastYear = MutableStateFlow<List<HabitCompletionEntity>?>(null)
     val habitsPastYear: StateFlow<List<HabitCompletionEntity>?> = _habitsPastYear
-    private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
-    val themeMode = _themeMode.asStateFlow()
-    private val _firstDayOfWeek = MutableStateFlow<DayOfWeek?>(null)
-    val firstDayOfWeek = _firstDayOfWeek.asStateFlow()
-    private val _amoledTheme = MutableStateFlow<PreferenceEntity?>(null)
-    val amoledTheme = _amoledTheme.asStateFlow()
+
+
 
     init {
-        collectThemeMode()
-        collectAmoledTheme()
-        collectFirstDayOfWeek()
-        getHabitDetails()
 
+        getHabitDetails()
+        collectPreferences()
         getHabitAllData()
     }
 
@@ -67,29 +64,16 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         }
     }
 
-    fun setFirstWeekOfDay(dayOfWeek: DayOfWeek) {
-        viewModelScope.launch {
-            preferencesRepository.setFirstDayOfWeek(dayOfWeek)
-        }
-    }
 
-    fun collectFirstDayOfWeek() {
-        viewModelScope.launch {
-            preferencesRepository.getFirstDayOfWeekFlow().collect { _firstDayOfWeek.value = it }
-        }
 
-    }
 
-    fun getLastYearData() {
-        val dateNow = LocalDate.now()
-        val dateAYearAgo = dateNow.minusYears(1).toEpochDay()
+
+
+    fun collectPreferences() {
         viewModelScope.launch(Dispatchers.IO) {
-
-            habitCompletionDao.getEntriesAfterDate(navKey.habitId, dateAYearAgo)
-                .collect { _habitsPastYear.value = it }
+            preferencesRepository.preferences.collect { _allPreferences.value = it }
         }
     }
-
 
     fun deleteHabitById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
@@ -101,21 +85,9 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         }
     }
 
-    fun collectThemeMode() {
-        viewModelScope.launch(Dispatchers.IO) {
-            preferencesDao.getPreferenceFlow("ThemeMode").collect { preference ->
-                _themeMode.value = preference ?: PreferenceEntity("ThemeMode", "system")
-            }
-        }
-    }
 
-    fun collectAmoledTheme() {
-        viewModelScope.launch(Dispatchers.IO) {
-            preferencesDao.getPreferenceFlow("AmoledTheme").collect { preference ->
-                _amoledTheme.value = preference ?: PreferenceEntity("AmoledTheme", "false")
-            }
-        }
-    }
+
+
 
 
 }

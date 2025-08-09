@@ -37,7 +37,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -56,6 +55,9 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
+import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
+import com.zavedahmad.yaHabit.database.utils.getTheme
 import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
 import com.zavedahmad.yaHabit.ui.mainPage.DialogueForHabit
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
@@ -63,28 +65,21 @@ import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotStateList<NavKey>) {
-    val habitsPastYear = viewModel.habitsPastYear.collectAsStateWithLifecycle().value
+    viewModel.habitsPastYear.collectAsStateWithLifecycle().value
     val habit = viewModel.habitDetails.collectAsStateWithLifecycle().value
-    val month = YearMonth.now()
-    val firstDayOfWeek = viewModel.firstDayOfWeek.collectAsStateWithLifecycle().value
-    val twelveMonths = (0..12).map { month.minusMonths(it.toLong()) }
     val habitAllData = viewModel.habitAllData.collectAsStateWithLifecycle().value
-    val theme by viewModel.themeMode.collectAsStateWithLifecycle()
-    val themeReal = theme
-    val isAmoledColor by viewModel.amoledTheme.collectAsStateWithLifecycle()
-
     val coroutineScope = rememberCoroutineScope()
     val dialogueVisible = rememberSaveable { mutableStateOf(false) }
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val allPreferences = viewModel.allPreferences.collectAsStateWithLifecycle().value
 
 
-    if (themeReal == null || isAmoledColor == null || firstDayOfWeek == null) {
+    if (allPreferences.isEmpty()) {
         ComposeTemplateTheme("system") {
             Box(
                 Modifier
@@ -93,15 +88,17 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
             )
         }
     } else {
-        if (habit == null) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                LoadingIndicator()
+        if (habitAllData == null || habit == null) {
+            Scaffold {innerPadding->
+                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                    LoadingIndicator()
+                }
             }
         } else {
             CustomTheme(
-                theme = themeReal.value,
+                theme = allPreferences.getTheme(),
                 primaryColor = habit.color,
-                isAmoled = isAmoledColor?.value == "true"
+                isAmoled = allPreferences.getAmoledThemeMode()
             ) {
                 Scaffold(Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
                     MediumFlexibleTopAppBar(
@@ -164,7 +161,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                     habitData = habitAllData,
                                     showDate = true,
                                     interactive = true,
-                                    firstDayOfWeek = firstDayOfWeek,
+                                    firstDayOfWeek = allPreferences.getFirstDayOfWeek(),
                                     dialogueComposable = { visible, onDismiss, habitCompletionEntity, completionDate ->
                                         DialogueForHabit(
                                             isVisible = visible,
@@ -202,27 +199,24 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
 
                                                     }
                                                 }
-                                            }
-                                        )
-                                    },skipHabit = { date ->
+                                            })
+                                    },
+                                    skipHabit = { date ->
                                         coroutineScope.launch(Dispatchers.IO) {
                                             viewModel.habitRepository.setSkip(
-                                                date = date,
-                                                habitId = habit.id,
-                                                skipValue = true
+                                                date = date, habitId = habit.id, skipValue = true
                                             )
                                         }
-                                    }, unSkipHabit = { date ->
+                                    },
+                                    unSkipHabit = { date ->
                                         coroutineScope.launch {
                                             viewModel.habitRepository.setSkip(
-                                                date = date,
-                                                habitId = habit.id,
-                                                skipValue = false
+                                                date = date, habitId = habit.id, skipValue = false
                                             )
                                         }
                                     },
 
-                                )
+                                    )
                             }
                         }
                     }
@@ -240,12 +234,15 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                 Icon(Icons.Default.Repeat, "")
                                 Spacer(Modifier.width(10.dp))
 
-                             Text(formatHabitFrequency(habit.streakType,habit.frequency,habit.cycle))
+                                Text(
+                                    formatHabitFrequency(
+                                        habit.streakType, habit.frequency, habit.cycle
+                                    )
+                                )
                             }
                         }
                         Column(
-                            Modifier
-                                .padding(horizontal = 10.dp)
+                            Modifier.padding(horizontal = 10.dp)
 
 
                         ) {
@@ -285,14 +282,13 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                             )
                                         }
                                     },
-                                    firstDayOfWeek = firstDayOfWeek,
-
+                                    firstDayOfWeek = allPreferences.getFirstDayOfWeek(),
 
 
                                     interactive = false,
-                                    skipHabit = { } ,
+                                    skipHabit = { },
                                     unSkipHabit = {},
-                                    dialogueComposable = {visible, onDismiss, habitCompletionEntity, completionDate -> },
+                                    dialogueComposable = { visible, onDismiss, habitCompletionEntity, completionDate -> },
                                 )
                             }
 
@@ -311,8 +307,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                             Spacer(Modifier.height(20.dp))
 
                             Row(
-                                Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
+                                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
                                     "Top Streaks",
@@ -379,8 +374,7 @@ private fun Menu(viewModel: HabitDetailsPageViewModel, backStack: SnapshotStateL
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
         Icon(
-            imageVector = Icons.Outlined.MoreVert,
-            contentDescription = "More"
+            imageVector = Icons.Outlined.MoreVert, contentDescription = "More"
         )
     }
     DropdownMenu(
@@ -391,8 +385,7 @@ private fun Menu(viewModel: HabitDetailsPageViewModel, backStack: SnapshotStateL
         ),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
         expanded = menuVisible.value, // Set to true to show the menu
-        onDismissRequest = { menuVisible.value = false }
-    ) {
+        onDismissRequest = { menuVisible.value = false }) {
         DropdownMenuItem(text = {
             Row {
                 Text("Edit Habit")
