@@ -19,6 +19,9 @@ class AboutPageViewModel @Inject constructor(
     private val _allPreferences = MutableStateFlow<List<PreferenceEntity>>(emptyList())
     val allPreferences = _allPreferences.asStateFlow()
     init {
+       collectPreferences()
+    }
+    fun collectPreferences(){
         viewModelScope.launch(Dispatchers.IO) {
             preferencesRepository.preferences.collect { _allPreferences.value = it }
         }

@@ -10,6 +10,7 @@ import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.enums.HabitStreakType
 import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
+import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -24,7 +25,8 @@ class AddHabitPageViewModel @AssistedInject constructor(
     @Assisted val navKey: Screen.AddHabitPageRoute,
     val habitDao: HabitDao,
     val habitRepository: HabitRepository,
-    val preferencesDao: PreferencesDao
+    val preferencesDao: PreferencesDao,
+    val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
     @AssistedFactory
     interface Factory {
@@ -55,7 +57,8 @@ class AddHabitPageViewModel @AssistedInject constructor(
 
 
     )
-
+    private val _allPreferences = MutableStateFlow<List<PreferenceEntity>>(emptyList())
+    val allPreferences = _allPreferences.asStateFlow()
     private val _themeMode = MutableStateFlow<PreferenceEntity?>(null)
     val themeMode = _themeMode.asStateFlow()
     private val _selectedColor = MutableStateFlow<Color>(colors[0])
@@ -80,15 +83,24 @@ class AddHabitPageViewModel @AssistedInject constructor(
 
 
     init {
+        collectPreferences()
         collectThemeMode()
 
         getHabitDetails()
     }
-    fun setRepetitionPerDay(repetition: Double){
+
+    fun setRepetitionPerDay(repetition: Double) {
         _repetitionPerDay.value = repetition
     }
-    fun setMeasurementUnit(unit: String?){
+
+    fun setMeasurementUnit(unit: String?) {
         _measurementUnit.value = unit
+    }
+
+    fun collectPreferences() {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesRepository.preferences.collect { _allPreferences.value = it }
+        }
     }
 
     fun setColor(color: Color) {
@@ -138,7 +150,8 @@ class AddHabitPageViewModel @AssistedInject constructor(
                         description = _habitDescription.value,
                         streakType = _habitStreakType.value,
                         frequency = _habitFrequency.value ?: 2.0,
-                        cycle = _habitCycle.value ?: 7, measurementUnit = _measurementUnit.value ?: "Unit",
+                        cycle = _habitCycle.value ?: 7,
+                        measurementUnit = _measurementUnit.value ?: "Unit",
                         repetitionPerDay = _repetitionPerDay.value ?: 1.0
                     )
                 )

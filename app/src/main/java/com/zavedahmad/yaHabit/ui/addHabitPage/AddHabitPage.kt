@@ -59,6 +59,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import com.zavedahmad.yaHabit.Screen
+import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
+import com.zavedahmad.yaHabit.database.utils.getTheme
 import com.zavedahmad.yaHabit.ui.components.MyTopABCommon
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 
@@ -69,8 +71,9 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
     val theme by viewModel.themeMode.collectAsStateWithLifecycle()
     val themeReal = theme
     val existingHabitData = viewModel.existingHabitData.collectAsStateWithLifecycle().value
-
-    if (themeReal == null || existingHabitData == null && viewModel.navKey.habitId != null) {
+    val allPreferences = viewModel.allPreferences.collectAsStateWithLifecycle().value
+//  if preferences are fetched and if navKey Exists then habitData is fetched
+    if (allPreferences.isEmpty() || existingHabitData == null && viewModel.navKey.habitId != null) {
 
         Box(
             Modifier
@@ -108,10 +111,11 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
 
 
         CustomTheme(
-            theme = themeReal.value,
+            isAmoled = allPreferences.getAmoledThemeMode().toBoolean(),
+            theme = allPreferences.getTheme(),
             primaryColor = setColor.value,
 
-        ) {
+            ) {
             Scaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 topBar = {
@@ -145,7 +149,8 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                             }
 
 
-                        }, colors = TopAppBarDefaults.topAppBarColors(titleContentColor = MaterialTheme.colorScheme.primary),
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(titleContentColor = MaterialTheme.colorScheme.primary),
                         scrollBehavior = scrollBehavior
                     )
 
@@ -241,14 +246,16 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                                 "Unit",
 
 
-                            )
+                                )
                         },
                         onValueChange = {
-                            if (it == ""){
+                            if (it == "") {
                                 viewModel.setMeasurementUnit(null)
-                            }else{
-                                if (it.length <= 12){
-                            viewModel.setMeasurementUnit(it)}}
+                            } else {
+                                if (it.length <= 12) {
+                                    viewModel.setMeasurementUnit(it)
+                                }
+                            }
                         },
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
@@ -258,7 +265,7 @@ fun AddHabitPage(viewModel: AddHabitPageViewModel, backStack: NavBackStack) {
                         maxLines = 1
 
 
-                        )
+                    )
                     Heading("Repetition Per Day")
                     RepetitionPerDaySelector(viewModel)
                     Heading("Color")
