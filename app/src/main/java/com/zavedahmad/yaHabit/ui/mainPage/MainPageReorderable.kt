@@ -19,6 +19,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -76,7 +78,17 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             },
         ) { innerPadding ->
             BottomSheetForFiltersAndSorting(viewModel)
-            val filteredHabits  =   if (!allPreferences.getShowArchive()){habits.value.filter { !it.isArchived }.sortedBy { it.index }}else{habits.value}   // todo this causes performance issues most probably use profiler to check
+            val showArchive = allPreferences.getShowArchive()
+            val currentHabits = habits.value
+            val filteredHabits by remember(showArchive, currentHabits) {
+                derivedStateOf {
+                    if (!showArchive) {
+                        currentHabits.filter { !it.isArchived }.sortedBy { it.index }
+                    } else {
+                        currentHabits
+                    }
+                }
+            }
             val lazyListState = rememberLazyListState()
             val reorderableLazyListState =
                 rememberReorderableLazyListState(
@@ -85,8 +97,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     ) { from, to ->
                     listUpdatedChannel.tryReceive()
                     //println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
-                    val realFromIndex = filteredHabits[from.index -1].index
-                    val realToIndex = filteredHabits[to.index -1].index
+                    val realFromIndex = filteredHabits[from.index - 1].index
+                    val realToIndex = filteredHabits[to.index - 1].index
                     viewModel.move(realFromIndex, realToIndex)
                     listUpdatedChannel.receive()
                 }
