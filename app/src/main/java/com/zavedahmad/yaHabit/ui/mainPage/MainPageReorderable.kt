@@ -28,8 +28,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
 import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
+import com.zavedahmad.yaHabit.database.utils.getShowActive
 import com.zavedahmad.yaHabit.database.utils.getShowArchive
 import com.zavedahmad.yaHabit.database.utils.getTheme
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
@@ -78,15 +80,11 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             },
         ) { innerPadding ->
             BottomSheetForFiltersAndSorting(viewModel)
-            val showArchive = allPreferences.getShowArchive()
             val currentHabits = habits.value
-            val filteredHabits by remember(showArchive, currentHabits) {
+            val filteredHabits by remember(allPreferences, currentHabits) {
                 derivedStateOf {
-                    if (!showArchive) {
-                        currentHabits.filter { !it.isArchived }.sortedBy { it.index }
-                    } else {
-                        currentHabits
-                    }
+                    filterHabitsList(allPreferences.getShowArchive(),  allPreferences.getShowActive() , currentHabits)
+
                 }
             }
             val lazyListState = rememberLazyListState()
@@ -165,6 +163,11 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             }
         }
     }
+
+}
+
+private fun filterHabitsList(showArchived : Boolean, showActive: Boolean, habits : List<HabitEntity>) : List<HabitEntity>{
+    return habits.filter { showArchived && it.isArchived || showActive && !it.isArchived} .sortedBy { it.index }
 
 }
 
