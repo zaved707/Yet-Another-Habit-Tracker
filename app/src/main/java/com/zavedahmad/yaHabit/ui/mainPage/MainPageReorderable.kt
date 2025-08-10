@@ -1,65 +1,31 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.VerticalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.IconButtonShapes
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumFlexibleTopAppBar
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
-import com.zavedahmad.yaHabit.R
-import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
 import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
 import com.zavedahmad.yaHabit.database.utils.getTheme
@@ -74,11 +40,9 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
-    val filteredHabits = habits.value.filter { !it.isArchived }
+    val filteredHabits = habits.value.filter { !it.isArchived }.sortedBy { it.index }
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
-
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     LaunchedEffect(habits.value) {
         listUpdatedChannel.trySend(Unit)
@@ -95,7 +59,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             )
         }
     } else {
-        val colorForBorder = MaterialTheme.colorScheme.outlineVariant.copy(0.5f)
+
 
         Scaffold(
             modifier = Modifier
@@ -103,120 +67,12 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 
             topBar = {
-                MediumFlexibleTopAppBar(
-                    modifier = Modifier.drawWithContent() {
-                        drawContent()
-                        drawLine(
-                            color = colorForBorder,
-                            start = Offset(0f, size.height),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = 1.dp.toPx()
-                        )
-                    },
-                    title = {
-                        Text( // Add border around this
-                            "Habits",
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    actions = {
-
-                        if (isReorderableMode.value
-                        ) {
-                            Button(
-                                onClick = {
-
-
-                                    viewModel.changeReorderableMode(false)
-
-                                },
-                                modifier = Modifier,
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                            ) {
-                                Icon(
-                                    Icons.Default.Check,
-                                    contentDescription = "turn off reorderable mode"
-                                )
-                            }
-                        }
-
-                        if (!isReorderableMode.value
-                        ) {
-                            Row {
-                                OutlinedButton(
-                                    onClick = {
-
-
-                                        backStack.add(Screen.AddHabitPageRoute())
-
-                                    },
-                                    modifier = Modifier,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
-                                            0.5f
-                                        )
-                                    ),
-                                    contentPadding = PaddingValues(
-                                        vertical = 2.dp,
-                                        horizontal = 20.dp
-                                    )
-                                ) {
-                                    Box(
-                                        Modifier
-                                            .clip(MaterialShapes.Cookie12Sided.toShape())
-                                            .border(
-                                                border = BorderStroke(
-                                                    width = 2.dp,
-                                                    brush = SolidColor(
-                                                        MaterialTheme.colorScheme.primary.copy(
-                                                            0.5f
-                                                        )
-                                                    )
-                                                ), shape = MaterialShapes.Cookie12Sided.toShape()
-                                            )
-                                            .background(MaterialTheme.colorScheme.primary.copy(0.7f))
-                                    ) {
-                                        Box(Modifier.padding(5.dp)) {
-                                            Icon(
-                                                Icons.Default.Add,
-                                                contentDescription = "add new Item",
-                                                tint = MaterialTheme.colorScheme.onPrimary
-                                            )
-                                        }
-                                    }
-                                }
-                                OutlinedIconButton(onClick = {viewModel.setBottomSheetVisibility(true)} , shapes = IconButtonDefaults.shapes(
-                                    IconButtonDefaults.extraSmallRoundShape)) {
-                                    Icon(
-                                        painterResource(R.drawable.list_status),
-                                        contentDescription = "Sort and filter"
-                                    )
-                                }
-                                MainPageMenu(viewModel, backStack)
-                            }
-                        }
-
-
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
-                    ),
-
+                MainPageTopAppBar(
+                    viewModel = viewModel,
+                    backStack = backStack,
                     scrollBehavior = scrollBehavior
                 )
             },
-            /* floatingActionButton = {
-                 AnimatedVisibility(
-                     visible = !isReorderableMode.value,
-                     enter = fadeIn(),
-                     exit = fadeOut()
-                 ) {
-                     ExtendedFloatingActionButton(onClick = { backStack.add(Screen.AddHabitPageRoute()) }) {
-                         Text("Add Habit")
-                     }
-                 }
-             }*/
         ) { innerPadding ->
             BottomSheetForFiltersAndSorting(viewModel)
 
@@ -227,13 +83,10 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
                     ) { from, to ->
                     listUpdatedChannel.tryReceive()
-//        viewModel.moveHabits(from.index,to.index)
                     //println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
-
                     viewModel.move(from.index - 1, to.index - 1)
                     listUpdatedChannel.receive()
                 }
-            // Button(onClick = {viewModel.move(5 ,6)}) {Text("MOve") }
 
 
             Box(
@@ -244,32 +97,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 
                 if (habits.value.isEmpty()) {
-                    val pagerState = rememberPagerState(pageCount = {
-                        1
-                    })
-                    VerticalPager(state = pagerState) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-
-                            Icon(
-                                Icons.AutoMirrored.Filled.FormatListBulleted,
-                                modifier = Modifier.size(200.dp),
-                                contentDescription = "placeholderr",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                "You Have not Yet added any Habits \n click the '+' button  to add one",
-                                textAlign = TextAlign.Center
-                            )
-
-
-                        }
-                    }
+                    NoHabitsPage(Modifier.padding(innerPadding))
                 } else {
                     Box {
                         //HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
