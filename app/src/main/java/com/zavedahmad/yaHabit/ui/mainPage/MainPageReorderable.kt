@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
 import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
+import com.zavedahmad.yaHabit.database.utils.getShowArchive
 import com.zavedahmad.yaHabit.database.utils.getTheme
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
@@ -40,7 +41,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
-    val filteredHabits = habits.value.filter { !it.isArchived }.sortedBy { it.index }
+
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
@@ -75,7 +76,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             },
         ) { innerPadding ->
             BottomSheetForFiltersAndSorting(viewModel)
-
+            val filteredHabits  =   if (!allPreferences.getShowArchive()){habits.value.filter { !it.isArchived }.sortedBy { it.index }}else{habits.value}   // todo this causes performance issues most probably use profiler to check
             val lazyListState = rememberLazyListState()
             val reorderableLazyListState =
                 rememberReorderableLazyListState(
@@ -84,7 +85,9 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     ) { from, to ->
                     listUpdatedChannel.tryReceive()
                     //println("from: key ${from.key} index ${from.index}  \n to:   key ${to.key} index ${to.index}")
-                    viewModel.move(from.index - 1, to.index - 1)
+                    val realFromIndex = filteredHabits[from.index -1].index
+                    val realToIndex = filteredHabits[to.index -1].index
+                    viewModel.move(realFromIndex, realToIndex)
                     listUpdatedChannel.receive()
                 }
 
@@ -100,6 +103,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     NoHabitsPage(Modifier.padding(innerPadding))
                 } else {
                     Box {
+
                         //HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         LazyColumn(
                             modifier = Modifier
@@ -109,8 +113,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 //                            contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
-                            item { }
-                            items(habits.value, key = { it.id }) { habit ->
+                            item {  /* Button(onClick = {viewModel.move(1,3)}) { Text("Move") }*/ }
+                            items(filteredHabits, key = { it.id }) { habit ->
                                 ReorderableItem(
                                     reorderableLazyListState,
                                     key = habit.id

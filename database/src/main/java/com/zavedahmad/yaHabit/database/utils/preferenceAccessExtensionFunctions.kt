@@ -15,5 +15,15 @@ fun List<PreferenceEntity>.getAmoledThemeMode(): Boolean {
 }
 
 fun List<PreferenceEntity>.getFirstDayOfWeek(): DayOfWeek{
+    println("hi")
     return DayOfWeek.of((find{it.accessKey == "firstDayOfWeek"}?. value ?: PreferencesRepository.defaultPreferences["firstDayOfWeek"] ?: "").toInt())
+}
+
+
+fun List<PreferenceEntity>.getShowArchive(): Boolean{
+    return (find { it.accessKey == "showArchive" }?.value ?: PreferencesRepository.defaultPreferences["showArchive"] ?: "false").toBoolean()
+}
+
+fun List<PreferenceEntity>.getShowActive(): Boolean{
+    return (find { it.accessKey == "showActive" }?.value ?: PreferencesRepository.defaultPreferences["showActive"] ?: "true").toBoolean()
 }

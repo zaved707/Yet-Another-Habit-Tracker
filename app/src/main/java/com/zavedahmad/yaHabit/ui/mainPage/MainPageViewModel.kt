@@ -4,10 +4,12 @@ package com.zavedahmad.yaHabit.ui.mainPage
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.PreferenceEntity
+import com.zavedahmad.yaHabit.database.constants.PreferenceKeys
+import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
+import com.zavedahmad.yaHabit.database.utils.getShowArchive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -29,6 +31,7 @@ class MainPageViewModel @Inject constructor(
     override fun onCleared() {
         println("mainViewModelCleared")
     }
+
     private val _isBottomSheetVisible = MutableStateFlow(false)
     val isBottomSheetVisible = _isBottomSheetVisible.asStateFlow()
     private val _allPreferences = MutableStateFlow<List<PreferenceEntity>>(emptyList())
@@ -38,18 +41,28 @@ class MainPageViewModel @Inject constructor(
     private val _isReorderableMode = MutableStateFlow(false)
     val isReorderableMode = _isReorderableMode.asStateFlow()
 
-
+    private val showArchive = MutableStateFlow(false)
 
     private val _devMode = MutableStateFlow<Boolean>(false)
     val devMode = _devMode.asStateFlow()
 
     init {
-        collectPreferences()
+            collectPreferences()
+            collectHabits()
 
+    }
+    fun collectHabits(){
         viewModelScope.launch(Dispatchers.IO) {
-            habitRepository.getHabitsFlowSortedByIndex().collect { it -> _habits.value = it }
+            habitRepository.getHabitsFlowSortedByIndex().collect { it ->
+               _habits.value = it
+            }
         }
+    }
 
+   fun setArchivedFilter(value: Boolean){
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesRepository.setPreference(PreferenceKeys.ShowArchive.key, value.toString() )
+        }
     }
 
     fun collectPreferences() {
@@ -58,9 +71,10 @@ class MainPageViewModel @Inject constructor(
         }
     }
 
-    fun setBottomSheetVisibility(value: Boolean){
+    fun setBottomSheetVisibility(value: Boolean) {
         _isBottomSheetVisible.value = value
     }
+
     fun changeReorderableMode(value: Boolean) {
         _isReorderableMode.value = value
     }
@@ -96,7 +110,8 @@ class MainPageViewModel @Inject constructor(
         }
 
     }
-    fun unArchive(id: Int){
+
+    fun unArchive(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.unArchive(id)
         }

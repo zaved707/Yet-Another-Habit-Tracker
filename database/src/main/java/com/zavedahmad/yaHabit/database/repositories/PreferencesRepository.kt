@@ -2,6 +2,7 @@ package com.zavedahmad.yaHabit.database.repositories
 
 import com.zavedahmad.yaHabit.database.MainDatabase
 import com.zavedahmad.yaHabit.database.PreferenceEntity
+import com.zavedahmad.yaHabit.database.constants.PreferenceKeys
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -16,11 +17,14 @@ class PreferencesRepository @Inject constructor(
 ) {
     companion object {
         val defaultPreferences = mapOf(
-            "AmoledTheme" to "false",
-            "ThemeMode" to "system",
-            "firstDayOfWeek" to "1"
+            PreferenceKeys.AmoledTheme.key to PreferenceKeys.AmoledTheme.defaultValue,
+            PreferenceKeys.ThemeMode.key to PreferenceKeys.ThemeMode.defaultValue,
+            PreferenceKeys.FirstDayOfWeek.key to PreferenceKeys.FirstDayOfWeek.defaultValue,
+            PreferenceKeys.ShowArchive.key to PreferenceKeys.ShowArchive.defaultValue,
+            PreferenceKeys.ShowActive.key to PreferenceKeys.ShowActive.defaultValue
         )
     }
+
 
     val preferences: Flow<List<PreferenceEntity>> =
         preferencesDao.getAllPreferencesFlow().map { dbPrefs ->
@@ -43,6 +47,16 @@ class PreferencesRepository @Inject constructor(
         )
 
     }
+
+    suspend fun setPreference(key:String, value: String){
+        preferencesDao.updatePreference(
+            preferenceEntity = PreferenceEntity(
+                accessKey = key,
+                value = value
+            )
+        )
+    }
+
 
 
     suspend fun setFirstDayOfWeek(dayOfWeek: DayOfWeek) {
