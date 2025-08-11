@@ -39,7 +39,7 @@ fun NoHabitsPage(modifier: Modifier) {
                 tint = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                "You Have not Yet added any Habits \n click the '+' button  to add one",
+                "No Habits In this List",
                 textAlign = TextAlign.Center
             )
 

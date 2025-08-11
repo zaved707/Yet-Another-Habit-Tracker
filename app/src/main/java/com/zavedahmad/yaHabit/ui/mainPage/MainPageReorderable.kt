@@ -1,7 +1,12 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -11,8 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -28,6 +38,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
+import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.utils.getAmoledThemeMode
 import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
@@ -79,12 +90,43 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                     scrollBehavior = scrollBehavior
                 )
             },
+            floatingActionButton = {
+                AnimatedVisibility(
+                    visible = !isReorderableMode.value,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    FloatingActionButton(
+                        onClick = { backStack.add(Screen.AddHabitPageRoute()) },
+                        modifier = Modifier
+                            .border(
+                                shape = FloatingActionButtonDefaults.shape,
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+                            ),
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        elevation = FloatingActionButtonDefaults.elevation(
+                            defaultElevation = 2.dp,
+                            pressedElevation = 4.dp
+                        )
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            "add",
+                        )
+                    }
+                }
+            }
         ) { innerPadding ->
             BottomSheetForFiltersAndSorting(viewModel)
             val currentHabits = habits.value
             val filteredHabits by remember(allPreferences, currentHabits) {
                 derivedStateOf {
-                    filterHabitsList(allPreferences.getShowArchive(),  allPreferences.getShowActive() , currentHabits)
+                    filterHabitsList(
+                        allPreferences.getShowArchive(),
+                        allPreferences.getShowActive(),
+                        currentHabits
+                    )
 
                 }
             }
@@ -157,7 +199,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                 }
                             }
 
-                            item { Spacer(Modifier.height(20.dp)) }
+                            item { Spacer(Modifier.height(70.dp)) }
                         }
                     }
                 }
@@ -167,8 +209,13 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
 }
 
-private fun filterHabitsList(showArchived : Boolean, showActive: Boolean, habits : List<HabitEntity>) : List<HabitEntity>{
-    return habits.filter { showArchived && it.isArchived || showActive && !it.isArchived} .sortedBy { it.index }
+private fun filterHabitsList(
+    showArchived: Boolean,
+    showActive: Boolean,
+    habits: List<HabitEntity>
+): List<HabitEntity> {
+    return habits.filter { showArchived && it.isArchived || showActive && !it.isArchived }
+        .sortedBy { it.index }
 
 }
 

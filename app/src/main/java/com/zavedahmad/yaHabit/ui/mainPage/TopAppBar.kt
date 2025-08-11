@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
@@ -85,49 +86,9 @@ fun MainPageTopAppBar(viewModel: MainPageViewModel,backStack: SnapshotStateList<
             if (!isReorderableMode.value
             ) {
                 Row {
-                    OutlinedButton(
-                        onClick = {
 
 
-                            backStack.add(Screen.AddHabitPageRoute())
-
-                        },
-                        modifier = Modifier,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
-                                0.5f
-                            )
-                        ),
-                        contentPadding = PaddingValues(
-                            vertical = 2.dp,
-                            horizontal = 20.dp
-                        )
-                    ) {
-                        Box(
-                            Modifier
-                                .clip(MaterialShapes.Cookie12Sided.toShape())
-                                .border(
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = SolidColor(
-                                            MaterialTheme.colorScheme.primary.copy(
-                                                0.5f
-                                            )
-                                        )
-                                    ), shape = MaterialShapes.Cookie12Sided.toShape()
-                                )
-                                .background(MaterialTheme.colorScheme.primary.copy(0.7f))
-                        ) {
-                            Box(Modifier.padding(5.dp)) {
-                                Icon(
-                                    Icons.Default.Add,
-                                    contentDescription = "add new Item",
-                                    tint = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                        }
-                    }
-                    OutlinedIconButton(onClick = {viewModel.setBottomSheetVisibility(true)} , shapes = IconButtonDefaults.shapes(
+                    IconButton(onClick = {viewModel.setBottomSheetVisibility(true)} , shapes = IconButtonDefaults.shapes(
                         IconButtonDefaults.extraSmallRoundShape)) {
                         Icon(
                             painterResource(R.drawable.list_status),
