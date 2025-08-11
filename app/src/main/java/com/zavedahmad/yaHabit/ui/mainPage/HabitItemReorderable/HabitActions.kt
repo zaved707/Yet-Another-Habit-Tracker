@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.ui.mainPage
+package com.zavedahmad.yaHabit.ui.mainPage.HabitItemReorderable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -10,15 +10,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.outlined.Archive
-import androidx.compose.material.icons.outlined.Unarchive
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,12 +47,13 @@ import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.ui.components.ConfirmationDialog
+import com.zavedahmad.yaHabit.ui.mainPage.DialogueForHabit
+import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import java.time.DayOfWeek
-
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -107,7 +105,7 @@ fun HabitItemReorderableNew(
     }
     Card(
         modifier =
-            Modifier
+            Modifier.Companion
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
                 .alpha(alphaValue),
@@ -135,40 +133,43 @@ fun HabitItemReorderableNew(
             )
         )
         Column(
-            Modifier
+            Modifier.Companion
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Companion.Start
         ) {
             Row(
                 modifier =
 
-                    Modifier
+                    Modifier.Companion
                         .fillMaxWidth()
                         .padding(15.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             )
             {
 
-                Row(Modifier.fillMaxWidth(0.7f), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    Modifier.Companion.fillMaxWidth(0.7f),
+                    verticalAlignment = Alignment.Companion.CenterVertically
+                ) {
                     AnimatedVisibility(visible = isArchived) {
 
                         Icon(
-                            modifier = Modifier.fillMaxHeight(),
-                           painter =  painterResource(R.drawable.archive_outline),
+                            modifier = Modifier.Companion.fillMaxHeight(),
+                            painter = painterResource(R.drawable.archive_outline),
                             contentDescription = "archived habit"
                         )
-                    Spacer(Modifier.width(10.dp))
+                        Spacer(Modifier.Companion.width(10.dp))
 
                     }
                     Text(
                         habit.name,
 
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Companion.Ellipsis,
                         style = TextStyle(
                             color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Companion.Bold
                         )
                     )
                     if (habit.description != "") {
@@ -177,11 +178,11 @@ fun HabitItemReorderableNew(
                             habit.description,
 
                             maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
+                            overflow = TextOverflow.Companion.Ellipsis,
                             style = TextStyle(
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Companion.Bold
                             )
                         )
 
@@ -192,11 +193,11 @@ fun HabitItemReorderableNew(
                         onClick = {},
                         modifier = if (reorderableListScope != null) {
                             with(reorderableListScope) {
-                                Modifier
+                                Modifier.Companion
                                     .draggableHandle()
                             }
                         } else {
-                            Modifier
+                            Modifier.Companion
                         }
 
                     ) {
@@ -220,7 +221,7 @@ fun HabitItemReorderableNew(
 
             }
             AnimatedVisibility(visible = !isReorderableMode) {
-                Column(Modifier.fillMaxWidth()) {
+                Column(Modifier.Companion.fillMaxWidth()) {
 
                     WeekCalendarDataNew(
                         addHabit = { date ->
@@ -309,68 +310,23 @@ fun HabitItemReorderableNew(
                     )
 
 
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.Companion.height(20.dp))
 
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(0.5f))
 
                     Column(
-                        Modifier
+                        Modifier.Companion
                             .fillMaxWidth(),
-                        horizontalAlignment = Alignment.Start
+                        horizontalAlignment = Alignment.Companion.Start
                     ) {
 
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.Companion.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Column { }
-                            Row {
-                                if (habit.isArchived){
-                                    IconButton(
-                                        modifier = Modifier,
-                                        onClick = {
 
-                                                viewModel.unArchive(habit.id)
-
-                                        }) {
-                                        Icon(painterResource(R.drawable.archive_off_outline), contentDescription = "")
-
-                                    }
-                                }else{ IconButton(
-                                    modifier = Modifier,
-                                    onClick = {
-
-                                        viewModel.archive(habit.id)
-
-                                    }) {
-                                    Icon(painterResource(R.drawable.archive_outline), contentDescription = "")
-                                }}
-
-                                IconButton(
-                                    modifier = Modifier,
-                                    onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "")
-                                }
-//                                Box(
-//                                    Modifier.border(shape = MaterialShapes.Clover8Leaf.toShape(), width = 1.dp,color = MaterialTheme.colorScheme.error)
-//                                        .clip(MaterialShapes.Clover8Leaf.toShape())
-//                                        .background(
-//                                            MaterialTheme.colorScheme.onError
-//                                        ), contentAlignment = Alignment.Center
-//                                ) {
-                                IconButton(
-                                    modifier = Modifier,
-                                    onClick = { /*viewModel.deleteHabitById(habit.id)*/
-                                        showDialog.value = true
-                                    }) {
-                                    Icon(
-                                        Icons.Default.Delete,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.error
-                                    )
-//                                    }
-                                }
-                            }
+                            HabitActions(habit, viewModel, backStack, showDialog)
                         }
                     }
                 }
@@ -379,12 +335,60 @@ fun HabitItemReorderableNew(
     }
 }
 
-//@Composable
-//private fun reorderableRow() {
-//    Row(modifier = with(reorderableListScope) {
-//        Modifier
-//            .longPressDraggableHandle()
-//            .fillMaxWidth()
-//    }, horizontalArrangement = Arrangement.SpaceBetween)
-//    {}
-//}
+@Composable
+private fun HabitActions(
+    habit: HabitEntity,
+    viewModel: MainPageViewModel,
+    backStack: SnapshotStateList<NavKey>,
+    showDialog: MutableState<Boolean>
+) {
+    Row {
+        if (habit.isArchived) {
+            IconButton(
+                modifier = Modifier.Companion,
+                onClick = {
+
+                    viewModel.unArchive(habit.id)
+
+                }) {
+                Icon(painterResource(R.drawable.archive_off_outline), contentDescription = "")
+
+            }
+        } else {
+            IconButton(
+                modifier = Modifier.Companion,
+                onClick = {
+
+                    viewModel.archive(habit.id)
+
+                }) {
+                Icon(painterResource(R.drawable.archive_outline), contentDescription = "")
+            }
+        }
+
+        IconButton(
+            modifier = Modifier.Companion,
+            onClick = { backStack.add(Screen.AddHabitPageRoute(habit.id)) }) {
+            Icon(Icons.Default.Edit, contentDescription = "")
+        }
+//                                Box(
+//                                    Modifier.border(shape = MaterialShapes.Clover8Leaf.toShape(), width = 1.dp,color = MaterialTheme.colorScheme.error)
+//                                        .clip(MaterialShapes.Clover8Leaf.toShape())
+//                                        .background(
+//                                            MaterialTheme.colorScheme.onError
+//                                        ), contentAlignment = Alignment.Center
+//                                ) {
+        IconButton(
+            modifier = Modifier.Companion,
+            onClick = { /*viewModel.deleteHabitById(habit.id)*/
+                showDialog.value = true
+            }) {
+            Icon(
+                Icons.Default.Delete,
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.error
+            )
+//                                    }
+        }
+    }
+}

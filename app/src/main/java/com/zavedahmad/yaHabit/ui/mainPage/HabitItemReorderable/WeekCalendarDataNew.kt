@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.ui.mainPage
+package com.zavedahmad.yaHabit.ui.mainPage.HabitItemReorderable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -127,14 +127,16 @@ fun WeekCalendarDataNew(
                         dialogueComposable(visible, onDismiss, habitCompletionEntity, day.date)
                     })
 
-            } else {DayItem(
-                date = day.date,
-                state = "incomplete",
-                repetitionsOnThisDay = 0.0,
-                skipHabit = {},
-                unSkipHabit = {},
-                dialogueComposable = {a,b -> }
-            )}
+            } else {
+                DayItem(
+                    date = day.date,
+                    state = "incomplete",
+                    repetitionsOnThisDay = 0.0,
+                    skipHabit = {},
+                    unSkipHabit = {},
+                    dialogueComposable = { a, b -> }
+                )
+            }
         }, state = state)
     }
 }

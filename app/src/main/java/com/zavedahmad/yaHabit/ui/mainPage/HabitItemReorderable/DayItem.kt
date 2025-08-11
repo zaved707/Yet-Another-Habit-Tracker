@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.ui.mainPage
+package com.zavedahmad.yaHabit.ui.mainPage.HabitItemReorderable
 
 
 import android.widget.Toast
@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.zavedahmad.yaHabit.R
 
@@ -80,7 +81,7 @@ fun DayItem(
             iconComposable = {
                 Text(
                     text = formattedNumber,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                     color = textColor,
                     maxLines = 1,
                     fontSize = if (formattedNumber.length > 3) {
@@ -103,7 +104,7 @@ fun DayItem(
             iconComposable = {
                 Text(
                     text = formattedNumber,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                     color = textColor,
                     maxLines = 1,
                     fontSize = if (formattedNumber.length > 3) {

@@ -34,6 +34,7 @@ import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
 import com.zavedahmad.yaHabit.database.utils.getShowActive
 import com.zavedahmad.yaHabit.database.utils.getShowArchive
 import com.zavedahmad.yaHabit.database.utils.getTheme
+import com.zavedahmad.yaHabit.ui.mainPage.HabitItemReorderable.HabitItemReorderableNew
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.channels.Channel
