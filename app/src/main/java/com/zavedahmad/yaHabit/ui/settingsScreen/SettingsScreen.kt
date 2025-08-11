@@ -1,52 +1,34 @@
 package com.zavedahmad.yaHabit.ui.settingsScreen
 
 import android.os.Build
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.InvertColors
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.InvertColors
 import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,20 +40,16 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
-import com.kizitonwose.calendar.core.daysOfWeek
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.ui.components.CardMyStyle
-import java.time.DayOfWeek
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -293,120 +271,3 @@ fun SettingsScreen(
     }
 }
 
-@Composable
-fun ModalForWeekSelection(
-    isVisible: Boolean,
-    onDismissRequest: () -> Unit,
-    onDaySelect: (DayOfWeek) -> Unit,
-    currentlySelectedDay: DayOfWeek = DayOfWeek.SUNDAY
-) {
-
-    if (isVisible) {
-        Dialog(onDismissRequest = { onDismissRequest() }) {
-            CardMyStyle(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Column(Modifier.fillMaxWidth(0.7f)) {
-                    for (i in 1..7) {
-                        val currentDay = DayOfWeek.of(i)
-                        Box(Modifier.combinedClickable(onClick = { onDaySelect(currentDay) })) {
-                            Row(
-                                Modifier
-                                    .padding(20.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    currentDay.toString()
-                                )
-                                if (currentDay == currentlySelectedDay) {
-                                    Icon(Icons.Default.Check, contentDescription = "f")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun SettingsItem(
-    icon: @Composable (() -> Unit) = { Column {Spacer(Modifier.size(24.dp))  } },
-    title: String,
-    description: String? = null,
-    task: () -> Unit,
-    actions: @Composable (() -> Unit)? = null
-) {
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(onClick = { task() })
-            .fillMaxWidth()
-            .padding(
-                horizontal = 20.dp,
-                vertical = 10.dp
-            ), // Use IntrinsicSize.Min to allow flexible height
-        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically // Center items vertically
-
-    ) {
-        Row(
-            modifier = if (actions != null) {
-                Modifier
-
-                    .fillMaxWidth(0.7f)
-            } else {
-                Modifier.fillMaxWidth()
-            },
-            verticalAlignment = Alignment.CenterVertically
-        ) { // Added weight to allow this Row to take available space
-            Column (Modifier.padding(10.dp)) {
-                icon()
-            }
-            Spacer(Modifier.width(20.dp))
-            Column(Modifier.fillMaxWidth()) {
-                Text(
-                    title,
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                )
-                description?.let {
-                    Text(
-                        description,
-                        style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 15.sp),
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
-                }
-            }
-        }
-        if (actions != null) {
-            Row(
-
-                verticalAlignment = Alignment.CenterVertically
-            ) { // Added fillMaxHeight to the actions Row
-
-
-                actions()
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun SettingsHeading(text: String, topPadding: Boolean = true) {
-    if (topPadding) {
-        Spacer(Modifier.height(30.dp))
-    }
-    Row {
-        Spacer(Modifier.width(30.dp))
-        Spacer(Modifier.width(54.dp))
-        Text(
-            text,
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = 12.sp,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Medium,
-            letterSpacing = 3.sp
-        )
-    }
-
-}

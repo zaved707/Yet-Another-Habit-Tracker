@@ -110,7 +110,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             ) {
 
 
-                if (habits.value.isEmpty()) {
+                if (filteredHabits.isEmpty()) {
                     NoHabitsPage(Modifier.padding(innerPadding))
                 } else {
                     Box {
