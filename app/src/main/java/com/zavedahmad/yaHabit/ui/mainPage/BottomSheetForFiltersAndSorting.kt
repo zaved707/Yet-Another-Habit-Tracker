@@ -43,7 +43,7 @@ fun BottomSheetForFiltersAndSorting(viewModel: MainPageViewModel) {
         ModalBottomSheet(
             onDismissRequest = { viewModel.setBottomSheetVisibility(false) }
         ) {
-            Column (Modifier.padding(horizontal = 20.dp)){
+            Column (Modifier.padding(horizontal = 20.dp).padding(bottom = 20.dp)){
                 FilterSection(preferences, viewModel)
             }
         }

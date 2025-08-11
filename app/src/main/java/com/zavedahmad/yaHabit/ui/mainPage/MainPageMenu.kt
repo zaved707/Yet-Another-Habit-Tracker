@@ -9,8 +9,10 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,13 +28,17 @@ import com.zavedahmad.yaHabit.database.printFromDatabaseModule
 
 import com.zavedahmad.yaHabit.ui.theme.LocalOutlineSizes
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavKey>) {
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     val devMode = viewModel.devMode.collectAsStateWithLifecycle()
     Column {
-        IconButton(onClick = { menuVisible.value = !menuVisible.value }) {
+        IconButton(onClick = { menuVisible.value = !menuVisible.value },
+            shapes = IconButtonDefaults.shapes(
+                IconButtonDefaults.extraSmallRoundShape
+            )) {
             Icon(
                 imageVector = Icons.Outlined.MoreVert,
                 contentDescription = "More"

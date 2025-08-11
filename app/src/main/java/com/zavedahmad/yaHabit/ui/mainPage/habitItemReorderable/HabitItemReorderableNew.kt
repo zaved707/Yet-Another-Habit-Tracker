@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.ui.mainPage.HabitItemReorderable
+package com.zavedahmad.yaHabit.ui.mainPage.habitItemReorderable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke

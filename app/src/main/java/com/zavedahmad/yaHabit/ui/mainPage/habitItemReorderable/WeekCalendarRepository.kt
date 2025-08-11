@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.ui.mainPage.HabitItemReorderable
+package com.zavedahmad.yaHabit.ui.mainPage.habitItemReorderable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi

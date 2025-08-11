@@ -2,8 +2,8 @@ package com.zavedahmad.yaHabit.ui.mainPage
 
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -45,7 +46,7 @@ import com.zavedahmad.yaHabit.database.utils.getFirstDayOfWeek
 import com.zavedahmad.yaHabit.database.utils.getShowActive
 import com.zavedahmad.yaHabit.database.utils.getShowArchive
 import com.zavedahmad.yaHabit.database.utils.getTheme
-import com.zavedahmad.yaHabit.ui.mainPage.HabitItemReorderable.HabitItemReorderableNew
+import com.zavedahmad.yaHabit.ui.mainPage.habitItemReorderable.HabitItemReorderableNew
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 import kotlinx.coroutines.channels.Channel
@@ -57,15 +58,38 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPageViewModel) {
     val listUpdatedChannel = remember { Channel<Unit>() }
     val habits = viewModel.habits.collectAsStateWithLifecycle()
-
+    val lazyListState = rememberLazyListState()
+    val topAppBarState = rememberTopAppBarState()
     val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
     val isReorderableMode = viewModel.isReorderableMode.collectAsStateWithLifecycle()
     LaunchedEffect(habits.value) {
         listUpdatedChannel.trySend(Unit)
     }
     val allPreferences = viewModel.allPreferences.collectAsStateWithLifecycle().value
-
+    val showFloatingActionButton = remember { mutableStateOf(true) }
+    val previousHeightOffsetOfTopAppBar =
+        remember { mutableStateOf(scrollBehavior.state.heightOffset) }
+    LaunchedEffect(                                            // todo this can have some perfromacnce issues
+        lazyListState.lastScrolledBackward,
+        lazyListState.lastScrolledForward,
+        scrollBehavior.state.heightOffset
+    ) {
+        if (lazyListState.lastScrolledBackward && !showFloatingActionButton.value) {
+            showFloatingActionButton.value = true
+        }
+        if (lazyListState.lastScrolledForward && showFloatingActionButton.value) {
+            showFloatingActionButton.value = false
+        }
+        if (previousHeightOffsetOfTopAppBar.value != scrollBehavior.state.heightOffset) {
+            if (previousHeightOffsetOfTopAppBar.value < scrollBehavior.state.heightOffset) {
+                showFloatingActionButton.value = true
+            } else {
+                showFloatingActionButton.value = false
+            }
+            previousHeightOffsetOfTopAppBar.value = scrollBehavior.state.heightOffset
+        }
+    }
 
     if (allPreferences.isEmpty()) {
         ComposeTemplateTheme("system") {
@@ -92,9 +116,9 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             },
             floatingActionButton = {
                 AnimatedVisibility(
-                    visible = !isReorderableMode.value,
-                    enter = fadeIn(),
-                    exit = fadeOut()
+                    visible = !isReorderableMode.value && showFloatingActionButton.value,
+                    enter = slideInVertically{it -> it*30/20},
+                    exit = slideOutVertically{it -> it*30/20}
                 ) {
                     FloatingActionButton(
                         onClick = { backStack.add(Screen.AddHabitPageRoute()) },
@@ -130,7 +154,8 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 
                 }
             }
-            val lazyListState = rememberLazyListState()
+
+
             val reorderableLazyListState =
                 rememberReorderableLazyListState(
                     lazyListState,
