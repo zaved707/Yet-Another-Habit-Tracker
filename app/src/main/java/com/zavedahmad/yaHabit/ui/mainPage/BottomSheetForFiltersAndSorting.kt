@@ -5,10 +5,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zavedahmad.yaHabit.database.utils.getShowActive
 import com.zavedahmad.yaHabit.database.utils.getShowArchive
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -21,10 +23,15 @@ fun BottomSheetForFiltersAndSorting(viewModel: MainPageViewModel) {
         ModalBottomSheet(
             onDismissRequest = { viewModel.setBottomSheetVisibility(false) }
         ) {
-            ToggleButton(
+            OutlinedToggleButton(
                 onCheckedChange = {viewModel.setArchivedFilter(it)},
                 checked = preferences.value.getShowArchive(),
                 content = {Text("Archived")}
+            )
+            OutlinedToggleButton (
+                onCheckedChange = {viewModel.setActiveFilter(it)},
+                checked = preferences.value.getShowActive(),
+                content = {Text("Active")}
             )
         }
     }

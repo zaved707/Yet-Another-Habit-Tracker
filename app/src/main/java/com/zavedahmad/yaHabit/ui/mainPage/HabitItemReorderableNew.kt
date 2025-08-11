@@ -6,14 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.Archive
+import androidx.compose.material.icons.outlined.Unarchive
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,12 +36,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
+import com.zavedahmad.yaHabit.R
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
@@ -47,6 +56,7 @@ import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import java.time.DayOfWeek
 
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitItemReorderableNew(
@@ -56,15 +66,27 @@ fun HabitItemReorderableNew(
     reorderableListScope: ReorderableCollectionItemScope? = null,
     isDragging: Boolean = false,
     isReorderableMode: Boolean = false,
-    firstDayOfWeek: DayOfWeek
-) {
+    firstDayOfWeek: DayOfWeek,
+
+    ) {
+    val isArchived = habit.isArchived
+    val alphaValue = if (isArchived) 0.5f else 1f
+    val titleTextColor: Color = if (isArchived) {
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) // Dim color for archived
+
+
+    } else {
+
+        MaterialTheme.colorScheme.onSurface
+
+    }
 
     val coroutineScope = rememberCoroutineScope()
     val color = if (isDragging) {
         CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
 
     } else {
-        CardDefaults.outlinedCardColors( )
+        CardDefaults.outlinedCardColors()
     }
     val cardElevation = if (isDragging) {
         CardDefaults.outlinedCardElevation(defaultElevation = 10.dp)
@@ -86,11 +108,16 @@ fun HabitItemReorderableNew(
     Card(
         modifier =
             Modifier
-                .fillMaxWidth().padding(horizontal = 10.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+                .alpha(alphaValue),
         elevation = cardElevation,
 
         colors = color,
-        border = BorderStroke(width = LocalOutlineSizes.current.small, color = MaterialTheme.colorScheme.outlineVariant.copy(0.5f)),
+        border = BorderStroke(
+            width = LocalOutlineSizes.current.small,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(0.5f)
+        ),
         onClick = {
             if (!isReorderableMode) {
                 backStack.add(Screen.HabitDetailsPageRoute(habit.id))
@@ -115,10 +142,24 @@ fun HabitItemReorderableNew(
             Row(
                 modifier =
 
-                    Modifier.fillMaxWidth().padding(15.dp), horizontalArrangement = Arrangement.SpaceBetween
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             )
             {
-                Column(Modifier.fillMaxWidth(0.7f)) {
+
+                Row(Modifier.fillMaxWidth(0.7f), verticalAlignment = Alignment.CenterVertically) {
+                    AnimatedVisibility(visible = isArchived) {
+
+                        Icon(
+                            modifier = Modifier.fillMaxHeight(),
+                           painter =  painterResource(R.drawable.archive_outline),
+                            contentDescription = "archived habit"
+                        )
+                    Spacer(Modifier.width(10.dp))
+
+                    }
                     Text(
                         habit.name,
 
@@ -270,7 +311,7 @@ fun HabitItemReorderableNew(
 
                     Spacer(Modifier.height(20.dp))
 
-                    HorizontalDivider(color =  MaterialTheme.colorScheme.outlineVariant.copy(0.5f))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(0.5f))
 
                     Column(
                         Modifier
@@ -284,11 +325,26 @@ fun HabitItemReorderableNew(
                         ) {
                             Column { }
                             Row {
-                                IconButton(
+                                if (habit.isArchived){
+                                    IconButton(
+                                        modifier = Modifier,
+                                        onClick = {
+
+                                                viewModel.unArchive(habit.id)
+
+                                        }) {
+                                        Icon(painterResource(R.drawable.archive_off_outline), contentDescription = "")
+
+                                    }
+                                }else{ IconButton(
                                     modifier = Modifier,
-                                    onClick = { if (habit.isArchived){ viewModel.unArchive(habit.id)}else{viewModel.archive(habit.id)} }) {
-                                    Icon(Icons.Default.Archive, contentDescription = "")
-                                }
+                                    onClick = {
+
+                                        viewModel.archive(habit.id)
+
+                                    }) {
+                                    Icon(painterResource(R.drawable.archive_outline), contentDescription = "")
+                                }}
 
                                 IconButton(
                                     modifier = Modifier,

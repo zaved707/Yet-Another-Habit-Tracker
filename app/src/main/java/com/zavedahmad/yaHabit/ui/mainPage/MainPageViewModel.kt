@@ -9,7 +9,6 @@ import com.zavedahmad.yaHabit.database.constants.PreferenceKeys
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
-import com.zavedahmad.yaHabit.database.utils.getShowArchive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -47,21 +46,27 @@ class MainPageViewModel @Inject constructor(
     val devMode = _devMode.asStateFlow()
 
     init {
-            collectPreferences()
-            collectHabits()
+        collectPreferences()
+        collectHabits()
 
     }
-    fun collectHabits(){
+
+    fun collectHabits() {
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.getHabitsFlowSortedByIndex().collect { it ->
-               _habits.value = it
+                _habits.value = it
             }
         }
     }
 
-   fun setArchivedFilter(value: Boolean){
+    fun setArchivedFilter(value: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            preferencesRepository.setPreference(PreferenceKeys.ShowArchive.key, value.toString() )
+            preferencesRepository.setPreference(PreferenceKeys.ShowArchive.key, value.toString())
+        }
+    }
+    fun setActiveFilter(value: Boolean){
+        viewModelScope.launch(Dispatchers.IO) {
+            preferencesRepository.setPreference(PreferenceKeys.ShowActive.key, value.toString())
         }
     }
 
