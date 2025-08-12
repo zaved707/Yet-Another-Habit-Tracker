@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Reorder
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -35,10 +36,12 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
     val menuVisible = rememberSaveable { mutableStateOf(false) }
     val devMode = viewModel.devMode.collectAsStateWithLifecycle()
     Column {
-        IconButton(onClick = { menuVisible.value = !menuVisible.value },
+        IconButton(
+            onClick = { menuVisible.value = !menuVisible.value },
             shapes = IconButtonDefaults.shapes(
                 IconButtonDefaults.extraSmallRoundShape
-            )) {
+            )
+        ) {
             Icon(
                 imageVector = Icons.Outlined.MoreVert,
                 contentDescription = "More"
@@ -55,7 +58,7 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
             onDismissRequest = { menuVisible.value = false }
         ) {
             Column {
-                DropdownMenuItem(trailingIcon = {
+                DropdownMenuItem(leadingIcon = {
                     Icon(
                         Icons.Filled.Settings,
                         contentDescription = "setting"
@@ -65,7 +68,12 @@ fun MainPageMenu(viewModel: MainPageViewModel, backStack: SnapshotStateList<NavK
                     backStack.add(Screen.SettingsPageRoute)
 
                 })
-                DropdownMenuItem(text = {
+                DropdownMenuItem(leadingIcon = {
+                    Icon(
+                        Icons.Filled.Reorder,
+                        contentDescription = "Reorder"
+                    )
+                }, text = {
                     Row {
                         Text("Reorder Mode")
 
