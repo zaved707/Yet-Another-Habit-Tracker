@@ -157,7 +157,6 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
                                         width = 2.dp,
                                         brush = SolidColor(
                                             MaterialTheme.colorScheme.primary.copy(
-                                                0.5f
                                             )
                                         )
                                     ), shape = MaterialShapes.Cookie12Sided.toShape()

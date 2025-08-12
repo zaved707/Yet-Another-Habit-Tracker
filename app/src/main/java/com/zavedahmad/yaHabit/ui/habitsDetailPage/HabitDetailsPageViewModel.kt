@@ -10,7 +10,6 @@ import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
-import com.zavedahmad.yaHabit.database.repositories.HabitRepositoryImpl
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -28,7 +27,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
-    val habitRepositoryImpl: HabitRepository,
+    val habitRepository: HabitRepository,
     val preferencesRepository: PreferencesRepository
 
 ) : ViewModel() {
@@ -58,7 +57,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
 
     fun getHabitAllData() {
         viewModelScope.launch(Dispatchers.IO) {
-            habitRepositoryImpl.getAllHabitCompletionsByIdFlow(navKey.habitId)
+            habitRepository.getAllHabitCompletionsByIdFlow(navKey.habitId)
                 .collect { _habitAllData.value = it }
         }
     }
@@ -75,7 +74,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
     }
 
     fun deleteHabitById(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) { habitRepositoryImpl.deleteHabit(id) }
+        viewModelScope.launch(Dispatchers.IO) { habitRepository.deleteHabit(id) }
     }
 
     fun getHabitDetails() {
@@ -84,6 +83,18 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
         }
     }
 
+    fun archive(id: Int): Unit {
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.archive(id)
+        }
+
+    }
+
+    fun unArchive(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            habitRepository.unArchive(id)
+        }
+    }
 
 
 

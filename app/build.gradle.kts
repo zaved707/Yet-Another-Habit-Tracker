@@ -7,7 +7,6 @@ plugins {
 
     alias(libs.plugins.hilt)
     id("kotlin-parcelize")
-    id("androidx.room")
     alias(libs.plugins.ksp)
 }
 
@@ -62,9 +61,7 @@ android {
         compose = true
     }
 }
-room{
-    schemaDirectory("${projectDir}/src/main/java/com/zavedahmad/yaHabit/roomDatabase/schemas")
-}
+
 
 dependencies {
     //room

@@ -22,15 +22,18 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -89,7 +92,9 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                     .padding(innerPadding), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    modifier = Modifier.size(150.dp),
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(MaterialShapes.Cookie12Sided.toShape()),
                     painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                     contentDescription = " Image"
                 )
@@ -105,9 +110,11 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
                     )
                 }
                 Spacer(Modifier.height(10.dp))
-                HorizontalDivider(Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp))
+                HorizontalDivider(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                )
                 Spacer(Modifier.height(10.dp))
 
                 SettingsItem(

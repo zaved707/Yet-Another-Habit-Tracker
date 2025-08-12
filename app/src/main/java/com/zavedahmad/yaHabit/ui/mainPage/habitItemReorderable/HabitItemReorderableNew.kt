@@ -2,7 +2,10 @@ package com.zavedahmad.yaHabit.ui.mainPage.habitItemReorderable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,8 +23,10 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +36,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -115,7 +122,7 @@ fun HabitItemReorderableNew(
             Modifier.Companion
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
-                .alpha(alphaValue),
+                ,
         elevation = cardElevation,
 
         colors = color,
@@ -159,14 +166,32 @@ fun HabitItemReorderableNew(
                     verticalAlignment = Alignment.Companion.CenterVertically
                 ) {
                     AnimatedVisibility(visible = isArchived) {
-
+                        val shape = MaterialShapes.Cookie6Sided
+                        Box(
+                            Modifier
+                                .clip(shape.toShape())
+                                .background(
+                                    MaterialTheme.colorScheme.primary.copy(0.7f)
+                                ) .border(
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = SolidColor(
+                                            MaterialTheme.colorScheme.primary.copy(
+                                                0.5f
+                                            )
+                                        )
+                                    ), shape = shape.toShape()
+                                )
+                                .padding(5.dp)
+                        ) {
                         Icon(
-                            modifier = Modifier.Companion.fillMaxHeight(),
+
                             painter = painterResource(R.drawable.archive_outline),
-                            contentDescription = "archived habit"
+                            contentDescription = "archived habit",
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(Modifier.Companion.width(10.dp))
-
+}
                     }
                     Text(
                         habit.name,
@@ -177,7 +202,8 @@ fun HabitItemReorderableNew(
                             color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Companion.Bold
-                        )
+                        ),
+                        modifier = Modifier.alpha(alphaValue)
                     )
                     if (habit.description != "") {
 
