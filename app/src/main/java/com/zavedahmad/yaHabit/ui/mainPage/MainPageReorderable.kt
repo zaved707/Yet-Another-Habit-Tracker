@@ -2,6 +2,8 @@ package com.zavedahmad.yaHabit.ui.mainPage
 
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,10 +26,13 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -35,6 +41,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -117,27 +126,49 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
             floatingActionButton = {
                 AnimatedVisibility(
                     visible = !isReorderableMode.value && showFloatingActionButton.value,
-                    enter = slideInVertically{it -> it*30/20},
-                    exit = slideOutVertically{it -> it*30/20}
+                    enter = slideInVertically { it -> it * 30 / 20 } + fadeIn(),
+                    exit = slideOutVertically { it -> it * 30 / 20 } + fadeOut()
                 ) {
-                    FloatingActionButton(
+                    MediumFloatingActionButton(
                         onClick = { backStack.add(Screen.AddHabitPageRoute()) },
                         modifier = Modifier
                             .border(
                                 shape = FloatingActionButtonDefaults.shape,
-                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary.copy(
+                                    0.5f
+                                ).compositeOver(MaterialTheme.colorScheme.surface))
                             ),
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = FloatingActionButtonDefaults.shape,
+                        containerColor = MaterialTheme.colorScheme.primary.copy(0.3f).compositeOver(
+                            MaterialTheme.colorScheme.surface),
                         contentColor = MaterialTheme.colorScheme.primary,
                         elevation = FloatingActionButtonDefaults.elevation(
                             defaultElevation = 2.dp,
                             pressedElevation = 4.dp
                         )
                     ) {
-                        Icon(
-                            Icons.Default.Add,
-                            "add",
-                        )
+                        Box(
+                            Modifier
+                                .clip(MaterialShapes.Cookie12Sided.toShape())
+                                .background(
+                                    MaterialTheme.colorScheme.primary.copy(0.7f)
+                                ) .border(
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = SolidColor(
+                                            MaterialTheme.colorScheme.primary.copy(
+                                                0.5f
+                                            )
+                                        )
+                                    ), shape = MaterialShapes.Cookie12Sided.toShape()
+                                )
+                                .padding(10.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Add,
+                                "add", modifier = Modifier.size(30.dp), tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     }
                 }
             }
