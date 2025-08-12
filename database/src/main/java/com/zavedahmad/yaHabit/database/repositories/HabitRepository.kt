@@ -9,7 +9,7 @@ interface HabitRepository {
     suspend fun addSampleHabits()
     suspend fun deleteAllHabits()
     suspend fun move(fromIndex: Int, toIndex: Int)
-    suspend fun addHabitItem(habitEntity: HabitEntity)
+    suspend fun addHabitItem(habitEntity: HabitEntity) : Long
     fun editItem(habitEntity: HabitEntity)
     fun deleteHabit(id: Int)
     fun getHabitsFlowSortedByIndex(): Flow<List<HabitEntity>>

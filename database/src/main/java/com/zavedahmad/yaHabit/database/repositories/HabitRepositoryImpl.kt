@@ -19,14 +19,14 @@ import com.zavedahmad.yaHabit.database.utils.processDateTriples
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
-import kotlin.random.Random
 import javax.inject.Inject
+import kotlin.random.Random
 
 class HabitRepositoryImpl @Inject constructor(
     val habitDao: HabitDao,
     val habitCompletionDao: HabitCompletionDao,
     val db: MainDatabase
-) :  HabitRepository{
+) : HabitRepository {
     override suspend fun addSampleHabits() {
         val listOfHabits = listOf<HabitEntity>(
             HabitEntity(
@@ -75,24 +75,25 @@ class HabitRepositoryImpl @Inject constructor(
                 measurementUnit = "Minutes"
             )
         )
-        listOfHabits.forEach {  habit ->
-        val habitId = habitDao.addHabit(
-          habit
-        )
-        val todayDate = LocalDate.now()
-        for (i in 1..300) {
-            if (Random.nextDouble() < 0.7) {
-                applyRepetitionForADate(
-                    date = todayDate.minusDays(i.toLong()),
-                    habitId = habitId.toInt(),
-                    newRepetitionValue = 5.0
-                )
+        listOfHabits.forEach { habit ->
+            val habitId = addHabitItem(
+                habit
+            )
+            val todayDate = LocalDate.now()
+            for (i in 1..300) {
+                if (Random.nextDouble() < 0.7) {
+                    applyRepetitionForADate(
+                        date = todayDate.minusDays(i.toLong()),
+                        habitId = habitId.toInt(),
+                        newRepetitionValue = 5.0
+                    )
+                }
             }
-        }}
+        }
 
     }
 
-    override suspend fun deleteAllHabits(){
+    override suspend fun deleteAllHabits() {
         habitDao.deleteAllHabits()
     }
 
@@ -112,9 +113,9 @@ class HabitRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun addHabitItem(habitEntity: HabitEntity) {
+    override suspend fun addHabitItem(habitEntity: HabitEntity): Long {
         val max = habitDao.getMaxIndex()
-        habitDao.addHabit(
+        val id = habitDao.addHabit(
             HabitEntity(
                 name = habitEntity.name,
                 color = habitEntity.color,
@@ -127,6 +128,7 @@ class HabitRepositoryImpl @Inject constructor(
                 repetitionPerDay = habitEntity.repetitionPerDay
             )
         )
+        return id
     }
 
     override fun editItem(habitEntity: HabitEntity) {
@@ -321,7 +323,11 @@ class HabitRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun applyRepetitionForADate(date: LocalDate, habitId: Int, newRepetitionValue: Double) {
+    override suspend fun applyRepetitionForADate(
+        date: LocalDate,
+        habitId: Int,
+        newRepetitionValue: Double
+    ) {
         db.withTransaction {
             val entry = habitCompletionDao.getEntryOfCertainHabitIdAndDate(
                 habitId = habitId,
@@ -499,6 +505,7 @@ class HabitRepositoryImpl @Inject constructor(
     override suspend fun unArchive(id: Int) {
         habitDao.archive(id = id, false)
     }
+
     override suspend fun deleteHabitCompletionEntry(habitId: Int, date: LocalDate) {
         habitCompletionDao.deleteHabitCompletionEntry(habitId = habitId, completionDate = date)
     }
