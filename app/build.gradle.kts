@@ -133,4 +133,5 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":common"))
     implementation(libs.material.icons.extended)
+    implementation(project(":widgets"))
 }

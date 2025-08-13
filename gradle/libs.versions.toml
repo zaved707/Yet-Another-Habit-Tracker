@@ -36,10 +36,15 @@ appcompat = "1.6.1"
 material = "1.10.0"
 roomVersion = "2.7.1"
 roomCompiler = "2.7.2"
+glanceAppwidgetVersion = "1.1.1"
+
 
 [libraries]
 
 
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidgetVersion" }
+
+androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidgetVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
