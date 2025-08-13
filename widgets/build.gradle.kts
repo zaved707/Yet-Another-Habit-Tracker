@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -56,5 +57,5 @@ dependencies {
 // For interop APIs with Material 3
     implementation(libs.androidx.glance.material3)
 // For interop APIs with Material 2
-    implementation(libs.androidx.glance.material)
+
 }
