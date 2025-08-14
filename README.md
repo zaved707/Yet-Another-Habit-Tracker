@@ -31,6 +31,10 @@ This is a mordern and simple habit tracker for android.
 
 
 ## Installation
+[<img src="https://f-droid.org/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/com.zavedahmad.yaHabit)
+    
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="70"/>](https://apt.izzysoft.de/packages/com.zavedahmad.yaHabit)
 
 [<img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" height="50"/>](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zaved707/Yet-Another-Habit-Tracker)
