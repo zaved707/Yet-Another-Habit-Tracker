@@ -4,6 +4,12 @@ package com.zavedahmad.yaHabit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -74,6 +80,31 @@ sealed class Screen : NavKey {
 
 }
 
+private val predictiveTransition: AnimatedContentTransitionScope<*>.() -> ContentTransform = {
+    slideInHorizontally(
+        initialOffsetX = { -it / 2 }, animationSpec = tween(
+            durationMillis = 200,
+            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
+        )
+    ) + fadeIn(
+        animationSpec = tween(
+            durationMillis = 100,
+
+            easing = CubicBezierEasing(0f, 0f, 1f, 0.6f)
+        )
+    ) togetherWith slideOutHorizontally(
+        targetOffsetX = { it / 4 }, animationSpec = tween(
+            durationMillis = 200,
+            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
+        )
+    ) + fadeOut(
+        animationSpec = tween(
+            durationMillis = 100,
+
+            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
+        )
+    )
+}
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -105,7 +136,7 @@ class MainActivity : ComponentActivity() {
                 !(themeReal == null || realDynamicColors == null || isAmoledColor == null || firstDayOfWeek == null)
             splashScreen.setKeepOnScreenCondition { !isReady }
 
-            if (!isReady){
+            if (!isReady) {
                 ComposeTemplateTheme("system") {
                     Box(
                         Modifier
@@ -114,10 +145,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-            }
-
-
-            else{
+            } else {
 
                 ComposeTemplateTheme(
                     themeReal.value,
@@ -166,14 +194,24 @@ class MainActivity : ComponentActivity() {
                                                     contentAlignment = Alignment.Center
                                                 ) {
 
-                                                    SettingsScreen(backStack, settingsViewModel,onDatabaseImport = { restartActivityOnImport(it) })
+                                                    SettingsScreen(
+                                                        backStack,
+                                                        settingsViewModel,
+                                                        onDatabaseImport = {
+                                                            restartActivityOnImport(it)
+                                                        })
                                                 }
                                             }
                                         }
+
                                         is Screen.AboutPageRoute -> {
-                                            NavEntry(key = key){
-                                                val aboutPageViewModel = hiltViewModel<AboutPageViewModel>()
-                                                AboutPage(backStack = backStack , viewModel =  aboutPageViewModel)
+                                            NavEntry(key = key) {
+                                                val aboutPageViewModel =
+                                                    hiltViewModel<AboutPageViewModel>()
+                                                AboutPage(
+                                                    backStack = backStack,
+                                                    viewModel = aboutPageViewModel
+                                                )
                                             }
                                         }
 
@@ -215,7 +253,7 @@ class MainActivity : ComponentActivity() {
 
                                         is Screen.TestingPageRoute -> {
                                             NavEntry(key = key) {
-                                                TestingPage(backStack )
+                                                TestingPage(backStack)
 
                                             }
                                         }
@@ -227,16 +265,32 @@ class MainActivity : ComponentActivity() {
 
                                 },
                                 transitionSpec = {
-                                    slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(
-                                        targetOffsetX = { -it / 2 })
-                                }, popTransitionSpec = {
-                                    slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
-                                        targetOffsetX = { it })
-                                },
-                                predictivePopTransitionSpec = {
-                                    slideInHorizontally(initialOffsetX = { -it / 2 }) togetherWith slideOutHorizontally(
-                                        targetOffsetX = { it })
-                                }
+                                    slideInHorizontally(
+                                        initialOffsetX = { it / 4 }, animationSpec = tween(
+                                            durationMillis = 200,
+                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
+                                        )
+                                    ) + fadeIn(
+                                        animationSpec = tween(
+                                            durationMillis = 100,
+
+                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
+                                        )
+                                    ) togetherWith slideOutHorizontally(
+                                        targetOffsetX = { -it/2 }, animationSpec = tween(
+                                            durationMillis = 200,
+                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
+                                        )
+                                    ) + fadeOut(
+                                        animationSpec = tween(
+                                            durationMillis = 100,
+
+                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
+                                        )
+                                    )
+
+                                }, popTransitionSpec = predictiveTransition,
+                                predictivePopTransitionSpec = predictiveTransition
                             )
 
                         }
@@ -246,6 +300,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     fun restartActivityOnImport(successful: Boolean) {
         finish()
         if (successful)
