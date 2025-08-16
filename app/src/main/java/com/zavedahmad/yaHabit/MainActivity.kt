@@ -4,15 +4,6 @@ package com.zavedahmad.yaHabit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -80,32 +71,6 @@ sealed class Screen : NavKey {
 
 }
 
-private val predictiveTransition: AnimatedContentTransitionScope<*>.() -> ContentTransform = {
-    slideInHorizontally(
-        initialOffsetX = { -it / 2 }, animationSpec = tween(
-            durationMillis = 200,
-            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
-        )
-    ) + fadeIn(
-        animationSpec = tween(
-            durationMillis = 100,
-
-            easing = CubicBezierEasing(0f, 0f, 1f, 0.6f)
-        )
-    ) togetherWith slideOutHorizontally(
-        targetOffsetX = { it / 4 }, animationSpec = tween(
-            durationMillis = 200,
-            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
-        )
-    ) + fadeOut(
-        animationSpec = tween(
-            durationMillis = 100,
-
-            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
-        )
-    )
-}
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -135,7 +100,6 @@ class MainActivity : ComponentActivity() {
             val isReady =
                 !(themeReal == null || realDynamicColors == null || isAmoledColor == null || firstDayOfWeek == null)
             splashScreen.setKeepOnScreenCondition { !isReady }
-
             if (!isReady) {
                 ComposeTemplateTheme("system") {
                     Box(
@@ -157,7 +121,12 @@ class MainActivity : ComponentActivity() {
                         isAmoled = isAmoledColor?.value == "true"
                     ) {
 
-                        Box(modifier = Modifier.padding()) {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surface)
+                        ) {
+
 
 
                             NavDisplay(
@@ -264,32 +233,8 @@ class MainActivity : ComponentActivity() {
 
 
                                 },
-                                transitionSpec = {
-                                    slideInHorizontally(
-                                        initialOffsetX = { it / 4 }, animationSpec = tween(
-                                            durationMillis = 200,
-                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
-                                        )
-                                    ) + fadeIn(
-                                        animationSpec = tween(
-                                            durationMillis = 100,
-
-                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
-                                        )
-                                    ) togetherWith slideOutHorizontally(
-                                        targetOffsetX = { -it/2 }, animationSpec = tween(
-                                            durationMillis = 200,
-                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
-                                        )
-                                    ) + fadeOut(
-                                        animationSpec = tween(
-                                            durationMillis = 100,
-
-                                            easing = CubicBezierEasing(0f, 1f, 0.6f, 1f)
-                                        )
-                                    )
-
-                                }, popTransitionSpec = predictiveTransition,
+                                transitionSpec = navigationForwardTransitionSpec,
+                                popTransitionSpec = predictiveTransition,
                                 predictivePopTransitionSpec = predictiveTransition
                             )
 
@@ -297,8 +242,8 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-            }
-        }
+
+        }}
     }
 
     fun restartActivityOnImport(successful: Boolean) {
