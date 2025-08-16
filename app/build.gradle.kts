@@ -134,5 +134,8 @@ dependencies {
     implementation(libs.material.icons.extended)
 
     // koin
-    implementation("io.insert-koin:koin-android:4.0.3")
+    val koin_version = "4.0.3"
+
+    implementation("io.insert-koin:koin-androidx-compose:${koin_version}")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:${koin_version}")
 }

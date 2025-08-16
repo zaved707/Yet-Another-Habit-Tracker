@@ -40,6 +40,7 @@ import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
 
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -188,7 +189,7 @@ class MainActivity : ComponentActivity() {
                                         is Screen.AddHabitPageRoute -> {
                                             NavEntry(key = key) {
 
-                                                val addHabitPageViewModel: AddHabitPageViewModel by viewModel { parametersOf(key) }
+                                                val addHabitPageViewModel: AddHabitPageViewModel  = koinViewModel {parametersOf(key) }
                                                 AddHabitPage(addHabitPageViewModel, backStack)
 
                                             }
@@ -202,7 +203,7 @@ class MainActivity : ComponentActivity() {
 
                                         is Screen.HabitDetailsPageRoute -> {
                                             NavEntry(key = key) {
-                                                val habitDetailsPageViewModel: HabitDetailsPageViewModel by viewModel{parametersOf(key)}
+                                                val habitDetailsPageViewModel: HabitDetailsPageViewModel = koinViewModel{parametersOf(key)}
                                                 HabitDetailsPage(
                                                     habitDetailsPageViewModel,
                                                     backStack
