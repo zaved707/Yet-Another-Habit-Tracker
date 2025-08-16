@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
+
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -38,8 +38,10 @@ import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsScreen
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsViewModel
 import com.zavedahmad.yaHabit.ui.theme.ComposeTemplateTheme
 import com.zavedahmad.yaHabit.ui.theme.CustomTheme
-import dagger.hilt.android.AndroidEntryPoint
+
 import kotlinx.serialization.Serializable
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 sealed class Screen : NavKey {
 
@@ -71,7 +73,7 @@ sealed class Screen : NavKey {
 
 }
 
-@AndroidEntryPoint
+
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     private val IMPORT_SUCCESSFUL = "DATABASE_IMPORT_SUCCESSFUL"
@@ -86,10 +88,10 @@ class MainActivity : ComponentActivity() {
 
             val backStack = rememberNavBackStack<Screen>(Screen.MainPageRoute)
 
-            val viewModelMainPage = hiltViewModel<MainPageViewModel>()
+            val viewModelMainPage: MainPageViewModel by viewModel()
 
 
-            val settingsViewModel = hiltViewModel<SettingsViewModel>()
+            val settingsViewModel : SettingsViewModel by viewModel()
             val theme by settingsViewModel.themeMode.collectAsStateWithLifecycle()
             val isDynamicColor by settingsViewModel.dynamicColor.collectAsStateWithLifecycle()
             val isAmoledColor by settingsViewModel.amoledTheme.collectAsStateWithLifecycle()
@@ -175,8 +177,7 @@ class MainActivity : ComponentActivity() {
 
                                         is Screen.AboutPageRoute -> {
                                             NavEntry(key = key) {
-                                                val aboutPageViewModel =
-                                                    hiltViewModel<AboutPageViewModel>()
+                                                val aboutPageViewModel : AboutPageViewModel by viewModel()
                                                 AboutPage(
                                                     backStack = backStack,
                                                     viewModel = aboutPageViewModel
@@ -186,12 +187,8 @@ class MainActivity : ComponentActivity() {
 
                                         is Screen.AddHabitPageRoute -> {
                                             NavEntry(key = key) {
-                                                val addHabitPageViewModel =
-                                                    hiltViewModel<AddHabitPageViewModel, AddHabitPageViewModel.Factory>(
-                                                        creationCallback = { factory ->
-                                                            factory.create(key)
-                                                        }
-                                                    )
+
+                                                val addHabitPageViewModel: AddHabitPageViewModel by viewModel { parametersOf(key) }
                                                 AddHabitPage(addHabitPageViewModel, backStack)
 
                                             }
@@ -205,12 +202,7 @@ class MainActivity : ComponentActivity() {
 
                                         is Screen.HabitDetailsPageRoute -> {
                                             NavEntry(key = key) {
-                                                val habitDetailsPageViewModel =
-                                                    hiltViewModel<HabitDetailsPageViewModel, HabitDetailsPageViewModel.Factory>(
-                                                        creationCallback = { factory ->
-                                                            factory.create(key)
-                                                        }
-                                                    )
+                                                val habitDetailsPageViewModel: HabitDetailsPageViewModel by viewModel{parametersOf(key)}
                                                 HabitDetailsPage(
                                                     habitDetailsPageViewModel,
                                                     backStack

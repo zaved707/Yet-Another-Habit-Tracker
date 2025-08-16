@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.time.DayOfWeek
-import javax.inject.Inject
 
 
-class PreferencesRepository @Inject constructor(
+
+class PreferencesRepository (
     val preferencesDao: PreferencesDao,
     val db: MainDatabase
 ) {

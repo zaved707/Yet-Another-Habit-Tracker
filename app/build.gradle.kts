@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
 
-    alias(libs.plugins.hilt)
+
     id("kotlin-parcelize")
     alias(libs.plugins.ksp)
 }
@@ -71,10 +71,7 @@ dependencies {
     ksp(libs.room.compiler)
     annotationProcessor(libs.room.compiler)
 
-    //hilt
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+   
 
     implementation("io.github.ehsannarmani:compose-charts:0.1.7")
 

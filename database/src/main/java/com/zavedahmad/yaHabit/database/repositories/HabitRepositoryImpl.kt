@@ -19,10 +19,10 @@ import com.zavedahmad.yaHabit.database.utils.processDateTriples
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
-import javax.inject.Inject
+
 import kotlin.random.Random
 
-class HabitRepositoryImpl @Inject constructor(
+class HabitRepositoryImpl(
     val habitDao: HabitDao,
     val habitCompletionDao: HabitCompletionDao,
     val db: MainDatabase
