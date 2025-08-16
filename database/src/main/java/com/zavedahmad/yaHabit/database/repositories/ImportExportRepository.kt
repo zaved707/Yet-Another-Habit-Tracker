@@ -1,24 +1,21 @@
 package com.zavedahmad.yaHabit.database.repositories
 
+
 import android.content.Context
 import android.net.Uri
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.zavedahmad.yaHabit.database.MainDatabase
-import com.zavedahmad.yaHabit.database.daos.HabitCompletionDao
 import com.zavedahmad.yaHabit.database.daos.HabitDao
 import com.zavedahmad.yaHabit.database.utils.DatabaseUtils
-
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
-import javax.inject.Inject
 
-class ImportExportRepository @Inject constructor(
+
+class ImportExportRepository (
     val habitDao: HabitDao,
 
-    @ApplicationContext val context : Context,
+   val context : Context,
     val databaseUtils: DatabaseUtils,
 ) {
     suspend fun importDatabase(uri: Uri, onComplete: (Result<Unit>) -> Unit){

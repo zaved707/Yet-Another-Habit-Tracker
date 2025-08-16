@@ -11,27 +11,19 @@ import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = AddHabitPageViewModel.Factory::class)
-class AddHabitPageViewModel @AssistedInject constructor(
-    @Assisted val navKey: Screen.AddHabitPageRoute,
+class AddHabitPageViewModel(
+    val navKey: Screen.AddHabitPageRoute,
     val habitDao: HabitDao,
     val habitRepositoryImpl: HabitRepository,
     val preferencesDao: PreferencesDao,
     val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
-    @AssistedFactory
-    interface Factory {
-        fun create(navKey: Screen.AddHabitPageRoute): AddHabitPageViewModel
-    }
 
     val colors = listOf<Color>(
 

@@ -8,16 +8,16 @@ import com.zavedahmad.yaHabit.database.repositories.ImportExportRepository
 import com.zavedahmad.yaHabit.database.PreferenceEntity
 import com.zavedahmad.yaHabit.database.daos.PreferencesDao
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
-import javax.inject.Inject
 
-@HiltViewModel()
-class SettingsViewModel @Inject constructor(
+
+
+class SettingsViewModel (
     val preferencesDao: PreferencesDao,
     val preferencesRepository: PreferencesRepository,
     val importExportRepository: ImportExportRepository

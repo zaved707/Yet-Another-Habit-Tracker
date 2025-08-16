@@ -11,19 +11,16 @@ import com.zavedahmad.yaHabit.database.entities.HabitCompletionEntity
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = HabitDetailsPageViewModel.Factory::class)
-class HabitDetailsPageViewModel @AssistedInject constructor(
-    @Assisted val navKey: Screen.HabitDetailsPageRoute,
+
+class HabitDetailsPageViewModel(
+   val navKey: Screen.HabitDetailsPageRoute,
     val habitCompletionDao: HabitCompletionDao,
     val habitDao: HabitDao,
     val preferencesDao: PreferencesDao,
@@ -32,10 +29,7 @@ class HabitDetailsPageViewModel @AssistedInject constructor(
 
 ) : ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(navKey: Screen.HabitDetailsPageRoute): HabitDetailsPageViewModel
-    }
+
 
     private val _allPreferences = MutableStateFlow<List<PreferenceEntity>>(emptyList())
     val allPreferences = _allPreferences.asStateFlow()

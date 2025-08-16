@@ -1,7 +1,7 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
-import android.content.Context
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zavedahmad.yaHabit.database.PreferenceEntity
@@ -9,9 +9,7 @@ import com.zavedahmad.yaHabit.database.constants.PreferenceKeys
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import jakarta.inject.Inject
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,11 +17,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
-@HiltViewModel()
-class MainPageViewModel @Inject constructor(
+class MainPageViewModel(
     val habitRepository: HabitRepository,
     val preferencesRepository: PreferencesRepository,
-    @ApplicationContext val context: Context,
+
 
     ) :
     ViewModel() {
@@ -64,7 +61,8 @@ class MainPageViewModel @Inject constructor(
             preferencesRepository.setPreference(PreferenceKeys.ShowArchive.key, value.toString())
         }
     }
-    fun setActiveFilter(value: Boolean){
+
+    fun setActiveFilter(value: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             preferencesRepository.setPreference(PreferenceKeys.ShowActive.key, value.toString())
         }
