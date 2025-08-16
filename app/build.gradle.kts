@@ -135,4 +135,7 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":common"))
     implementation(libs.material.icons.extended)
+
+    // koin
+    implementation("io.insert-koin:koin-android:4.0.3")
 }
