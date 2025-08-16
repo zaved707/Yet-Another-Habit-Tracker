@@ -1,6 +1,7 @@
 package com.zavedahmad.yaHabit.ui.mainPage
 
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -79,6 +80,9 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
     val showFloatingActionButton = remember { mutableStateOf(true) }
     val previousHeightOffsetOfTopAppBar =
         remember { mutableStateOf(scrollBehavior.state.heightOffset) }
+    BackHandler(enabled = isReorderableMode.value) {
+        viewModel.changeReorderableMode(false)
+    }
     LaunchedEffect(                                            // todo this can have some perfromacnce issues
         lazyListState.lastScrolledBackward,
         lazyListState.lastScrolledForward,
