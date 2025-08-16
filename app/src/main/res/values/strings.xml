@@ -16,7 +16,7 @@
 
 <resources>
     <string name="app_name">YA Habit Tracker</string>
-    <string name="app_version">0.3.0</string>      <!--todo make this a standardized declaration for this and build.gradle-->
+    <string name="app_version">0.3.1</string>      <!--todo make this a standardized declaration for this and build.gradle-->
     <string name="github_repo">https://github.com/zaved707/Yet-Another-Habit-Tracker/tree/master</string>
     <string name="issue_tracker">https://github.com/zaved707/Yet-Another-Habit-Tracker/issues</string>
     <string name="developer_address">zavedahmadca707@gmail.com</string>
