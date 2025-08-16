@@ -17,27 +17,28 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zavedahmad.yaHabit.database.entities.HabitEntity
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.database.repositories.PreferencesRepository
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
+import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class MyAppWidget(
-    private val habitRepository: HabitRepository,
-    private val preferencesRepository: PreferencesRepository,
-    private val context: Context
-) : GlanceAppWidget() {
+class MyAppWidget : GlanceAppWidget() {
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             GlanceTheme {
                 Scaffold {
                     val coroutineScope = rememberCoroutineScope()
-                    val habitsState = habitRepository
-                        .getHabitsFlowSortedByIndex()
-                        .collectAsState(emptyList())
+//                    val habitsState = habitRepository
+//                        .getHabitsFlowSortedByIndex()
+//                        .collectAsState(emptyList())
 
                     Column {
-                        habitsState.value.forEach { Text(it.name) }
+
+
 
                     }
                 }

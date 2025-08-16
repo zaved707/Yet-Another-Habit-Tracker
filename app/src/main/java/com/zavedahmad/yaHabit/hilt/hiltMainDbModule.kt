@@ -14,11 +14,17 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import java.util.concurrent.Executors
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+annotation class AppCoroutineScope
 
 @Module
 @InstallIn(SingletonComponent::class)
-
 object HiltMainDbModule {
     @Provides
     @Singleton
@@ -40,5 +46,11 @@ object HiltMainDbModule {
         return database.habitCompletionDao()
     }
 
+    @Provides
+    @Singleton
+    @AppCoroutineScope
+    fun providesApplicationCoroutineScope(): CoroutineScope = CoroutineScope(
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher(),
+    )
 
 }

@@ -11,11 +11,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyAppWidgetReceiver : GlanceAppWidgetReceiver(){
-    @Inject lateinit var habitRepository: HabitRepository
-    @Inject lateinit var preferencesRepository: PreferencesRepository
-    @Inject @ApplicationContext
-    lateinit var context: Context
-    override val glanceAppWidget: MyAppWidget
-        get() = MyAppWidget(habitRepository, preferencesRepository, context)
+    override val glanceAppWidget: GlanceAppWidget
+        get() = MyAppWidget()
 
 }
