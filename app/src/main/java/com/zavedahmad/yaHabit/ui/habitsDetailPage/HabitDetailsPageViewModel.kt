@@ -49,6 +49,10 @@ class HabitDetailsPageViewModel(
         getHabitAllData()
     }
 
+    override fun onCleared() {
+        println("cleared detailspageViewModel")
+    }
+
     fun getHabitAllData() {
         viewModelScope.launch(Dispatchers.IO) {
             habitRepository.getAllHabitCompletionsByIdFlow(navKey.habitId)

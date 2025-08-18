@@ -15,7 +15,7 @@ fun List<PreferenceEntity>.getAmoledThemeMode(): Boolean {
 }
 
 fun List<PreferenceEntity>.getFirstDayOfWeek(): DayOfWeek{
-    println("hi")
+
     return DayOfWeek.of((find{it.accessKey == "firstDayOfWeek"}?. value ?: PreferencesRepository.defaultPreferences["firstDayOfWeek"] ?: "").toInt())
 }
 

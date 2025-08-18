@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
             val backStack = rememberNavBackStack<Screen>(Screen.MainPageRoute)
 
-            val viewModelMainPage: MainPageViewModel by viewModel()
+            val viewModelMainPage: MainPageViewModel =  koinViewModel()
 
 
             val settingsViewModel : SettingsViewModel by viewModel()
