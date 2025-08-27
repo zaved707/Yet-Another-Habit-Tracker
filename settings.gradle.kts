@@ -45,3 +45,4 @@ rootProject.name = "yaHabit"
 include(":app")
 include(":database")
 include(":common")
+include(":widgets")

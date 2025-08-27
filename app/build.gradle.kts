@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 
 
+
     id("kotlin-parcelize")
     alias(libs.plugins.ksp)
 }
@@ -131,6 +132,7 @@ dependencies {
     implementation( "androidx.core:core-splashscreen:1.0.0")
     implementation(project(":database"))
     implementation(project(":common"))
+    implementation(project(":widgets"))
     implementation(libs.material.icons.extended)
 
     // koin
@@ -138,4 +140,9 @@ dependencies {
 
     implementation("io.insert-koin:koin-androidx-compose:${koin_version}")
     implementation("io.insert-koin:koin-androidx-compose-navigation:${koin_version}")
+
+
+
+
+
 }
