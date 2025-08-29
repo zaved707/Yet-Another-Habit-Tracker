@@ -1,5 +1,6 @@
 package com.zavedahmad.yaHabit.hilt
 
+import android.content.Context
 import androidx.room.Room
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.MainDatabase
@@ -22,6 +23,7 @@ val mainDBModule = module {
             name = "main_database"
         ).build()
     }
+
     single { get<MainDatabase>().preferencesDao() }
     single { get<MainDatabase>().habitDao() }
     single { get<MainDatabase>().habitCompletionDao() }

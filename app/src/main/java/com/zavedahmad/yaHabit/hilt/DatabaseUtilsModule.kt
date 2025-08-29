@@ -7,5 +7,5 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val databaseUtilsModule = module {
-    single<DatabaseUtils> { LocalDatabaseUtils(androidContext(), get()) }
+    single<DatabaseUtils> { LocalDatabaseUtils(get(), get()) }
 }

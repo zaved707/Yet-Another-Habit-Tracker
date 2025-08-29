@@ -44,9 +44,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
+    implementation(project(":database"))
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("androidx.glance:glance-material3:1.1.1")
 
+//    koin
+    val koin_version = "4.0.3"
+
+    implementation("io.insert-koin:koin-androidx-compose:${koin_version}")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:${koin_version}")
 
 }

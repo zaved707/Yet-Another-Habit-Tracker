@@ -60,15 +60,7 @@ import sh.calvin.reorderable.ReorderableCollectionItemScope
 import java.time.DayOfWeek
 
 
-//@Composable
-//private fun reorderableRow() {
-//    Row(modifier = with(reorderableListScope) {
-//        Modifier
-//            .longPressDraggableHandle()
-//            .fillMaxWidth()
-//    }, horizontalArrangement = Arrangement.SpaceBetween)
-//    {}
-//}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitItemReorderableNew(
