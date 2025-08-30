@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.yaHabit"
         android:enableOnBackInvokedCallback="true"
-        android:name=".hilt.MainApplication"
+        android:name=".di.MainApplication"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"

@@ -1,9 +1,8 @@
-package com.zavedahmad.yaHabit.hilt
+package com.zavedahmad.yaHabit.di
 
 import com.zavedahmad.yaHabit.database.utils.DatabaseUtils
 import com.zavedahmad.yaHabit.database.utils.LocalDatabaseUtils
 
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val databaseUtilsModule = module {

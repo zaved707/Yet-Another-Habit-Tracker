@@ -75,6 +75,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(project(":common"))
     // koin
     val koin_version = "4.0.3"
 

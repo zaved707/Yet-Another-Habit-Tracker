@@ -16,6 +16,7 @@ import com.zavedahmad.yaHabit.database.entities.onlyPartial
 import com.zavedahmad.yaHabit.database.enums.HabitStreakType
 import com.zavedahmad.yaHabit.database.utils.findHabitClusters
 import com.zavedahmad.yaHabit.database.utils.processDateTriples
+import com.zavedahmad.yahabit.common.WidgetUpdater
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
@@ -25,7 +26,8 @@ import kotlin.random.Random
 class HabitRepositoryImpl(
     val habitDao: HabitDao,
     val habitCompletionDao: HabitCompletionDao,
-    val db: MainDatabase
+    val db: MainDatabase,
+    val widgetUpdater: WidgetUpdater
 ) : HabitRepository {
     override suspend fun addSampleHabits() {
         val listOfHabits = listOf<HabitEntity>(
@@ -128,6 +130,7 @@ class HabitRepositoryImpl(
                 repetitionPerDay = habitEntity.repetitionPerDay
             )
         )
+        widgetUpdater.updateWidgets()
         return id
     }
 

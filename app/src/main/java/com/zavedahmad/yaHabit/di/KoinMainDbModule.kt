@@ -1,6 +1,5 @@
-package com.zavedahmad.yaHabit.hilt
+package com.zavedahmad.yaHabit.di
 
-import android.content.Context
 import androidx.room.Room
 import com.zavedahmad.yaHabit.Screen
 import com.zavedahmad.yaHabit.database.MainDatabase
@@ -11,8 +10,14 @@ import com.zavedahmad.yaHabit.ui.addHabitPage.AddHabitPageViewModel
 import com.zavedahmad.yaHabit.ui.habitsDetailPage.HabitDetailsPageViewModel
 import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
 import com.zavedahmad.yaHabit.ui.settingsScreen.SettingsViewModel
+import com.zavedahmad.yaHabit.widgets.overviewWidget.HabitWidgetRepository
+import com.zavedahmad.yaHabit.widgets.overviewWidget.WidgetUpdaterImpl
+import com.zavedahmad.yahabit.common.WidgetUpdater
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val mainDBModule = module {
@@ -23,7 +28,8 @@ val mainDBModule = module {
             name = "main_database"
         ).build()
     }
-
+    singleOf(::HabitWidgetRepository)
+    singleOf(::WidgetUpdaterImpl).bind<WidgetUpdater>()
     single { get<MainDatabase>().preferencesDao() }
     single { get<MainDatabase>().habitDao() }
     single { get<MainDatabase>().habitCompletionDao() }

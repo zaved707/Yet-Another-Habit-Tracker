@@ -1,4 +1,4 @@
-package com.zavedahmad.yaHabit.hilt
+package com.zavedahmad.yaHabit.di
 
 import android.app.Application
 
