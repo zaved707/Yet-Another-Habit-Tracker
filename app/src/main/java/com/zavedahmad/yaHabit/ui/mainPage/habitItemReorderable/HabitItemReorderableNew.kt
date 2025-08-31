@@ -248,7 +248,7 @@ fun HabitItemReorderableNew(
                 Column(Modifier.Companion.fillMaxWidth()) {
 
                     WeekCalendarDataNew(
-                        addHabit = { date ->
+                        markHabitDoneForADate = { date ->
 
                             coroutineScope.launch(
                                 Dispatchers.IO
@@ -260,7 +260,7 @@ fun HabitItemReorderableNew(
                                 )
                             }
                         },
-                        deleteHabit = { date ->
+                        deleteRepetitionsForDate = { date ->
                             coroutineScope.launch(
                                 Dispatchers.IO
                             ) {
@@ -273,7 +273,7 @@ fun HabitItemReorderableNew(
                         },
                         habitData = habitData.value,
                         firstDayOfWeek = firstDayOfWeek,
-                        skipHabit = { date ->
+                        skipHabitForDate = { date ->
                             coroutineScope.launch(Dispatchers.IO) {
                                 viewModel.habitRepository.setSkip(
                                     date = date,

@@ -231,7 +231,7 @@ fun MainPageReorderable(backStack: SnapshotStateList<NavKey>, viewModel: MainPag
 //                            contentPadding = PaddingValues(top = 1.dp, start = 10.dp, end = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
-                            item { Button(onClick = { }) { Text("Move") } }  // Todo this is testing
+                            item {  }  // Todo this is testing
                             items(filteredHabits, key = { it.id }) { habit ->
                                 ReorderableItem(
                                     reorderableLazyListState,

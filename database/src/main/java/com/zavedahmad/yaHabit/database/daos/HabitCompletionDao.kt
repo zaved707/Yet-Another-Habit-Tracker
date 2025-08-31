@@ -20,6 +20,9 @@ interface HabitCompletionDao {
 
     @Query("SELECT * FROM habitCompletion WHERE habitId = :habitId AND completionDate = :completionDate")
     suspend fun getEntryOfCertainHabitIdAndDate(habitId: Int, completionDate: LocalDate) : HabitCompletionEntity?
+
+    @Query("SELECT * FROM habitCompletion WHERE habitId = :habitId AND completionDate = :completionDate")
+    fun getEntryOfCertainHabitIdAndDateFlow(habitId: Int, completionDate: LocalDate) : Flow<HabitCompletionEntity?>
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id")
     fun getHabitCompletionsById(id : Int): List<HabitCompletionEntity>
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id AND partial = 0")

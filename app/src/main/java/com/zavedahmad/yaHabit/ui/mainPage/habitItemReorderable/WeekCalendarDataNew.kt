@@ -22,11 +22,11 @@ import java.time.LocalDate
 @Composable
 fun WeekCalendarDataNew(
 
-    addHabit: (date: LocalDate) -> Unit,
-    deleteHabit: (date: LocalDate) -> Unit,
+    markHabitDoneForADate: (date: LocalDate) -> Unit,
+    deleteRepetitionsForDate: (date: LocalDate) -> Unit,
     initialWeekString: String? = null,
     habitEntity: HabitEntity,
-    skipHabit: (date: LocalDate) -> Unit,
+    skipHabitForDate: (date: LocalDate) -> Unit,
     habitData: List<HabitCompletionEntity>?,
     firstDayOfWeek: DayOfWeek,
     unSkipHabit: (date: LocalDate) -> Unit,
@@ -116,12 +116,12 @@ fun WeekCalendarDataNew(
                     }, unSkipHabit = { unSkipHabit(day.date) },
                     date = day.date,
                     state = dayState,
-                    skipHabit = { skipHabit(day.date) },
+                    skipHabit = { skipHabitForDate(day.date) },
                     addHabit = {
-                        addHabit(day.date)
+                        markHabitDoneForADate(day.date)
                     },
                     deleteHabit = {
-                        deleteHabit(day.date)
+                        deleteRepetitionsForDate(day.date)
                     }, interactive = suffix != "Disabled",
                     dialogueComposable = { visible, onDismiss ->
                         dialogueComposable(visible, onDismiss, habitCompletionEntity, day.date)

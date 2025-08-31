@@ -151,8 +151,11 @@ class HabitRepositoryImpl(
                 habitDao.pluck(habitEntity.index)
                 // then delete the habit
                 habitDao.deleteHabitById(id)
+                widgetUpdater.updateWidgets()
             }
+
         }
+
     }
 
     // Read operations
@@ -365,6 +368,7 @@ class HabitRepositoryImpl(
                 }
             }
         }
+        widgetUpdater.updateWidgets()
 
     }
 
@@ -451,6 +455,7 @@ class HabitRepositoryImpl(
 
             }
         }
+        widgetUpdater.updateWidgets()
 
     }
 
@@ -503,10 +508,12 @@ class HabitRepositoryImpl(
 
     override suspend fun archive(id: Int) {
         habitDao.archive(id = id, true)
+        widgetUpdater.updateWidgets()
     }
 
     override suspend fun unArchive(id: Int) {
         habitDao.archive(id = id, false)
+        widgetUpdater.updateWidgets()
     }
 
     override suspend fun deleteHabitCompletionEntry(habitId: Int, date: LocalDate) {
@@ -535,5 +542,8 @@ class HabitRepositoryImpl(
             habitId = habitId,
             completionDate = completionDate
         )
+    }
+    override fun getEntryOfCertainHabitIdAndDateFlow(habitId: Int, completionDate: LocalDate) : Flow<HabitCompletionEntity?>{
+        return habitCompletionDao.getEntryOfCertainHabitIdAndDateFlow(habitId, completionDate)
     }
 }
