@@ -20,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +40,7 @@ import com.zavedahmad.yaHabit.ui.mainPage.MainPageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HabitActions(
+fun HabitActionsDialogue(
     habit: HabitEntity,
     viewModel: MainPageViewModel,
     backStack: SnapshotStateList<NavKey>,

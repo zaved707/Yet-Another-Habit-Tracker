@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -99,7 +98,7 @@ fun HabitItemReorderableNew(
         CardDefaults.cardElevation()
     }
     val habitData = rememberSaveable { mutableStateOf<List<HabitCompletionEntity>?>(null) }
-    val showDialog = rememberSaveable { mutableStateOf(false) }
+    val showDeleteDialog = rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) {
 
         coroutineScope.launch(Dispatchers.IO) {
@@ -129,10 +128,10 @@ fun HabitItemReorderableNew(
         })
     {
         ConfirmationDialog(
-            visible = showDialog.value,
+            visible = showDeleteDialog.value,
             text = "Do you want to delete this Habit?",
             confirmAction = { viewModel.deleteHabitById(habit.id) },
-            onDismiss = { showDialog.value = false },
+            onDismiss = { showDeleteDialog.value = false },
             confirmationColor = ButtonDefaults.buttonColors(
                 contentColor = MaterialTheme.colorScheme.onError,
                 containerColor = MaterialTheme.colorScheme.error
@@ -351,7 +350,7 @@ fun HabitItemReorderableNew(
                         ) {
                             Column { }
 
-                            HabitActions(habit, viewModel, backStack, showDialog)
+                            HabitActionsDialogue(habit, viewModel, backStack, showDeleteDialog)
                         }
                     }
                 }
