@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -154,7 +155,7 @@ fun HabitDetailsPage(viewModel: HabitDetailsPageViewModel, backStack: SnapshotSt
                                     }
                                 }
 
-                            Text(habit.name, fontWeight = FontWeight.Bold)}
+                            Text(habit.name, fontWeight = FontWeight.Bold, maxLines = 3 , overflow = TextOverflow.Ellipsis)}
                         },
                         actions = { Menu(viewModel, backStack) },
                         scrollBehavior = scrollBehavior

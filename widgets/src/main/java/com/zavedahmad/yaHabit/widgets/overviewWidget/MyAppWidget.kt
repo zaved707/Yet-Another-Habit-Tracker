@@ -61,6 +61,7 @@ class MyAppWidget : GlanceAppWidget(), KoinComponent {
         provideContent {
             GlanceTheme {
                 Scaffold() {
+
                     val habitRepository: HabitRepository = get()
                     val habits = habitRepository.getHabitsFlowSortedByIndex()
                         .collectAsState(initial = emptyList())
@@ -68,10 +69,15 @@ class MyAppWidget : GlanceAppWidget(), KoinComponent {
                         TitleBarWidget("Habits")
                         if (!habits.value.isEmpty()) {
                             HabitItemsList(habits.value, habitRepository)
-                        }
-                        else{
-                            Box (GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                                Text("Nothing Here", style = TextStyle(fontStyle = FontStyle.Italic , color = GlanceTheme.colors.onSurface))
+                        } else {
+                            Box(GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(
+                                    "Nothing Here",
+                                    style = TextStyle(
+                                        fontStyle = FontStyle.Italic,
+                                        color = GlanceTheme.colors.onSurface
+                                    )
+                                )
                             }
                         }
                     }
@@ -87,7 +93,7 @@ class MyAppWidget : GlanceAppWidget(), KoinComponent {
 private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepository) {
     LazyColumn {
 
-        items(items = habits) { habit ->
+        items(items = habits.filter { it.isArchived == false }) { habit ->
             val habitCompletionEntity =
                 habitRepository.getEntryOfCertainHabitIdAndDateFlow(
                     habit.id, LocalDate.now()
@@ -99,6 +105,26 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
             var bgColor = GlanceTheme.colors.error
             var textColor = GlanceTheme.colors.onPrimary
             when (habitCompletionEntity?.state()) {
+                "partial" -> {
+                    bgColor = GlanceTheme.colors.inverseSurface
+                    buttonAction = {
+                        coroutineScope.launch {
+                            habitRepository.applyRepetitionForADate(
+                                date = date,
+                                habitId = habit.id,
+                                newRepetitionValue = habit.repetitionPerDay
+                            )
+                        }
+                    }
+
+                    iconComposable = {
+                        Image(
+                            modifier = GlanceModifier.size(24.dp),
+                            provider = ImageProvider(R.drawable.hollowtick),
+                            contentDescription = "partial"
+                        )
+                    }
+                }
 
                 "absolute" -> {
                     bgColor = GlanceTheme.colors.primary
@@ -114,7 +140,7 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
 
                     iconComposable = {
                         Image(
-                            provider = ImageProvider(R.drawable.outline_check_small_24),
+                            provider = ImageProvider(R.drawable.baseline_check_24),
                             contentDescription = "Done"
                         )
                     }
@@ -162,7 +188,7 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                     }
                     iconComposable = {
                         Image(
-                            provider = ImageProvider(R.drawable.outline_close_small_24),
+                            provider = ImageProvider(R.drawable.outline_close_24),
                             contentDescription = "Failed",
                             colorFilter = ColorFilter.tint(textColor)
                         )
@@ -183,7 +209,7 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                     }
                     iconComposable = {
                         Image(
-                            provider = ImageProvider(R.drawable.outline_close_small_24),
+                            provider = ImageProvider(R.drawable.outline_close_24),
                             contentDescription = "Pending",
                             colorFilter = ColorFilter.tint(textColor)
                         )
@@ -215,7 +241,9 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
 
 @Composable
 internal fun TitleBarWidget(title: String) {
-    Row(GlanceModifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
+    Row(
+        GlanceModifier.padding(vertical = 10.dp)
+    ) {
 
         Image(
             modifier = GlanceModifier.size(24.dp), provider =
