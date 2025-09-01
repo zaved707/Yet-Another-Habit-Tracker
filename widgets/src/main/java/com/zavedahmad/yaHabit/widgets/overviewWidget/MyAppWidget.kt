@@ -40,15 +40,15 @@ import com.zavedahmad.yaHabit.database.entities.state
 import com.zavedahmad.yaHabit.database.repositories.HabitRepository
 import com.zavedahmad.yaHabit.widgets.R
 import com.zavedahmad.yahabit.common.WidgetUpdater
+import com.zavedahmad.yahabit.common.formatNumber.formatNumberToReadable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.time.LocalDate
 
-// todo filter out archived items
+
 // todo open app when clicked on icon or on nothing page
-// todo add partials in widget also
 class HabitWidgetRepository(private val context: Context, val widgetUpdater: WidgetUpdater) {
     suspend fun update() {
         widgetUpdater.updateWidgets()
@@ -104,7 +104,11 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
             val date = LocalDate.now()
             var bgColor = GlanceTheme.colors.error
             var textColor = GlanceTheme.colors.onPrimary
-            when (habitCompletionEntity?.state()) {
+            var state = habitCompletionEntity?.state()
+            val isLowerOrMoreThanSetFrequency =
+                (habitCompletionEntity?.repetitionsOnThisDay ?: 0.0) != habit.repetitionPerDay
+
+            when (state) {
                 "partial" -> {
                     bgColor = GlanceTheme.colors.inverseSurface
                     buttonAction = {
@@ -138,11 +142,13 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                         }
                     }
 
-                    iconComposable = {
+                    iconComposable = if (!isLowerOrMoreThanSetFrequency) {{
                         Image(
                             provider = ImageProvider(R.drawable.baseline_check_24),
                             contentDescription = "Done"
                         )
+                    }} else{
+                        { Text(formatNumberToReadable( habitCompletionEntity?.repetitionsOnThisDay ?: 0.0))}
                     }
                 }
 
@@ -222,16 +228,16 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                     GlanceModifier.background(bgColor)
                         .cornerRadius(10.dp)
                         .padding(vertical = 5.dp, horizontal = 10.dp)
-                        .fillMaxWidth().clickable { buttonAction() },
+                        .fillMaxWidth().height(40.dp).clickable { buttonAction() }, verticalAlignment = Alignment.CenterVertically
 
                     ) {
                     iconComposable()
 
                     Spacer(GlanceModifier.width(10.dp))
-                    Text(text = habit.name, maxLines = 1, style = TextStyle(color = textColor))
+                    Text(text = habit.name, maxLines = 1, style = TextStyle(color = textColor, fontSize = 15.sp, fontWeight = FontWeight.Medium))
 
                 }
-                Spacer(GlanceModifier.height(10.dp))
+                Spacer(GlanceModifier.height(5.dp))
 
             }
         }
@@ -242,7 +248,7 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
 @Composable
 internal fun TitleBarWidget(title: String) {
     Row(
-        GlanceModifier.padding(vertical = 10.dp)
+        GlanceModifier.height(50.dp), verticalAlignment = Alignment.CenterVertically
     ) {
 
         Image(
@@ -250,7 +256,7 @@ internal fun TitleBarWidget(title: String) {
                 ImageProvider(R.drawable.yahabiticonnobg),
             contentDescription = "app Logo"
         )
-        Spacer(GlanceModifier.width(20.dp))
+        Spacer(GlanceModifier.width(10.dp))
         Text(
             title, maxLines = 1, style = TextStyle(
                 color = GlanceTheme.colors.onSurface,
