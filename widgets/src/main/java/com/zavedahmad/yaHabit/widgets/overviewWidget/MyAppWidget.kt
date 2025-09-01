@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.ColorFilter
@@ -125,7 +126,8 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                         Image(
                             modifier = GlanceModifier.size(24.dp),
                             provider = ImageProvider(R.drawable.hollowtick),
-                            contentDescription = "partial"
+                            contentDescription = "partial",
+                            colorFilter = ColorFilter.tint(textColor)
                         )
                     }
                 }
@@ -145,7 +147,8 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                     iconComposable = if (!isLowerOrMoreThanSetFrequency) {{
                         Image(
                             provider = ImageProvider(R.drawable.baseline_check_24),
-                            contentDescription = "Done"
+                            contentDescription = "Done",
+                            colorFilter = ColorFilter.tint(textColor)
                         )
                     }} else{
                         { Text(formatNumberToReadable( habitCompletionEntity?.repetitionsOnThisDay ?: 0.0))}
@@ -175,7 +178,8 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                     iconComposable = {
                         Image(
                             provider = ImageProvider(R.drawable.outline_keyboard_double_arrow_right_24),
-                            contentDescription = "Skipped"
+                            contentDescription = "Skipped",
+                                    colorFilter = ColorFilter.tint(textColor)
                         )
                     }
                 }
@@ -231,8 +235,9 @@ private fun HabitItemsList(habits: List<HabitEntity>, habitRepository: HabitRepo
                         .fillMaxWidth().height(40.dp).clickable { buttonAction() }, verticalAlignment = Alignment.CenterVertically
 
                     ) {
-                    iconComposable()
-
+//                    Box(GlanceModifier.background(Color.White).cornerRadius(5.dp)) {
+                        iconComposable()
+//                    }
                     Spacer(GlanceModifier.width(10.dp))
                     Text(text = habit.name, maxLines = 1, style = TextStyle(color = textColor, fontSize = 15.sp, fontWeight = FontWeight.Medium))
 
