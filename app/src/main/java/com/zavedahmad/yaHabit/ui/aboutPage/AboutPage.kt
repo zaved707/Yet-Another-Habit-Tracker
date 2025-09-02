@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -93,8 +94,8 @@ fun AboutPage(backStack: SnapshotStateList<NavKey>, viewModel: AboutPageViewMode
             ) {
                 Image(
                     modifier = Modifier
-                        .size(150.dp)
-                        .clip(MaterialShapes.Cookie12Sided.toShape()),
+
+                        .size(150.dp),
                     painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                     contentDescription = " Image"
                 )
