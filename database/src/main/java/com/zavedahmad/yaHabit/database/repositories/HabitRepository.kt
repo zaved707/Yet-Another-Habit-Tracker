@@ -28,6 +28,7 @@ interface HabitRepository {
     suspend fun deleteHabitCompletionEntry(habitId: Int, date: LocalDate)
     suspend fun getAllHabitCompletionsById(habitId: Int): List<HabitCompletionEntity>?
     fun getAllAbsoluteHabitCompletionsById(habitId: Int): List<HabitCompletionEntity>?
+    fun getAllSkippedHabitCompletionsById(habitId: Int): List<HabitCompletionEntity>
     fun getAllHabitCompletionsByIdFlow(id: Int): Flow<List<HabitCompletionEntity>?>
     fun getEntriesAfterDate(habitId: Int, completionDate: Long): Flow<List<HabitCompletionEntity>?>
     fun getEntryOfCertainHabitIdAndDateFlow(habitId: Int, completionDate: LocalDate) : Flow<HabitCompletionEntity?>

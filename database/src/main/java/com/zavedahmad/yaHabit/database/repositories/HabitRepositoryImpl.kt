@@ -467,6 +467,8 @@ class HabitRepositoryImpl(
 
         //  get all absolute entries of the habit
         val habitAbsoluteEntries = getAllAbsoluteHabitCompletionsById(newHabitEntity.id)
+        //  get all skips
+        val skippedEntries = getAllSkippedHabitCompletionsById(newHabitEntity.id)
         // get absolute clusters
         if (habitAbsoluteEntries != null) {
             val clusters = findHabitClusters(
@@ -480,10 +482,18 @@ class HabitRepositoryImpl(
             // from processed clusters remove all the absolute dates
             val removedAbsoluteFromProcessedDates =
                 processedClusters.filter { it !in habitAbsoluteEntries.map { it -> it.completionDate } }
-
             // delete all partial from database
             habitCompletionDao.deleteAllPartialFromId(newHabitEntity.id)
 
+            //  get all skipped Entries  which are present in processedClusters dates
+            val skippedEntriesWhosePartialIsToBeChangeToTrue = skippedEntries.filter { it.completionDate in processedClusters }
+
+            // change all skipped partial to true who are eligible
+            skippedEntriesWhosePartialIsToBeChangeToTrue.forEach {
+                addHabitCompletionEntry(
+                    it.copy(partial = true)
+                )
+            }
             // add all the rest of dates as partials to database
             removedAbsoluteFromProcessedDates.forEach {
                 addHabitCompletionEntry(
@@ -527,6 +537,10 @@ class HabitRepositoryImpl(
 
     override fun getAllAbsoluteHabitCompletionsById(habitId: Int): List<HabitCompletionEntity>? {
         return habitCompletionDao.getAbsoluteHabitCompletionsById(habitId)
+    }
+
+    override fun getAllSkippedHabitCompletionsById(habitId: Int): List<HabitCompletionEntity>{
+        return habitCompletionDao.getSkippedHabitCompletionsById(habitId)
     }
 
     override fun getAllHabitCompletionsByIdFlow(id: Int): Flow<List<HabitCompletionEntity>?> {

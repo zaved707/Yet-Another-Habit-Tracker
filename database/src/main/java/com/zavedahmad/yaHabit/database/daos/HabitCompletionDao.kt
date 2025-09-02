@@ -27,6 +27,10 @@ interface HabitCompletionDao {
     fun getHabitCompletionsById(id : Int): List<HabitCompletionEntity>
     @Query("SELECT * FROM habitCompletion WHERE habitId = :id AND partial = 0")
     fun getAbsoluteHabitCompletionsById(id : Int): List<HabitCompletionEntity>
+
+
+    @Query("SELECT * FROM habitCompletion WHERE habitId = :id AND skip = 1")
+    fun getSkippedHabitCompletionsById(id : Int): List<HabitCompletionEntity>
     @Query("SELECT * FROM habitCompletion WHERE completionDate = :date")
     fun getHabitCompletionsByDate(date : Long): Flow<List<HabitCompletionEntity>>
 
