@@ -463,7 +463,7 @@ class HabitRepositoryImpl(
     // Write operations
 
 
-    override suspend fun repairPartials(newHabitEntity: HabitEntity) {
+    override suspend fun repairPartials(newHabitEntity: HabitEntity) {                              // todo this should also add partial to true to skipped habits
 
         //  get all absolute entries of the habit
         val habitAbsoluteEntries = getAllAbsoluteHabitCompletionsById(newHabitEntity.id)
