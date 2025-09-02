@@ -467,7 +467,7 @@ fun FrequencySelector(viewModel: AddHabitPageViewModel, onErrorValueChange: (Boo
                          DialogItem(
                              modifier = Modifier.fillMaxWidth(),
                              state = isChecked,
-                             onValueChange = {
+                             onClick = {
                                  if (!isChecked) {
                                      checkErrorsAndRectify()
 
