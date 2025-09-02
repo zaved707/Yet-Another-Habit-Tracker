@@ -35,7 +35,7 @@ This is a mordern and simple habit tracker for android.
  <p align="center">
     <a href="https://apt.izzysoft.de/packages/com.zavedahmad.yaHabit"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"></a>
     <a href="https://f-droid.org/packages/com.zavedahmad.yaHabit"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
-    <a href="https://github.com/zavedahmad/yet-another-habit-tracker/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80"></a>
+    <a href="https://github.com/zaved707/Yet-Another-Habit-Tracker/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80"></a>
    </p>
 <p align = "center"> 
  <a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zaved707/Yet-Another-Habit-Tracker"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" height="55"></a>
@@ -61,16 +61,16 @@ This is a mordern and simple habit tracker for android.
 </div>
 
 - [jetpack Compose](https://developer.android.com/compose) for ui building and state management
-- [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection
+- [Koin](https://github.com/InsertKoinIO/koin) for dependency injection
 - [Room](https://developer.android.com/jetpack/androidx/releases/room) for database
 - [Reorderable](https://github.com/Calvin-LL/Reorderable) for Reorderable habits
-- navigation 3 for navigation
+- [navigation 3](https://developer.android.com/guide/navigation/navigation-3) for navigation
 ## Roadmap
 - [x] Custom Starting  day of week
 - [x] Measurable Habits (since >= v0.1.0 )
 - [x] data backup and restore (since >= v0.2.0 )
-- [ ] swipe all habits at once in main page
-- [ ] HomeScreen Widgets
+- [x] HomeScreen Widgets (since >= v0.4.0)
+- [ ] table form habits view
 
  
  
