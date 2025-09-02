@@ -31,22 +31,16 @@ This is a mordern and simple habit tracker for android.
 
 
 ## Installation
-<p align="center">
-  <a href="https://f-droid.org/packages/com.zavedahmad.yaHabit">
-    <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
-  </a>
-  <a href="https://apt.izzysoft.de/packages/com.zavedahmad.yaHabit">
-    <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="70">
-  </a>
-  <a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zaved707/Yet-Another-Habit-Tracker">
-    <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" height="50">
-  </a>
+
+ <p align="center">
+    <a href="https://apt.izzysoft.de/packages/com.zavedahmad.yaHabit"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"></a>
+    <a href="https://f-droid.org/packages/com.zavedahmad.yaHabit"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
+    <a href="https://github.com/zavedahmad/yet-another-habit-tracker/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80"></a>
+   </p>
+<p align = "center"> 
+ <a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zaved707/Yet-Another-Habit-Tracker"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" height="55"></a>
+
 </p>
-
-OR
-
-Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/releases) and then install on your android phone to use.
-
 
 ## Screenshots
 
@@ -56,6 +50,7 @@ Get app from [Releases](https://github.com/zaved707/Yet-Another-Habit-Tracker/re
   <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg?raw=true" alt="App Screenshot 3" width="200"/>
   <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg?raw=true" alt="App Screenshot 3" width="200"/>
 </div>
+
 
 
 
