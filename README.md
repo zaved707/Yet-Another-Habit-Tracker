@@ -49,6 +49,7 @@ This is a mordern and simple habit tracker for android.
   <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg?raw=true" alt="App Screenshot 2" width="200"/>
   <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg?raw=true" alt="App Screenshot 3" width="200"/>
   <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg?raw=true" alt="App Screenshot 3" width="200"/>
+  <img src="https://github.com/zaved707/Yet-Another-Habit-Tracker/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/6.jpg?raw=true" alt="App Screenshot 3" width="200"/>
 </div>
 
 

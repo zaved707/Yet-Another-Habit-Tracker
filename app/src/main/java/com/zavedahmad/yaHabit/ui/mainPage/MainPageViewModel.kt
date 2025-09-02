@@ -39,7 +39,7 @@ class MainPageViewModel(
 
     private val showArchive = MutableStateFlow(false)
 
-    private val _devMode = MutableStateFlow<Boolean>(false)
+    private val _devMode = MutableStateFlow<Boolean>(true)
     val devMode = _devMode.asStateFlow()
 
     init {

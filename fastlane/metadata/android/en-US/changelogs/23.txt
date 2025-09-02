@@ -1,0 +1,3 @@
+- home screen widgets
+- code refactoring
+- bug fixes
