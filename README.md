@@ -22,7 +22,7 @@ This is a mordern and simple habit tracker for android.
 
 
 ## Features
-
+- HomeScreen widget
 - Light/dark mode toggle
 - amoled mode
 - HeatMap
